@@ -52,3 +52,11 @@ Installs required packages and sets up:
 * haproxy
 * varnish
 * apache
+
+add_users.yml
+~~~~~~~~~~~~~
+
+Targets: all
+
+Establishes basic user set
+

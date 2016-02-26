@@ -6,13 +6,7 @@
 - src: Stouts.supervisor
   version: 1.2.0
 
-- src: GROG.user
-  version: v1.2.0
-
-- src: GROG.authorized-key
-  version: v1.1.0
-
-- src: GROG.sudo
+- src: GROG.management-user
   version: v1.2.0
 
 - src: geerlingguy.varnish

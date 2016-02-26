@@ -3,6 +3,7 @@ roles/Stouts.supervisor
 roles/GROG.user
 roles/GROG.authorized-key
 roles/GROG.sudo
+roles/GROG.management-user
 roles/geerlingguy.varnish
 roles/geerlingguy.apache
 roles/geerlingguy.postfix

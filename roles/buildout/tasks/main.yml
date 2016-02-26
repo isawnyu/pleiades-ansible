@@ -44,7 +44,7 @@
   register: git_updated
   sudo_user: "{{ buildout_user }}"
   notify:
-    - Bootstrap buildout
+    - Bootstrap buildout {{ instance_name }}
 
 - name: App var directory
   file:

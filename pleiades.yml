@@ -24,13 +24,23 @@
       apt: pkg="{{ item }}"
       with_items:
         - python-dev
-        - python-pip
         - python2.4-dev
-        - python2.4-distribute-deadsnakes
         - python2.6-dev
 
-    - name: Update default python-virtualenv
-      pip: name=virtualenv version=14.0.6 state=present
+    - name: download ez_setup
+      get_url: url=http://peak.telecommunity.com/dist/ez_setup.py dest=/srv/ez_setup.py
+
+    - name: install easy_installs
+      command: python{{ item }} /srv/ez_setup.py creates=/usr/local/bin/easy_install-{{ item }}
+      with_items:
+        - 2.4
+        - 2.6
+
+    - name: Link easy_install
+      file: src=/usr/bin/easy_install-2.4 dest=/usr/local/bin/easy_install-2.4 state=link
+
+    - name: Remove easy_install
+      file: path=/usr/local/bin/easy_install state=absent
 
     - name: Install old PIPs
       easy_install: executable="easy_install-{{ item.py_version }}" name="pip=={{item.pip_version}}" state='present'
@@ -38,16 +48,48 @@
         - {py_version: 2.4, pip_version: 1.1}
         - {py_version: 2.6, pip_version: "8.0.3"}
 
-    - name: Link pip2.6 to canonical location
-      file: src=/usr/local/bin/pip2.6 dest=/usr/local/bin/pip-2.6 state=link owner=root
+    - name: Link for pip-2.6
+      file: src=/usr/local/bin/pip2.6 dest=/usr/local/bin/pip-2.6 state=link
+
+    - name: Remove pip
+      file: path=/usr/local/bin/pip state=absent
 
     - name: Install 2.4 and 2.6 virtualenv
       pip: executable="pip-{{ item.pip_version }}" name='virtualenv' version="{{ item.version }}"
       with_items:
         - {pip_version: 2.4, version: 1.7}
+        - {pip_version: 2.6, version: 14.0.6}
 
-    - name: Link virtualenv to virtualenv-2.6
-      file: src=/usr/local/bin/virtualenv dest=/usr/local/bin/virtualenv-2.6 state=link owner=root
+    - name: check virtualenv-2.4
+      command: grep -Fq "python2.4" /usr/bin/virtualenv
+      register: venv24_present
+      ignore_errors: True
+      changed_when: False
+
+    - name: move virtualenv-2.4
+      command: mv /usr/bin/virtualenv /usr/local/bin/virtualenv-2.4
+      when: venv24_present.rc == 0
+
+    - name: check virtualenv-2.6
+      command: grep -Fq "python2.6" /usr/local/bin/virtualenv
+      register: venv26_present
+      ignore_errors: True
+      changed_when: False
+
+    - name: Remove virtualenv link
+      file: path=/usr/local/bin/virtualenv-2.6 state=absent
+      when: venv26_present.rc == 0
+
+    - name: Move virtualenv-2.6
+      command: mv /usr/local/bin/virtualenv /usr/local/bin/virtualenv-2.6
+      when: venv26_present.rc == 0
+
+    - name: Install default python tools
+      apt: pkg="{{ item }}" force=yes state=latest
+      with_items:
+        - python-pip
+        - python-setuptools
+        - python-virtualenv
 
     - name: Create 2.4 and 2.6 virtualenvs and add packages
       pip: executable="pip-{{ item.py_version }}" name="{{ item.name }}" version="{{ item.version }}" virtualenv="{{ item.env }}" virtualenv_python="python{{ item.py_version }}" virtualenv_command="virtualenv-{{ item.py_version }}" virtualenv_site_packages=no
@@ -101,13 +143,6 @@
       user:
         name=plone_buildout
         group=plone_group
-
-    - name: Create vaytrou log dir
-      file: path=/srv/python26-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
-
-
-    - name: Create pleiades var dir
-      file: path=/srv/python24-apps/pleiades3/var recurse=yes state=directory owner=plone_daemon
 
   roles:
 
@@ -217,20 +252,24 @@
 
   tasks:
 
+    - name: Create vaytrou log dir
+      file: path=/srv/python26-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
+
     - name: Set timezone
-      file: src=/usr/share/zoneinfo/America/New_York dest=/etc/localtime state=link owner=root
+      file: src=/usr/share/zoneinfo/America/New_York dest=/etc/localtime state=link owner=root force=yes
 
     - name: Start supervisor
       service: name=supervisor state=started
 
   post_tasks:
-    - name: Restart services
+    - name: Restart plieades
       command: supervisorctl restart {{ item }}
-      sudo: yes
-      when: git_updated.changed
+      when: buildout_pleiades3 is defined
       with_items:
-        - pleiades-zeoserver
         - pleiades-instance1
         - pleiades-instance2
         - pleiades-instance3
-        - vtpleiades3
+
+    - name: Restart vaytrou
+      command: supervisorctl restart vtpleiades3
+      when: buildout_vaytrou is defined

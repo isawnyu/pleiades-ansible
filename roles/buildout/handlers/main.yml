@@ -1,17 +1,19 @@
 ---
-- name: Bootstrap buildout
+- name: Bootstrap buildout {{ instance_name }}
   command: "{{ buildout_python }} bootstrap.py -c {{ buildout_file }}"
   args:
     chdir: "{{ base_dir }}/{{ instance_name }}"
   sudo: yes
   sudo_user: "{{ buildout_user }}"
+  when: git_updated.changed
   notify:
-    - Run buildout
+    - Run buildout {{ instance_name }}
 
-- name: Run buildout
+- name: Run buildout {{ instance_name }}
   command: bin/buildout -c {{ buildout_file }}
   args:
     chdir: "{{ base_dir }}/{{ instance_name }}"
   when: run_buildout
   sudo: yes
   sudo_user: "{{ buildout_user }}"
+  register: buildout_{{ instance_name }}
