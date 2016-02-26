@@ -1,0 +1,10 @@
+---
+
+base_dir: '/usr/local/pyramid'
+instance_name: 'pyramid_app'
+run_buildout: True
+buildout_repo: 'https://github.com/example/pyramid.git'
+buildout_user: plone_buildout
+daemon_user: plone_daemon
+buildout_file: buildout.cfg
+buildout_python: '/usr/bin/python'

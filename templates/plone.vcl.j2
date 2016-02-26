@@ -1,0 +1,117 @@
+vcl 4.0;
+backend default {
+    .host = "{{ varnish_default_backend_host }}";
+    .port = "{{ varnish_default_backend_port }}";
+}
+
+acl purge {
+    "localhost";
+}
+
+sub vcl_recv {
+
+    # For now handle virtual host mapping here
+    set req.url = "/VirtualHostBase/http/" + req.http.host + "/plone/VirtualHostRoot" + req.url;
+  
+    # let's not deal with the registration form
+    if (req.url ~ "^/register-external-user") {
+        return(pipe);
+    }
+
+    # Do not cache these paths.
+    if (req.url ~ "^/@@alm-report-viewer.*$" ||
+        req.url ~ "\?.*" ||
+        req.url ~ "^/alm-report.*$") {
+         return(pipe);
+    }
+
+    # Sanitize compression handling
+    if (req.http.Accept-Encoding) {
+        if (req.url ~ "\.(jpg|png|gif|gz|tgz|bz2|tbz|mp3|ogg)$") {
+            # No point in compressing these
+            unset req.http.Accept-Encoding;
+        } elsif (req.http.Accept-Encoding ~ "gzip") {
+            set req.http.Accept-Encoding = "gzip";
+        } elsif (req.http.Accept-Encoding ~ "deflate" && req.http.user-agent !~ "MSIE") {
+            set req.http.Accept-Encoding = "deflate";
+        } else {
+            # unkown algorithm
+            unset req.http.Accept-Encoding;
+        }
+    }
+
+    # Always cache these file types
+    if (req.url ~ "(?i)\.(pdf|asc|dat|txt|doc|xls|ppt|tgz|png|gif|jpeg|jpg|ico|swf|css|js)(\?.*)?$") {
+        unset req.http.Cookie;
+    }
+
+
+    # Handle special requests
+    if (req.method != "GET" && req.method != "HEAD") {
+       # POST - Logins and edits
+       if (req.method == "POST") {
+           return(pass);
+       }
+       # PURGE - The CacheFu product can invalidate updated URLs
+       if (req.method == "PURGE") {
+           if (!client.ip ~ purge) {
+               return (synth(405, "Not allowed."));
+           }
+           return(purge);
+       }
+       # Do not cache the creation of objects in Plone
+       if (req.url ~ "createObject"){
+           return(pass);
+       }
+    }
+
+    # Do Plone cookie sanitization, so cookies do not destroy cacheable anonymous pages
+    if (req.http.Cookie) {
+        set req.http.Cookie = ";" + req.http.Cookie;
+        set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
+        set req.http.Cookie = regsuball(req.http.Cookie, ";(statusmessages|__ac|_ZopeId|__cp)=", "; \1=");
+        set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
+        set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
+
+        if (req.http.Cookie == "") {
+            unset req.http.Cookie;
+        }
+    }
+
+    # Don't cache authenticated requests
+    if (req.http.Cookie && req.http.Cookie ~ "__ac(|_(name|password|persistent))=") {
+       # Force lookup of specific urls unlikely to need protection
+       if (req.url ~ "\.(gif|jpg|png|js|css|kss)$") {
+           unset req.http.cookie;
+               return(hash);
+       }
+       return(pass);
+   }
+
+    if (req.http.Authorization && req.http.Authorization !~ "wta-authtoken") {
+        unset req.http.Authorization;
+    }
+   # The default vcl_recv is used from here.
+}
+
+sub vcl_deliver {
+    if (obj.hits > 0) {
+        set resp.http.X-Varnish-Cache = "HIT";
+    }
+    else {
+        set resp.http.X-Varnish-Cache = "MISS";
+    }
+}
+
+sub vcl_backend_response {
+    # Don't allow static files to set cookies.
+    # (?i) denotes case insensitive in PCRE (perl compatible regular expressions).
+    # This list of extensions appears twice, once here and again in vcl_recv so
+    # make sure you edit both and keep them equal.
+    if (bereq.url ~ "(?i)\.(pdf|asc|dat|txt|doc|xls|ppt|tgz|png|gif|jpeg|jpg|ico|swf|css|js)(\?.*)?$") {
+      unset beresp.http.set-cookie;
+    }
+
+    # Allow items to be stale if needed.
+    #set beresp.grace = 6h;
+}

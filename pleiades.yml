@@ -1,0 +1,236 @@
+---
+- hosts: all
+  vars:
+    http_port: 80
+    max_clients: 200
+  become: true
+  become_user: root
+  become_method: sudo
+
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Install repo management
+      apt: pkg=python-software-properties
+
+    - name: Install old python repos
+      apt_repository: repo='ppa:fkrull/deadsnakes'
+
+    - name: Update packages
+      apt: upgrade=safe update_cache=yes
+
+    - name: Install pythons
+      apt: pkg="{{ item }}"
+      with_items:
+        - python-dev
+        - python-pip
+        - python2.4-dev
+        - python2.4-distribute-deadsnakes
+        - python2.6-dev
+
+    - name: Update default python-virtualenv
+      pip: name=virtualenv version=14.0.6 state=present
+
+    - name: Install old PIPs
+      easy_install: executable="easy_install-{{ item.py_version }}" name="pip=={{item.pip_version}}" state='present'
+      with_items:
+        - {py_version: 2.4, pip_version: 1.1}
+        - {py_version: 2.6, pip_version: "8.0.3"}
+
+    - name: Link pip2.6 to canonical location
+      file: src=/usr/local/bin/pip2.6 dest=/usr/local/bin/pip-2.6 state=link owner=root
+
+    - name: Install 2.4 and 2.6 virtualenv
+      pip: executable="pip-{{ item.pip_version }}" name='virtualenv' version="{{ item.version }}"
+      with_items:
+        - {pip_version: 2.4, version: 1.7}
+
+    - name: Link virtualenv to virtualenv-2.6
+      file: src=/usr/local/bin/virtualenv dest=/usr/local/bin/virtualenv-2.6 state=link owner=root
+
+    - name: Create 2.4 and 2.6 virtualenvs and add packages
+      pip: executable="pip-{{ item.py_version }}" name="{{ item.name }}" version="{{ item.version }}" virtualenv="{{ item.env }}" virtualenv_python="python{{ item.py_version }}" virtualenv_command="virtualenv-{{ item.py_version }}" virtualenv_site_packages=no
+      with_items:
+        - {py_version: 2.4, name: "Paste", version: "1.7.5", env: "/srv/python24-apps"}
+        - {py_version: 2.4, name: "PasteScript", version: "1.7.5", env: "/srv/python24-apps"}
+        - {py_version: 2.4, name: "Pillow", version: "1.7.5", env: "/srv/python24-apps"}
+        - {py_version: 2.6, name: "Paste", version: "1.7.5", env: "/srv/python26-apps"}
+
+    - name: Install required packages
+      apt: pkg="{{ item }}" state=present
+      with_items:
+        - build-essential
+        - libz-dev
+        - libssl-dev
+        - libjpeg-dev
+        - libxslt1-dev
+        - libxml2-dev
+        - poppler-utils
+        - lynx-cur
+        - unzip
+        - git
+        - wv
+        - iotop
+        - sysstat
+
+    - name: Install pleiades dependencies
+      apt: pkg={{ item }}
+      with_items:
+        - libgeos-dev
+        - openldap-utils
+        - ldap-server
+        - libsasl2-dev
+        - libldap-dev
+        - libffi-dev
+        - autoconf
+        - patch
+
+    - name: Ensure plone_group
+      group: name=plone_group
+
+    - name: Ensure plone_daemon
+      user:
+        name=plone_daemon
+        group=plone_group
+        shell=/bin/bash
+        createhome=yes
+        generate_ssh_key=yes
+
+    - name: Ensure plone_buildout
+      user:
+        name=plone_buildout
+        group=plone_group
+
+    - name: Create vaytrou log dir
+      file: path=/srv/python26-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
+
+
+    - name: Create pleiades var dir
+      file: path=/srv/python24-apps/pleiades3/var recurse=yes state=directory owner=plone_daemon
+
+  roles:
+
+    - jnv.unattended-upgrades
+
+    - geerlingguy.postfix
+
+    - {role: 'buildout',
+        base_dir: '/srv/python24-apps',
+        buildout_python: '/srv/python24-apps/bin/python2.4',
+        instance_name: 'pleiades3',
+        buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
+        buildout_version: 'jazkarta-fixes',
+        buildout_file: 'production.cfg',
+        tags: ['plone', 'buildout'],
+      }
+
+    - {role: 'buildout',
+        base_dir: '/srv/python26-apps',
+        buildout_python: '/srv/python26-apps/bin/python2.6',
+        instance_name: 'vaytrou',
+        buildout_repo: 'https://github.com/isawnyu/vaytrou.git',
+        buildout_version: 'jazkarta-fixes',
+        tags: ['vaytrou', 'buildout'],
+      }
+
+    - role: 'Stouts.supervisor'
+      supervisor_superlance: yes
+      supervisor_tasks:
+        - name: pleiades-zeoserver
+          command: /srv/python24-apps/pleiades3/bin/zeoserver console
+          directory: /srv/python24-apps/pleiades3
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+
+        - name: pleiades-instance1
+          command: /srv/python24-apps/pleiades3/bin/instance1 console
+          directory: /srv/python24-apps/pleiades3
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+
+        - name: pleiades-instance2
+          command: /srv/python24-apps/pleiades3/bin/instance2 console
+          directory: /srv/python24-apps/pleiades3
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+
+        - name: pleiades-instance3
+          command: /srv/python24-apps/pleiades3/bin/instance3 console
+          directory: /srv/python24-apps/pleiades3
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+          
+        - name: pleiades-instance4
+          command: /srv/python24-apps/pleiades3/bin/instance4 console
+          directory: /srv/python24-apps/pleiades3
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+          
+        - name: vtpleiades3
+          command:  /srv/python26-apps/vaytrou/bin/vtpython scripts/vtserve -d vtdata pleiades3-three -p 8887
+          user: plone_daemon
+          directory: /srv/python26-apps/vaytrou
+          environment: LD_LIBRARY_PATH="/srv/python26-apps/vaytrou/parts/libgeos/lib:/srv/python26-apps/vaytrou/parts/libspatialindex/lib"
+          stopwaitsecs: 30
+          stdout_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
+          stdout_logfile_maxbytes: 50MB
+          stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
+          autostart: true
+          autorestart: true
+
+      tags: ['supervisor']
+
+    - {role: haproxy,
+        listen_name: plone,
+        listen_port: 8081,
+        clients: [
+            {'name': 'plone_2', 'port': 8402},
+            {'name': 'plone_3', 'port': 8403},
+            {'name': 'plone_4', 'port': 8404},
+            ],
+        tags: ['haproxy'],
+      }
+
+    - role: geerlingguy.varnish
+      varnish_secret: "1d3739d74843dc3eadf59a329bc420d4"
+      varnish_default_vcl_template_path: "plone.vcl.j2"
+      varnish_default_backend_host: "127.0.0.1"
+      varnish_default_backend_port: "8081"
+      varnish_listen_port: "80"
+      varnish_storage: "file,/var/lib/varnish/varnish_storage.bin,256M"
+
+  tasks:
+
+    - name: Set timezone
+      file: src=/usr/share/zoneinfo/America/New_York dest=/etc/localtime state=link owner=root
+
+    - name: Start supervisor
+      service: name=supervisor state=started
+
+  post_tasks:
+    - name: Restart services
+      command: supervisorctl restart {{ item }}
+      sudo: yes
+      when: git_updated.changed
+      with_items:
+        - pleiades-zeoserver
+        - pleiades-instance1
+        - pleiades-instance2
+        - pleiades-instance3
+        - vtpleiades3

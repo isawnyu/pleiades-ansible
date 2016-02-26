@@ -1,0 +1,62 @@
+---
+
+- name: Ensure base directory
+  file:
+    path={{ base_dir}}
+    state=directory
+
+- name: Buildout cache directory
+  file:
+    path={{ base_dir }}/buildout-cache
+    state=directory
+    owner={{ buildout_user }}
+    group=plone_group
+
+- name: Buildout cache eggs directory
+  file:
+    path={{ base_dir }}/buildout-cache/eggs
+    state=directory
+    owner={{ buildout_user }}
+    group=plone_group
+
+- name: Buildout cache downloads directory
+  file:
+    path={{ base_dir }}/buildout-cache/downloads
+    state=directory
+    owner={{ buildout_user }}
+    group=plone_group
+
+- name: App buildout directory
+  file:
+    path={{ base_dir }}/{{ instance_name }}
+    state=directory
+    owner={{ buildout_user }}
+    group=plone_group
+
+- name: App buildout directory via git
+  git:
+    repo={{ buildout_repo }}
+    update=yes
+    dest={{ base_dir }}/{{ instance_name }}
+    version={{ buildout_version | default('HEAD') }}
+    depth=1
+    accept_hostkey=yes
+  register: git_updated
+  sudo_user: "{{ buildout_user }}"
+  notify:
+    - Bootstrap buildout
+
+- name: App var directory
+  file:
+    path={{ base_dir }}/{{ instance_name }}/var
+    state=directory
+    owner={{ daemon_user }}
+    group=plone_group
+    mode=02775
+
+- name: Python eggs directory
+  file:
+    path={{ base_dir }}/{{ instance_name }}/var/.python-eggs
+    state=directory
+    owner={{ daemon_user }}
+    group=plone_group

@@ -1,0 +1,17 @@
+---
+- name: Bootstrap buildout
+  command: "{{ buildout_python }} bootstrap.py -c {{ buildout_file }}"
+  args:
+    chdir: "{{ base_dir }}/{{ instance_name }}"
+  sudo: yes
+  sudo_user: "{{ buildout_user }}"
+  notify:
+    - Run buildout
+
+- name: Run buildout
+  command: bin/buildout -c {{ buildout_file }}
+  args:
+    chdir: "{{ base_dir }}/{{ instance_name }}"
+  when: run_buildout
+  sudo: yes
+  sudo_user: "{{ buildout_user }}"
