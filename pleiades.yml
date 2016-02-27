@@ -115,6 +115,7 @@
         - wv
         - iotop
         - sysstat
+        - joe
 
     - name: Install pleiades dependencies
       apt: pkg={{ item }}
@@ -167,6 +168,15 @@
         buildout_repo: 'https://github.com/isawnyu/vaytrou.git',
         buildout_version: 'jazkarta-fixes',
         tags: ['vaytrou', 'buildout'],
+      }
+
+    - {role: 'buildout',
+        base_dir: '/srv/python27-apps',
+        instance_name: 'pleiades4',
+        buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
+        buildout_version: 'jazkarta-plone4',
+        buildout_file: 'devel.cfg',
+        tags: ['plone4', 'buildout'],
       }
 
     - role: 'Stouts.supervisor'
@@ -229,6 +239,15 @@
           autostart: true
           autorestart: true
 
+        - name: pleiades4-instance1
+          command: /srv/python27-apps/pleiades4/bin/instance console
+          directory: /srv/python27-apps/pleiades4
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+
       tags: ['supervisor']
 
     - {role: haproxy,
@@ -262,7 +281,7 @@
       service: name=supervisor state=started
 
   post_tasks:
-    - name: Restart plieades
+    - name: Restart pleiades
       command: supervisorctl restart {{ item }}
       when: buildout_pleiades3 is defined
       with_items:
