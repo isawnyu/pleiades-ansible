@@ -21,18 +21,6 @@ sub vcl_recv {
         set req.backend_hint = p4;
     }
 
-    # let's not deal with the registration form
-    if (req.url ~ "^/register-external-user") {
-        return(pipe);
-    }
-
-    # Do not cache these paths.
-    if (req.url ~ "^/@@alm-report-viewer.*$" ||
-        req.url ~ "\?.*" ||
-        req.url ~ "^/alm-report.*$") {
-         return(pipe);
-    }
-
     # Sanitize compression handling
     if (req.http.Accept-Encoding) {
         if (req.url ~ "\.(jpg|png|gif|gz|tgz|bz2|tbz|mp3|ogg)$") {
