@@ -1,6 +1,7 @@
 ---
 - hosts: all
   vars:
+    p4_port: 9080
     http_port: 80
     max_clients: 200
   become: true
