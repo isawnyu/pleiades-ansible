@@ -291,7 +291,7 @@
         - pleiades-instance3
 
     - name: Restart pleaides 4
-      command supervisorctl restart pleiades4-instance1
+      command: supervisorctl restart pleiades4-instance1
       when: buildout_pleiades4 is defined
 
     - name: Restart vaytrou
