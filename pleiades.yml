@@ -176,7 +176,7 @@
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
         buildout_version: 'jazkarta-plone4',
-        buildout_file: 'devel.cfg',
+        buildout_file: 'staging.cfg',
         tags: ['plone4', 'buildout'],
       }
 
