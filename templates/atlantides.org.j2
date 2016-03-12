@@ -1,0 +1,121 @@
+AddType application/vnd.google-earth.kml+xml .kml  
+AddType application/vnd.google-earth.kmz .kmz
+AddType application/atom+xml .atom
+
+# WSGIPythonHome /usr/local/pythonenv/BASELINE
+
+<VirtualHost *:*>
+  ServerName atlantides.org
+  ServerAlias m.atlantides.org www.atlantides.org atlantides.com www.atlantides.com gawd.atlantides.org
+  ServerAdmin tom.elliott@nyu.edu
+  DocumentRoot /var/www/atlantides.org/
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride Options
+  </Directory>
+  <Directory /var/www/atlantides.org>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride FileInfo
+    Order allow,deny
+    allow from all
+  </Directory>
+
+  # ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+  # <Directory "/usr/lib/cgi-bin">
+  #   AllowOverride None
+  #   Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+  #   Order allow,deny
+  #   Allow from all
+  # </Directory>
+
+  # Alias /planet /home/planet/public_html
+  
+  # Alias /stats /var/www/stats
+  # <Directory /var/www/stats>
+  #   Options +Indexes
+  #   AllowOverride All
+  #   #AllowOverride AuthConfig Limit
+  # </Directory>
+
+  # Alias /munin /var/www/munin
+  # <Directory /var/www/munin>
+  #   Options +Indexes
+  #   AllowOverride All
+  # </Directory>
+
+  # <Directory /var/www/atlantides.org/bibliography>
+  #   AllowOverride All
+  # </Directory>
+
+# Batlas WSGI application
+# =======================================================================
+
+  # WSGIScriptAlias /features /usr/lib/cgi-bin/batlas/app.wsgi
+
+  # <Location /features>
+  #   WSGIApplicationGroup %{RESOURCE}
+  #   SetEnv HTTP_X_VHM_HOST http://atlantides.org/batlas
+  #   #SetEnv HTTP_X_VHM_ROOT /features
+  #   Order deny,allow
+  #   Allow from all
+  # </Location>
+ 
+  
+  ErrorLog /var/log/apache2/atlantides.org-error.log
+#
+#  # Possible values include: debug, info, notice, warn, error, crit,
+#  # alert, emerg.
+  LogLevel warn
+
+  CustomLog /var/log/apache2/atlantides.org-access.log combined
+  ServerSignature On
+
+ # <Location /batlas>
+ #   Order deny,allow
+ #   Allow from all
+ # </Location>
+
+ # <Location /terms>
+ #   Order deny,allow
+ #   Allow from all
+ # </Location>
+
+  # RewriteEngine On
+  # RewriteRule ^/batlas/static/(.*) http://atlantides.org/features/@@static/$1 [P,L]
+  # RewriteRule ^/batlas/([\w-]+)$ http://atlantides.org/features/$1 [P,L]
+  # RewriteRule ^/terms/(.*) http://atlantides.org/trac/concordia/wiki/ConcordiaThesaurus [P,L]
+
+  # Alias /zotero /var/www/zotero
+
+  # <Directory /var/www/zotero>
+  #   Options Indexes MultiViews
+  #   AllowOverride None
+  #   Order allow,deny
+  #   allow from all
+  # </Directory>
+
+  # <Location /zotero>
+  #   Dav On
+  #   AuthName "Pleiades"
+  #   AuthType basic
+  #   AuthBasicProvider ldap
+  #   AuthzLDAPAuthoritative off
+  #   AuthLDAPURL ldap://localhost:389/dc=atlantides,dc=org
+  #   # Only committers can PUT and DELETE
+  #   <Limit PUT POST DELETE PROPPATCH MKCOL COPY MOVE LOCK UNLOCK>
+  #     Require ldap-group cn=committers,dc=atlantides,dc=org
+  #   </Limit>
+  # </Location>
+
+</VirtualHost>
+
+<VirtualHost *:*>
+  ServerName concordia.atlantides.org
+  ServerAdmin tom.elliott@nyu.edu
+  DocumentRoot /var/www/concordia.atlantides.org/
+  <Location "/">
+    Options Indexes FollowSymLinks MultiViews
+    Order allow,deny
+    allow from all
+  </Location>
+</VirtualHost>

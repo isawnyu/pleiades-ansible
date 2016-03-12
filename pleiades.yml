@@ -4,6 +4,8 @@
     p4_port: 9080
     http_port: 80
     max_clients: 200
+    varnish_listen_port: 6081
+    haproxy_port: 8081
   become: true
   become_user: root
   become_method: sudo
@@ -253,7 +255,7 @@
 
     - {role: haproxy,
         listen_name: plone,
-        listen_port: 8081,
+        listen_port: "{{ haproxy_port }}",
         clients: [
             {'name': 'plone_2', 'port': 8402},
             {'name': 'plone_3', 'port': 8403},
@@ -266,11 +268,118 @@
       varnish_secret: "1d3739d74843dc3eadf59a329bc420d4"
       varnish_default_vcl_template_path: "plone.vcl.j2"
       varnish_default_backend_host: "127.0.0.1"
-      varnish_default_backend_port: "8081"
-      varnish_listen_port: "80"
+      varnish_default_backend_port: "{{ haproxy_port }}"
       varnish_storage: "file,/var/lib/varnish/varnish_storage.bin,256M"
 
+    - role: geerlingguy.apache
+      apache_remove_default_vhost: true
+      apache_mods_enabled:
+        - alias.load
+        - alias.conf
+        - auth_basic.load
+        - authn_file.load
+        - authz_core.load
+        - authz_groupfile.load
+        - authz_host.load
+        - authz_user.load
+        - autoindex.load
+        - autoindex.conf
+        - cgid.load
+        - deflate.load
+        - deflate.conf
+        - dir.load
+        - dir.conf
+        - env.load
+        - expires.load
+        - headers.load
+        - mime.load
+        - mime.conf
+        - negotiation.load
+        - negotiation.conf
+        - proxy.load
+        - proxy.conf
+        - proxy_connect.load
+        - proxy_http.load
+        - rewrite.load
+        - setenvif.load
+        - setenvif.conf
+        - status.load
+        - status.conf
+      apache_packages:
+        - apache2
+        - apache2-utils
+        - apache2-threaded-dev
+        - libapache2-mod-wsgi
+        - libapache2-svn
+      apache_state: stopped
+      apache_ignore_missing_ssl_certificate: true
+
   tasks:
+
+    - name: Apache pleiades config
+      template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
+      notify: restart apache
+
+    - name: Apache pleiades-api config
+      template: src=templates/api.pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/api.pleiades.stoa.org.conf owner=root group=root mode=0644
+      notify: restart apache
+
+    - name: Apache atlantides config
+      template: src=templates/atlantides.org.j2 dest=/etc/apache2/sites-available/atlantides.org.conf owner=root group=root mode=0644
+      notify: restart apache
+
+    - name: Apache pleiades symlink
+      file: src=/etc/apache2/sites-available/pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
+      notify: restart apache
+
+    - name: Apache pleiades-api symlink
+      file: src=/etc/apache2/sites-available/api.pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/02-api.pleiades.stoa.org.conf state=link
+      notify: restart apache
+
+    - name: Apache atlantides symlink
+      file: src=/etc/apache2/sites-available/atlantides.org.conf dest=/etc/apache2/sites-enabled/01-atlantides.org.conf state=link
+      notify: restart apache
+
+    - name: Remove default vhost symlink
+      file: path=/etc/apache2/sites-enabled/vhosts.conf state=absent
+      notify: restart apache
+
+    - name: Create pleiades vhost dir
+      file: path=/var/www/pleiades.stoa.org recurse=yes state=directory owner=www-data mode=0775
+
+    - name: Create atlantides dump dir
+      file: path=/var/www/atlantides.org/downloads/pleiades/dumps/ recurse=yes state=directory owner=www-data mode=0775
+
+    - name: Create atlantides kml dir
+      file: path=/var/www/atlantides.org/downloads/pleiades/kml/ recurse=yes state=directory owner=www-data mode=0775
+
+    - name: Create atlantides rdf dir
+      file: path=/var/www/atlantides.org/downloads/pleiades/rdf/ recurse=yes state=directory owner=www-data mode=0775
+
+    - name: Create concordia vhost dir
+      file: path=/var/www/concordia.atlantides.org/ recurse=yes state=directory owner=www-data mode=0775
+
+    - name: Pleiades frontpage git checkout
+      git:
+        repo=https://github.com/isawnyu/pleiades-frontpage.git
+        update=yes
+        dest=/var/www/pleiades.stoa.org/pleiades-frontpage
+        version=master
+        depth=1
+        force=yes
+        accept_hostkey=yes
+      sudo_user: "www-data"
+
+    - name: Pleiades api git checkout
+      git:
+        repo=https://github.com/isawnyu/pleiades-api.git
+        update=yes
+        dest=/var/www/pleiades.stoa.org/pleiades-api
+        version=master
+        depth=1
+        force=yes
+        accept_hostkey=yes
+      sudo_user: "www-data"
 
     - name: Create vaytrou log dir
       file: path=/srv/python26-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
@@ -281,6 +390,9 @@
     - name: Start supervisor
       service: name=supervisor state=started
 
+    - name: Start apache
+      service: name=apache2 state=started
+
   post_tasks:
     - name: Restart pleiades
       command: supervisorctl restart {{ item }}
@@ -289,6 +401,7 @@
         - pleiades-instance1
         - pleiades-instance2
         - pleiades-instance3
+        - pleiades-instance4
 
     - name: Restart pleaides 4
       command: supervisorctl restart pleiades4-instance1
@@ -297,3 +410,15 @@
     - name: Restart vaytrou
       command: supervisorctl restart vtpleiades3
       when: buildout_vaytrou is defined
+
+    - name: Cron dumps
+      copy: src=files/pleiades-dumps dest=/etc/cron.daily/pleiades-dumps owner=root group=root mode=0755
+
+    - name: Cron kml
+      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
+
+    - name: Cron sitemap
+      copy: src=files/pleiades-sitemap dest=/etc/cron.daily/pleiades-sitemap owner=root group=root mode=0755
+
+    - name: Cron rdf
+      copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755

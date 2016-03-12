@@ -1,0 +1,562 @@
+AddType application/vnd.google-earth.kml+xml .kml  
+AddType application/vnd.google-earth.kmz .kmz
+AddType application/atom+xml .atom
+AddType application/json .json
+
+<VirtualHost _default_:*>
+  ServerName pleiades.stoa.org
+  ServerAdmin tom.elliott@nyu.edu
+  DocumentRoot /var/www/pleiades.stoa.org
+  SetOutputFilter DEFLATE
+  HostnameLookups off
+  ProxyPreserveHost On
+
+  # define a list of user agents to block entirely because they are 'bad bots'
+  
+  # bad bots from https://github.com/bluedragonz/bad-bot-blocker/blob/master/.htaccess 24 Feb 2014
+  SetEnvIfNoCase User-Agent "Aboundex" bad_bot
+  SetEnvIfNoCase User-Agent "AhrefsBot" bad_bot
+  SetEnvIfNoCase User-Agent "80legs" bad_bot
+  SetEnvIfNoCase User-Agent "360Spider" bad_bot
+  SetEnvIfNoCase User-Agent "^Java" bad_bot    
+  SetEnvIfNoCase User-Agent "^Cogentbot" bad_bot
+  SetEnvIfNoCase User-Agent "^Alexibot" bad_bot
+  SetEnvIfNoCase User-Agent "^asterias" bad_bot
+  SetEnvIfNoCase User-Agent "^attach" bad_bot
+  SetEnvIfNoCase User-Agent "^BackDoorBot" bad_bot
+  SetEnvIfNoCase User-Agent "^BackWeb" bad_bot
+  SetEnvIfNoCase User-Agent "Bandit" bad_bot
+  SetEnvIfNoCase User-Agent "^BatchFTP" bad_bot
+  SetEnvIfNoCase User-Agent "^Bigfoot" bad_bot
+  SetEnvIfNoCase User-Agent "^Black.Hole" bad_bot
+  SetEnvIfNoCase User-Agent "^BlackWidow" bad_bot
+  SetEnvIfNoCase User-Agent "BLEXBot" bad_bot
+  SetEnvIfNoCase User-Agent "^BlowFish" bad_bot
+  SetEnvIfNoCase User-Agent "^BotALot" bad_bot
+  SetEnvIfNoCase User-Agent "Buddy" bad_bot
+  SetEnvIfNoCase User-Agent "^BuiltBotTough" bad_bot
+  SetEnvIfNoCase User-Agent "^Bullseye" bad_bot
+  SetEnvIfNoCase User-Agent "^BunnySlippers" bad_bot
+  SetEnvIfNoCase User-Agent "^Cegbfeieh" bad_bot
+  SetEnvIfNoCase User-Agent "^CheeseBot" bad_bot
+  SetEnvIfNoCase User-Agent "^CherryPicker" bad_bot
+  SetEnvIfNoCase User-Agent "^ChinaClaw" bad_bot
+  SetEnvIfNoCase User-Agent "Collector" bad_bot
+  SetEnvIfNoCase User-Agent "Copier" bad_bot
+  SetEnvIfNoCase User-Agent "^CopyRightCheck" bad_bot
+  SetEnvIfNoCase User-Agent "^cosmos" bad_bot
+  SetEnvIfNoCase User-Agent "^Crescent" bad_bot
+  SetEnvIfNoCase User-Agent "^Custo" bad_bot
+  SetEnvIfNoCase User-Agent "^AIBOT" bad_bot
+  SetEnvIfNoCase User-Agent "^DISCo" bad_bot
+  SetEnvIfNoCase User-Agent "^DIIbot" bad_bot
+  SetEnvIfNoCase User-Agent "^DittoSpyder" bad_bot
+  SetEnvIfNoCase User-Agent "^Download\ Demon" bad_bot
+  SetEnvIfNoCase User-Agent "^Download\ Devil" bad_bot
+  SetEnvIfNoCase User-Agent "^Download\ Wonder" bad_bot
+  SetEnvIfNoCase User-Agent "^dragonfly" bad_bot
+  SetEnvIfNoCase User-Agent "^Drip" bad_bot
+  SetEnvIfNoCase User-Agent "^eCatch" bad_bot
+  SetEnvIfNoCase User-Agent "^EasyDL" bad_bot
+  SetEnvIfNoCase User-Agent "^ebingbong" bad_bot
+  SetEnvIfNoCase User-Agent "^EirGrabber" bad_bot
+  SetEnvIfNoCase User-Agent "^EmailCollector" bad_bot
+  SetEnvIfNoCase User-Agent "^EmailSiphon" bad_bot
+  SetEnvIfNoCase User-Agent "^EmailWolf" bad_bot
+  SetEnvIfNoCase User-Agent "^EroCrawler" bad_bot
+  SetEnvIfNoCase User-Agent "^Exabot" bad_bot
+  SetEnvIfNoCase User-Agent "^Express\ WebPictures" bad_bot
+  SetEnvIfNoCase User-Agent "Extractor" bad_bot
+  SetEnvIfNoCase User-Agent "^EyeNetIE" bad_bot
+  SetEnvIfNoCase User-Agent "^Foobot" bad_bot
+  SetEnvIfNoCase User-Agent "^flunky" bad_bot
+  SetEnvIfNoCase User-Agent "^FrontPage" bad_bot
+  SetEnvIfNoCase User-Agent "^Go-Ahead-Got-It" bad_bot
+  SetEnvIfNoCase User-Agent "^gotit" bad_bot
+  SetEnvIfNoCase User-Agent "^GrabNet" bad_bot
+  SetEnvIfNoCase User-Agent "^Grafula" bad_bot
+  SetEnvIfNoCase User-Agent "^Harvest" bad_bot
+  SetEnvIfNoCase User-Agent "^hloader" bad_bot
+  SetEnvIfNoCase User-Agent "^HMView" bad_bot
+  SetEnvIfNoCase User-Agent "HTTrack" bad_bot  
+  SetEnvIfNoCase User-Agent "^humanlinks" bad_bot
+  SetEnvIfNoCase User-Agent "^IlseBot" bad_bot
+  SetEnvIfNoCase User-Agent "^Image\ Stripper" bad_bot
+  SetEnvIfNoCase User-Agent "^Image\ Sucker" bad_bot
+  SetEnvIfNoCase User-Agent "Indy\ Library" bad_bot
+  SetEnvIfNoCase User-Agent "^InfoNaviRobot" bad_bot
+  SetEnvIfNoCase User-Agent "^InfoTekies" bad_bot
+  SetEnvIfNoCase User-Agent "^Intelliseek" bad_bot
+  SetEnvIfNoCase User-Agent "^InterGET" bad_bot
+  SetEnvIfNoCase User-Agent "^Internet\ Ninja" bad_bot
+  SetEnvIfNoCase User-Agent "^Iria" bad_bot
+  SetEnvIfNoCase User-Agent "^Jakarta" bad_bot
+  SetEnvIfNoCase User-Agent "^JennyBot" bad_bot
+  SetEnvIfNoCase User-Agent "^JetCar" bad_bot
+  SetEnvIfNoCase User-Agent "^JOC" bad_bot
+  SetEnvIfNoCase User-Agent "^JustView" bad_bot
+  SetEnvIfNoCase User-Agent "^Jyxobot" bad_bot
+  SetEnvIfNoCase User-Agent "^Kenjin.Spider" bad_bot
+  SetEnvIfNoCase User-Agent "^Keyword.Density" bad_bot
+  SetEnvIfNoCase User-Agent "^larbin" bad_bot
+  SetEnvIfNoCase User-Agent "^LexiBot" bad_bot
+  SetEnvIfNoCase User-Agent "^lftp" bad_bot
+  SetEnvIfNoCase User-Agent "^libWeb/clsHTTP" bad_bot
+  SetEnvIfNoCase User-Agent "^likse" bad_bot
+  SetEnvIfNoCase User-Agent "^LinkextractorPro" bad_bot
+  SetEnvIfNoCase User-Agent "^LinkScan/8.1a.Unix" bad_bot
+  SetEnvIfNoCase User-Agent "^LNSpiderguy" bad_bot
+  SetEnvIfNoCase User-Agent "^LinkWalker" bad_bot
+  SetEnvIfNoCase User-Agent "^lwp-trivial" bad_bot
+  SetEnvIfNoCase User-Agent "^LWP::Simple" bad_bot
+  SetEnvIfNoCase User-Agent "^Magnet" bad_bot
+  SetEnvIfNoCase User-Agent "^Mag-Net" bad_bot
+  SetEnvIfNoCase User-Agent "^MarkWatch" bad_bot
+  SetEnvIfNoCase User-Agent "^Mass\ Downloader" bad_bot
+  SetEnvIfNoCase User-Agent "^Mata.Hari" bad_bot
+  SetEnvIfNoCase User-Agent "^Memo" bad_bot
+  SetEnvIfNoCase User-Agent "^Microsoft.URL" bad_bot
+  SetEnvIfNoCase User-Agent "^Microsoft\ URL\ Control" bad_bot
+  SetEnvIfNoCase User-Agent "^MIDown\ tool" bad_bot
+  SetEnvIfNoCase User-Agent "^MIIxpc" bad_bot
+  SetEnvIfNoCase User-Agent "^Mirror" bad_bot
+  SetEnvIfNoCase User-Agent "^Missigua\ Locator" bad_bot
+  SetEnvIfNoCase User-Agent "^Mister\ PiX" bad_bot
+  SetEnvIfNoCase User-Agent "MJ12bot" bad_bot
+  SetEnvIfNoCase User-Agent "^moget" bad_bot
+  SetEnvIfNoCase User-Agent "^Mozilla/3.Mozilla/2.01" bad_bot
+  SetEnvIfNoCase User-Agent "^Mozilla.*NEWT" bad_bot
+  SetEnvIfNoCase User-Agent "^NAMEPROTECT" bad_bot
+  SetEnvIfNoCase User-Agent "^Navroad" bad_bot
+  SetEnvIfNoCase User-Agent "^NearSite" bad_bot
+  SetEnvIfNoCase User-Agent "^NetAnts" bad_bot
+  SetEnvIfNoCase User-Agent "^Netcraft" bad_bot
+  SetEnvIfNoCase User-Agent "^NetMechanic" bad_bot
+  SetEnvIfNoCase User-Agent "^NetSpider" bad_bot
+  SetEnvIfNoCase User-Agent "^Net\ Vampire" bad_bot
+  SetEnvIfNoCase User-Agent "^NetZIP" bad_bot
+  SetEnvIfNoCase User-Agent "^NextGenSearchBot" bad_bot
+  SetEnvIfNoCase User-Agent "^NG" bad_bot
+  SetEnvIfNoCase User-Agent "^NICErsPRO" bad_bot
+  SetEnvIfNoCase User-Agent "^niki-bot" bad_bot
+  SetEnvIfNoCase User-Agent "^NimbleCrawler" bad_bot
+  SetEnvIfNoCase User-Agent "^Ninja" bad_bot
+  SetEnvIfNoCase User-Agent "^NPbot" bad_bot
+  SetEnvIfNoCase User-Agent "^Octopus" bad_bot
+  SetEnvIfNoCase User-Agent "^Offline\ Explorer" bad_bot
+  SetEnvIfNoCase User-Agent "^Offline\ Navigator" bad_bot
+  SetEnvIfNoCase User-Agent "^Openfind" bad_bot
+  SetEnvIfNoCase User-Agent "^OutfoxBot" bad_bot
+  SetEnvIfNoCase User-Agent "^PageGrabber" bad_bot
+  SetEnvIfNoCase User-Agent "^Papa\ Foto" bad_bot
+  SetEnvIfNoCase User-Agent "^pavuk" bad_bot
+  SetEnvIfNoCase User-Agent "^pcBrowser" bad_bot
+  SetEnvIfNoCase User-Agent "^PHP\ version\ tracker" bad_bot
+  SetEnvIfNoCase User-Agent "^Pockey" bad_bot
+  SetEnvIfNoCase User-Agent "^ProPowerBot/2.14" bad_bot
+  SetEnvIfNoCase User-Agent "^ProWebWalker" bad_bot
+  SetEnvIfNoCase User-Agent "^psbot" bad_bot
+  SetEnvIfNoCase User-Agent "^Pump" bad_bot
+  SetEnvIfNoCase User-Agent "^QueryN.Metasearch" bad_bot
+  SetEnvIfNoCase User-Agent "^RealDownload" bad_bot
+  SetEnvIfNoCase User-Agent "Reaper" bad_bot
+  SetEnvIfNoCase User-Agent "Recorder" bad_bot
+  SetEnvIfNoCase User-Agent "^ReGet" bad_bot
+  SetEnvIfNoCase User-Agent "^RepoMonkey" bad_bot
+  SetEnvIfNoCase User-Agent "^RMA" bad_bot
+  SetEnvIfNoCase User-Agent "Siphon" bad_bot
+  SetEnvIfNoCase User-Agent "^SiteSnagger" bad_bot
+  SetEnvIfNoCase User-Agent "^SlySearch" bad_bot
+  SetEnvIfNoCase User-Agent "^SmartDownload" bad_bot
+  SetEnvIfNoCase User-Agent "^Snake" bad_bot
+  SetEnvIfNoCase User-Agent "^Snapbot" bad_bot
+  SetEnvIfNoCase User-Agent "^Snoopy" bad_bot
+  SetEnvIfNoCase User-Agent "^sogou" bad_bot
+  SetEnvIfNoCase User-Agent "^SpaceBison" bad_bot
+  SetEnvIfNoCase User-Agent "^SpankBot" bad_bot
+  SetEnvIfNoCase User-Agent "^spanner" bad_bot
+  SetEnvIfNoCase User-Agent "^Sqworm" bad_bot
+  SetEnvIfNoCase User-Agent "Stripper" bad_bot
+  SetEnvIfNoCase User-Agent "Sucker" bad_bot
+  SetEnvIfNoCase User-Agent "^SuperBot" bad_bot
+  SetEnvIfNoCase User-Agent "^SuperHTTP" bad_bot
+  SetEnvIfNoCase User-Agent "^Surfbot" bad_bot
+  SetEnvIfNoCase User-Agent "^suzuran" bad_bot
+  SetEnvIfNoCase User-Agent "^Szukacz/1.4" bad_bot
+  SetEnvIfNoCase User-Agent "^tAkeOut" bad_bot
+  SetEnvIfNoCase User-Agent "^Teleport" bad_bot
+  SetEnvIfNoCase User-Agent "^Telesoft" bad_bot
+  #SetEnvIfNoCase User-Agent "^TurnitinBot/1.5" bad_bot
+  SetEnvIfNoCase User-Agent "^The.Intraformant" bad_bot
+  SetEnvIfNoCase User-Agent "^TheNomad" bad_bot
+  SetEnvIfNoCase User-Agent "^TightTwatBot" bad_bot
+  SetEnvIfNoCase User-Agent "^Titan" bad_bot
+  SetEnvIfNoCase User-Agent "^True_Robot" bad_bot
+  SetEnvIfNoCase User-Agent "^turingos" bad_bot
+  SetEnvIfNoCase User-Agent "^TurnitinBot" bad_bot
+  SetEnvIfNoCase User-Agent "^URLy.Warning" bad_bot
+  SetEnvIfNoCase User-Agent "^Vacuum" bad_bot
+  SetEnvIfNoCase User-Agent "^VCI" bad_bot
+  SetEnvIfNoCase User-Agent "^VoidEYE" bad_bot
+  SetEnvIfNoCase User-Agent "^Web\ Image\ Collector" bad_bot
+  SetEnvIfNoCase User-Agent "^Web\ Sucker" bad_bot
+  SetEnvIfNoCase User-Agent "^WebAuto" bad_bot
+  SetEnvIfNoCase User-Agent "^WebBandit" bad_bot
+  SetEnvIfNoCase User-Agent "^Webclipping.com" bad_bot
+  SetEnvIfNoCase User-Agent "^WebCopier" bad_bot
+  SetEnvIfNoCase User-Agent "^WebEMailExtrac.*" bad_bot
+  SetEnvIfNoCase User-Agent "^WebEnhancer" bad_bot
+  SetEnvIfNoCase User-Agent "^WebFetch" bad_bot
+  SetEnvIfNoCase User-Agent "^WebGo\ IS" bad_bot
+  SetEnvIfNoCase User-Agent "^Web.Image.Collector" bad_bot
+  SetEnvIfNoCase User-Agent "^WebLeacher" bad_bot
+  SetEnvIfNoCase User-Agent "^WebmasterWorldForumBot" bad_bot
+  SetEnvIfNoCase User-Agent "^WebReaper" bad_bot
+  SetEnvIfNoCase User-Agent "^WebSauger" bad_bot
+  SetEnvIfNoCase User-Agent "^Website\ eXtractor" bad_bot
+  SetEnvIfNoCase User-Agent "^Website\ Quester" bad_bot
+  SetEnvIfNoCase User-Agent "^Webster" bad_bot
+  SetEnvIfNoCase User-Agent "^WebStripper" bad_bot
+  SetEnvIfNoCase User-Agent "^WebWhacker" bad_bot
+  SetEnvIfNoCase User-Agent "^WebZIP" bad_bot
+  SetEnvIfNoCase User-Agent "Whacker" bad_bot
+  SetEnvIfNoCase User-Agent "^Widow" bad_bot
+  SetEnvIfNoCase User-Agent "^WISENutbot" bad_bot
+  SetEnvIfNoCase User-Agent "^WWWOFFLE" bad_bot
+  SetEnvIfNoCase User-Agent "^WWW-Collector-E" bad_bot
+  SetEnvIfNoCase User-Agent "^Xaldon" bad_bot
+  SetEnvIfNoCase User-Agent "^Xenu" bad_bot
+  SetEnvIfNoCase User-Agent "^Zeus" bad_bot
+  SetEnvIfNoCase User-Agent "ZmEu" bad_bot
+  SetEnvIfNoCase User-Agent "^Zyborg" bad_bot
+
+  # Vulnerability Scanners
+  SetEnvIfNoCase User-Agent "Acunetix" bad_bot
+  SetEnvIfNoCase User-Agent "FHscan" bad_bot
+
+  # Aggressive Chinese Search Engine
+  SetEnvIfNoCase User-Agent "Baiduspider" bad_bot
+
+  # Aggressive Russian Search Engine
+  SetEnvIfNoCase User-Agent "Yandex" bad_bot
+  # end bluedragonz bad bot definitions
+
+  
+  # If someone can’t be arsed to set a user-agent, why should you serve him anything?
+  SetEnvIfNoCase User-Agent ^$ bad_bot 
+  SetEnvIfNoCase User-Agent ^-$ bad_bot
+  SetEnvIfNoCase User-Agent ^java$ bad_bot
+
+  # additional bad bots identified by Pleiades team
+  SetEnvIfNoCase User-Agent "Gecko/20100101 Firefox/6.0.2" bad_bot
+  BrowserMatchNoCase cowbot bad_bot
+  BrowserMatchNoCase daum bad_bot
+  BrowserMatchNoCase ezooms bad_bot
+  BrowserMatchNoCase ichiro bad_bot
+  BrowserMatchNoCase ltx71 bad_bot 
+  BrowserMatchNoCase magpie-crawler bad_bot
+  BrowserMatchNoCase mj12bot bad_bot
+  BrowserMatchNoCase mogimogi bad_bot
+  BrowserMatchNoCase nabot bad_bot
+  BrowserMatchNoCase naver bad_bot
+  BrowserMatchNoCase openlinkprofiler bad_bot
+  BrowserMatchNoCase rabot bad_bot
+  BrowserMatchNoCase slurp bad_bot
+  BrowserMatchNoCase sohu bad_bot
+  BrowserMatchNoCase squider bad_bot
+  BrowserMatchNoCase xovibot bad_bot
+  BrowserMatchNoCase yahoocachesystem bad_bot
+  BrowserMatchNoCase yeti bad_bot
+  BrowserMatchNoCase youdaobot bad_bot
+  # end Pleiades bad bot definitions
+  
+  <Location "/">
+    Order allow,deny
+    allow from all
+    deny from env=bad_bot 
+    
+    # deranged flickr machine-tag servers (as of 2013-10-17, hopefully temporary?)
+    deny from 98.139.190.55
+    deny from 98.139.190.56
+    deny from 98.139.190.57
+    deny from 98.139.190.58
+
+    # bad actors (sniffing for vulnerabilities)
+    deny from 95.50.70.70
+    deny from 188.165.243.45
+
+    
+    # bad actors (trying to copy the whole site at speed)
+    deny from 91.128.240.34
+    deny from 37.187.56.76
+    deny from 98.139.190.58
+    deny from 202.46.52 # Chinese range of multiple bot hosts masquerading as Firefox
+    deny from cnsat.com.cn # Chinese range for aggressive crawl or DOS botnet spoofing DNS
+    deny from ptr.cnsat.com.cn
+    deny from 202.46.32
+
+    # bluedragonz 24 Feb 2014
+    # Cyveillance
+    deny from 38.100.19.8/29
+    deny from 38.100.21.0/24
+    deny from 38.100.41.64/26
+    deny from 38.105.71.0/25
+    deny from 38.105.83.0/27
+    deny from 38.112.21.140/30
+    deny from 38.118.42.32/29
+    deny from 65.213.208.128/27
+    deny from 65.222.176.96/27
+    deny from 65.222.185.72/29
+    # end bluedragonz
+  </Location>
+
+  <Location "/pleiades-frontpage">
+    Order allow,deny
+    allow from all
+    deny from env=bad_bot 
+  </Location>
+
+  <Location "/pleiades-api">
+    Order allow,deny
+    allow from all
+    deny from env=bad_bot 
+  </Location>
+
+  ErrorLog /var/log/apache2/pleiades.stoa.org-error.log
+
+  # Possible values include: debug, info, notice, warn, error, crit,
+  # alert, emerg.
+  LogLevel warn rewrite:trace3
+
+  CustomLog /var/log/apache2/pleiades.stoa.org-access.log combined
+  ServerSignature On
+
+  # RequestHeader unset Cookie
+  # RequestHeader unset Authorization
+
+  # BEGIN Expire headers
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    #ExpiresDefault "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    #ExpiresByType text/html "access plus 1 day"
+    #ExpiresByType application/xhtml+xml "access plus 1 day"
+    ExpiresByType application/json "access plus 1 day"
+    ExpiresByType application/atom+xml "access plus 1 day"
+    ExpiresByType application/rdf+xml "access plus 1 day"
+    ExpiresByType application/vnd.google-earth.kml+xml "access plus 1 day"
+    ExpiresByType text/turtle "access plus 1 day"
+  </IfModule>
+  # END Expire headers
+
+  <IfModule mod_headers.c>
+    <Location "/pleiades-frontpage">
+      Header set Cache-Control "max-age=86400, s-maxage=11988, public"
+      ExpiresDefault "access plus 1 day"
+    </Location>
+    <LocationMatch "/places/\d+/(atom|json|kml|neighborhood-kml|rdf|turtle)$">
+      Header set Cache-Control "max-age=86400, s-maxage=11988"
+      ExpiresDefault "access plus 1 day"
+    </LocationMatch>
+    <LocationMatch "/(downloads|credits)$">
+      Header set Cache-Control "max-age=86400, s-maxage=11988"
+      ExpiresDefault "access plus 1 day"
+    </LocationMatch>
+    #<LocationMatch "/(vocabularies|docs|help)/">
+    #  Header set Cache-Control "max-age=86400, s-maxage=11988"
+    #  ExpiresDefault "access plus 1 day"
+    #</LocationMatch>
+
+  </IfModule>
+
+  RewriteEngine On
+  #RewriteLog /var/log/apache2/pleiades.stoa.org-rewrite.log
+  #RewriteLogLevel 3
+
+  # tell everyone the site is down (this works)
+  #RewriteCond %{ENV:REDIRECT_STATUS} !=503
+  #RewriteRule .* /down.html [L,R=503]  
+
+  # tell Dickinson College Commentary referalls to get lost for a while
+  RewriteCond %{HTTP_REFERER} dcc\.dickinson\.edu [NC]
+  RewriteRule ^/.*$ - [L,R=503]
+
+  # tell all bots to get lost for a while (this works)
+  #RewriteCond %{HTTP_USER_AGENT} (uptimerobot|google|archive.org) [NC]
+  RewriteCond %{HTTP_USER_AGENT} (uptimerobot) [NC]
+  RewriteRule ^/.*$ - [S=2]
+  RewriteCond %{HTTP_USER_AGENT} (feedspot|spider|spyder|bot|crawler) [NC] 
+  RewriteRule ^/.*$ - [L,R=503]
+
+  RewriteRule ^/css/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/css/$1 [L]
+  RewriteRule ^/js/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/js/$1 [L]
+  RewriteRule ^/img/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/img/$1 [L]
+  RewriteRule ^/index.html$ /var/www/pleiades.stoa.org/pleiades-frontpage/index.html [L]
+
+  # Pleiades 3 frontpage redesign redirects
+  RewriteRule ^/downloads/$ /downloads [L,R=301]
+  RewriteRule ^/downloads$ /var/www/pleiades.stoa.org/pleiades-frontpage/downloads.html [L]
+  RewriteRule ^/participate/$ /participate [L,R=301]
+  RewriteRule ^/participate$ /var/www/pleiades.stoa.org/pleiades-frontpage/participate.html [L]
+  RewriteRule ^/welcome$ /participate [L,R=301]
+  #RewriteRule ^/places/$ /places [L,R=301]
+  #RewriteRule ^/places$ /var/www/pleiades.stoa.org/pleiades-frontpage/places.html [L]
+  RewriteRule ^/help/data-structure/$ /help/data-structure [L,R=301]
+  RewriteRule ^/help/data-structure$ /var/www/pleiades.stoa.org/pleiades-frontpage/help/data-structure.html [L]
+  RewriteRule ^/places/browse_names$ /places [L,R=307]
+  RewriteRule ^/contents/$ /places [L,R=301]
+  RewriteRule ^/contents$ /places [L,R=301]
+  RewriteRule ^/places/places-index/$ /places/places-index [L,R=301]
+  RewriteRule ^/places/places-index$ /places [L,R=307]
+  RewriteRule ^/places/names-index/$ /places/names-index [L,R=301]
+  RewriteRule ^/places/names-index$ /places [L,R=307]
+  #RewriteRule ^/search/$ /search [L,R=301]
+  #RewriteRule ^/search$ / [L,R=301]
+
+  # temporary rule for access to new-fangled JSON
+  # RewriteMap jsonmap prg:/var/www/pleiades.stoa.org/json/jsonmap.py
+  # RewriteCond /var/www/pleiades.stoa.org/json/${jsonmap:$1}.json -f
+  # RewriteRule ^/places/(\d+)/json2$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}.json [L]
+
+  # RewriteRule ^/places/(\d+)/json2$ /places/$1/json2 [L,R=303]
+
+  RewriteRule ^/api/index.html$ /var/www/pleiades.stoa.org/pleiades-api/html/index.html [L]
+  RewriteRule ^/api(/)?$ /var/www/pleiades.stoa.org/pleiades-api/html/index.html [L]
+  
+  RewriteCond %{REQUEST_METHOD} GET [NC]
+  RewriteRule ^/$ /var/www/pleiades.stoa.org/pleiades-frontpage/index.html [L]
+  RewriteCond %{REQUEST_METHOD} GET [NC]
+  RewriteRule ^/pleiades-frontpage(.*)$ /var/www/pleiades.stoa.org/pleiades-frontpage$1 [L]
+  
+  RewriteRule ^/robots.txt$ /var/www/pleiades.stoa.org/robots.txt [L]
+  RewriteRule ^/images/pmapi/(.+) /var/www/pleiades.stoa.org/images/pmapi/$1 [L]
+  RewriteRule ^/files/(.+) /var/www/pleiades.stoa.org/files/$1 [L]
+  RewriteRule ^/sitemap(.+) /var/www/pleiades.stoa.org/sitemap$1 [L]
+  RewriteRule ^/google18ab215e4f134b4a.html$ /var/www/pleiades.stoa.org/google18ab215e4f134b4a.html [L]
+  RewriteRule ^/BingSiteAuth.xml$ /var/www/pleiades.stoa.org/BingSiteAuth.xml [L]
+
+  RewriteRule ^/Members/collections - [F,L]
+
+  # Punch anyone in the throat who asks for php or wordpress stuff (cuz they're clearly up to no good)
+  RewriteRule ^.*php.*$ - [F,L]
+
+  # Punch bots in the teeth if they go places that will slow down the site
+
+  #RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
+  RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
+  RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
+  RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
+  RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
+  RewriteCond %{HTTP_USER_AGENT} TVersity
+  RewriteRule ^/(places|errata)/\d+/.+ - [F,L]
+
+  RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
+  RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
+  RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
+  RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
+  RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
+  RewriteCond %{HTTP_USER_AGENT} TVersity
+  RewriteRule search - [F,L]
+
+  RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
+  RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
+  RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
+  RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
+  RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
+  RewriteCond %{HTTP_USER_AGENT} TVersity
+  RewriteRule acl|history|Members - [F,L]
+
+  # RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]  -- commented out because blocking lod-cloud.net/robot, semrushbot
+  RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
+  RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
+  RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
+  RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+  RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
+  RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
+  RewriteCond %{HTTP_USER_AGENT} TVersity
+  RewriteRule ^/places/\d+/json$ - [F,L]
+
+# commented this out because it seems to break the pelagios portlet behavior
+#  RewriteCond %{REQUEST_METHOD} GET
+#  RewriteCond %{QUERY_STRING} !came_from_prefs=1
+#  RewriteRule pelagios-tagged - [F,L]
+
+  RewriteCond %{REQUEST_METHOD} POST
+  RewriteRule ^/places/\d+/json$ - [L,R=405]
+
+  RewriteRule ^/ol/(.*) /var/www/pleiades.stoa.org/ol/$1 [L]
+ 
+  # Tell clients that the following resources are gone forever
+  RewriteRule ^/names - [G]
+  RewriteRule ^/locations - [G]
+  RewriteRule ^/join_form - [G]
+ 
+  RewriteRule ^/news/RSS /news/aggregator/RSS [R=301]
+  RewriteRule ^/news/aggregator/RSS /news/blog/collector/RSS [R=301]
+  RewriteRule ^/RSS /news/blog/collector/RSS [R=301]
+  RewriteRule ^/feed$ /news/blog/collector/RSS [R=301]
+  RewriteRule ^/news/blog/RSS /news/blog/collector/RSS [R=301]
+  RewriteRule ^/news/recently-modified(.*) /news/recently-published$1 [R=301]
+
+  # RDF conneg
+  RewriteCond %{REQUEST_URI} ^/places/\d+$
+  RewriteCond %{HTTP_ACCEPT} !html 
+  RewriteCond %{HTTP_ACCEPT} !^\*/\*$
+  RewriteRule ^/places/(.*) http://localhost:{{ varnish_listen_port }}/conneg?pid=$1 [P,L]
+  
+  # Places index, @@ views are valid, all other non-place resources are gone 
+  RewriteRule ^/places/index_html(.*) http://localhost:{{ varnish_listen_port }}/places/index_html$1 [P,L]
+  RewriteRule ^/places/(.*)-index http://localhost:{{ varnish_listen_port }}/places/$1-index [P,L]
+  RewriteRule ^/places/createObject(.*) http://localhost:{{ varnish_listen_port }}/places/createObject$1 [P,L,QSA]
+  RewriteRule ^/places/@@(.*) http://localhost:{{ varnish_listen_port }}/places/@@$1 [P,L,QSA]
+  RewriteRule ^/places/\+\+(.*) http://localhost:{{ varnish_listen_port }}/places/++$1 [P,L]
+  RewriteRule ^/places/copy_of(.*).atom$ http://localhost:{{ varnish_listen_port }}/$1/places/copy_of$1/atom [P,L]
+  RewriteRule ^/places/copy_of(.*).kml$ http://localhost:{{ varnish_listen_port }}/places/copy_of$1/kml [P,L]
+  RewriteRule ^/places/copy_of(.*) http://localhost:{{ varnish_listen_port }}/places/copy_of$1 [P,L]
+#  RewriteRule ^/places/browse_names /places/names-index [R=301,L]
+  RewriteRule ^/places/(.*)_(.*) http://localhost:{{ varnish_listen_port }}/places/$1_$2 [P,L]
+  RewriteRule ^/places/vocab(.*) http://localhost:{{ varnish_listen_port }}/docs/using-our-data/pleiades-rdf-vocabulary$1 [P,L]
+  RewriteRule ^/places/reconcile http://localhost:{{ varnish_listen_port }}/places/reconcile [P,L,QSA]
+
+  RewriteRule ^/places/\D - [G]
+
+  # Dot-formatted URLs are expected by some clients
+  RewriteRule ^/(.*).atom$ http://localhost:{{ varnish_listen_port }}/$1/atom [P,L]
+  RewriteRule ^/(.*)\.kml$ http://localhost:{{ varnish_listen_port }}/$1/kml [P,L]
+
+  # Try to find places json on the filesystem, if possible
+  #RewriteMap jsonmap txt:/var/www/pleiades.stoa.org/json/jsonmap.txt
+  #RewriteMap jsonmap prg:/var/www/pleiades.stoa.org/json/jsonmap.py
+  #RewriteCond /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json -f
+  #RewriteRule ^/places/(\d+)/json$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json [L]
+
+  # Finally 
+  RewriteRule ^/(.*) http://localhost:{{ varnish_listen_port }}/$1 [P,L]
+
+  <LocationMatch "^[^/]">
+    Deny from all
+  </LocationMatch>
+
+</VirtualHost>

@@ -1,0 +1,20 @@
+#! /bin/sh
+
+# pleiades-kmz
+
+# set -e
+
+PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+DEST=/var/www/atlantides.org/downloads/pleiades/kml/
+DATE=`date +%Y%m%d`
+
+# Run sitemapping script as zope user
+cd $PLEIADES_HOME
+. ./setenv
+su plone_daemon -c "./bin/debug-instance run ./dump-scripts/kml.py > /tmp/doc.kml 2> /tmp/pleiades-kmz.log"
+zip $DEST/pleiades-$DATE.kmz /tmp/doc.kml
+
+cd $DEST
+find . -name "*.kmz" -mtime +7 -delete
+chown www-data.www-data pleiades*.kmz
+chmod 644 pleiades*.kmz

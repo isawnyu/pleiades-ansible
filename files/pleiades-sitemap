@@ -1,0 +1,19 @@
+#! /bin/sh
+
+# pleiades-sitemap
+
+set -e
+
+PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+
+# Run sitemapping script as zope user
+cd $PLEIADES_HOME
+. ./setenv
+su plone_buildout -c "./bin/debug-instance run eggs/pleiades.sitemap-0.2-py2.4.egg/pleiades/sitemap/writer.py -d /tmp/ -z"
+
+# Copy sitemaps to pleiades.stoa.org
+cd /var/www/pleiades.stoa.org
+cp /tmp/sitemap* .
+chown www-data.www-data sitemap*
+chmod 644 sitemap*
+

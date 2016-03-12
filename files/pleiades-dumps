@@ -1,0 +1,27 @@
+#! /bin/sh
+
+# pleiades-dumps
+
+# set -e
+
+PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+DEST=/var/www/atlantides.org/downloads/pleiades/dumps/
+DATE=`date +%Y%m%d`
+
+# Run sitemapping script as zope user
+cd $PLEIADES_HOME
+. ./setenv
+su plone_daemon -c "./bin/debug-instance run ./dump-scripts/places.py > $DEST/pleiades-places-$DATE.csv" 2> /tmp/pleiades-places-$DATE.log
+su plone_daemon -c "./bin/debug-instance run ./dump-scripts/names.py > $DEST/pleiades-names-$DATE.csv" 2> /tmp/pleiades-names-$DATE.log
+su plone_daemon -c "./bin/debug-instance run ./dump-scripts/locations.py > $DEST/pleiades-locations-$DATE.csv" 2> /tmp/pleiades-locations-$DATE.log
+
+# GZIP
+cd $DEST
+find . -name "*.gz" -mtime +7 -delete
+gzip *.csv
+ln -sf $DEST/pleiades-locations-$DATE.csv.gz $DEST/pleiades-locations-latest.csv.gz
+ln -sf $DEST/pleiades-names-$DATE.csv.gz $DEST/pleiades-names-latest.csv.gz
+ln -sf $DEST/pleiades-places-$DATE.csv.gz $DEST/pleiades-places-latest.csv.gz
+chown www-data.www-data pleiades*.gz
+chmod 644 pleiades*.gz
+
