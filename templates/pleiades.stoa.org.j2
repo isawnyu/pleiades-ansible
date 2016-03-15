@@ -434,7 +434,6 @@ AddType application/json .json
   RewriteCond %{REQUEST_METHOD} GET [NC]
   RewriteRule ^/pleiades-frontpage(.*)$ /var/www/pleiades.stoa.org/pleiades-frontpage$1 [L]
   
-  RewriteRule ^/robots.txt$ /var/www/pleiades.stoa.org/robots.txt [L]
   RewriteRule ^/images/pmapi/(.+) /var/www/pleiades.stoa.org/images/pmapi/$1 [L]
   RewriteRule ^/files/(.+) /var/www/pleiades.stoa.org/files/$1 [L]
   RewriteRule ^/sitemap(.+) /var/www/pleiades.stoa.org/sitemap$1 [L]
