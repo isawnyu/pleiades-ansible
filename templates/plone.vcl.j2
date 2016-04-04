@@ -4,11 +4,6 @@ backend default {
     .port = "{{ varnish_default_backend_port }}";
 }
 
-backend p4 {
-    .host = "{{ varnish_default_backend_host }}";
-    .port = "{{ p4_port }}";
-}
-
 acl purge {
     "localhost";
 }
@@ -17,9 +12,6 @@ sub vcl_recv {
 
     # For now handle virtual host mapping here
     set req.url = "/VirtualHostBase/http/" + req.http.host + "/plone/VirtualHostRoot" + req.url;
-    if (req.http.host ~ "jazkarta\.com") {
-        set req.backend_hint = p4;
-    }
 
     # Sanitize compression handling
     if (req.http.Accept-Encoding) {

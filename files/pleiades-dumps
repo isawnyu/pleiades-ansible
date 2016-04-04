@@ -4,13 +4,13 @@
 
 # set -e
 
-PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+PLEIADES_HOME=/srv/python27-apps/pleiades4/
 DEST=/var/www/atlantides.org/downloads/pleiades/dumps/
 DATE=`date +%Y%m%d`
 
 # Run sitemapping script as zope user
 cd $PLEIADES_HOME
-. ./setenv
+# . ./setenv
 su plone_daemon -c "./bin/debug-instance run ./dump-scripts/places.py > $DEST/pleiades-places-$DATE.csv" 2> /tmp/pleiades-places-$DATE.log
 su plone_daemon -c "./bin/debug-instance run ./dump-scripts/names.py > $DEST/pleiades-names-$DATE.csv" 2> /tmp/pleiades-names-$DATE.log
 su plone_daemon -c "./bin/debug-instance run ./dump-scripts/locations.py > $DEST/pleiades-locations-$DATE.csv" 2> /tmp/pleiades-locations-$DATE.log

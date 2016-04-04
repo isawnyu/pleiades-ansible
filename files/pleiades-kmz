@@ -4,13 +4,13 @@
 
 # set -e
 
-PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+PLEIADES_HOME=/srv/python27-apps/pleiades4/
 DEST=/var/www/atlantides.org/downloads/pleiades/kml/
 DATE=`date +%Y%m%d`
 
 # Run sitemapping script as zope user
 cd $PLEIADES_HOME
-. ./setenv
+# . ./setenv
 su plone_daemon -c "./bin/debug-instance run ./dump-scripts/kml.py > /tmp/doc.kml 2> /tmp/pleiades-kmz.log"
 zip $DEST/pleiades-$DATE.kmz /tmp/doc.kml
 

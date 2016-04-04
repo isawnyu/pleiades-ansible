@@ -4,13 +4,13 @@
 
 # set -e
 
-PLEIADES_HOME=/srv/python27-apps/pleiades3-buildout/
+PLEIADES_HOME=/srv/python27-apps/pleiades4/
 DEST=/var/www/atlantides.org/downloads/pleiades/rdf
 DATE=`date +%Y%m%d`  
 
 # Run sitemapping script as zope user
 cd $PLEIADES_HOME
-. ./setenv
+# . ./setenv
 
 SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -a -u sgillies > $DEST/authors.ttl" 2> dump.log
 SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -v time-periods > $DEST/time-periods.ttl" 2>> dump.log

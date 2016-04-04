@@ -178,7 +178,7 @@
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
         buildout_version: 'jazkarta-plone4',
-        buildout_file: 'staging.cfg',
+        buildout_file: 'production.cfg',
         tags: ['plone4', 'buildout'],
       }
 
@@ -186,8 +186,8 @@
       supervisor_superlance: yes
       supervisor_tasks:
         - name: pleiades-zeoserver
-          command: /srv/python24-apps/pleiades3/bin/zeoserver console
-          directory: /srv/python24-apps/pleiades3
+          command: /srv/python27-apps/pleiades4/bin/zeoserver console
+          directory: /srv/python27-apps/pleiades4
           user: plone_daemon
           redirect_stderr: true
           stopwaitsecs: 30
@@ -195,8 +195,8 @@
           autorestart: true
 
         - name: pleiades-instance1
-          command: /srv/python24-apps/pleiades3/bin/instance1 console
-          directory: /srv/python24-apps/pleiades3
+          command: /srv/python27-apps/pleiades4/bin/instance1 console
+          directory: /srv/python27-apps/pleiades4
           user: plone_daemon
           redirect_stderr: true
           stopwaitsecs: 30
@@ -204,8 +204,8 @@
           autorestart: true
 
         - name: pleiades-instance2
-          command: /srv/python24-apps/pleiades3/bin/instance2 console
-          directory: /srv/python24-apps/pleiades3
+          command: /srv/python27-apps/pleiades4/bin/instance2 console
+          directory: /srv/python27-apps/pleiades4
           user: plone_daemon
           redirect_stderr: true
           stopwaitsecs: 30
@@ -213,8 +213,8 @@
           autorestart: true
 
         - name: pleiades-instance3
-          command: /srv/python24-apps/pleiades3/bin/instance3 console
-          directory: /srv/python24-apps/pleiades3
+          command: /srv/python27-apps/pleiades4/bin/instance3 console
+          directory: /srv/python27-apps/pleiades4
           user: plone_daemon
           redirect_stderr: true
           stopwaitsecs: 30
@@ -222,8 +222,8 @@
           autorestart: true
           
         - name: pleiades-instance4
-          command: /srv/python24-apps/pleiades3/bin/instance4 console
-          directory: /srv/python24-apps/pleiades3
+          command: /srv/python27-apps/pleiades4/bin/instance4 console
+          directory: /srv/python27-apps/pleiades4
           user: plone_daemon
           redirect_stderr: true
           stopwaitsecs: 30
@@ -239,15 +239,6 @@
           stdout_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
           stdout_logfile_maxbytes: 50MB
           stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
-          autostart: true
-          autorestart: true
-
-        - name: pleiades4-instance1
-          command: /srv/python27-apps/pleiades4/bin/instance console
-          directory: /srv/python27-apps/pleiades4
-          user: plone_daemon
-          redirect_stderr: true
-          stopwaitsecs: 30
           autostart: true
           autorestart: true
 
@@ -347,14 +338,17 @@
     - name: Create pleiades vhost dir
       file: path=/var/www/pleiades.stoa.org recurse=yes state=directory owner=www-data mode=0775
 
+    - name: Create pleiades vhost dir
+      file: path=/var/www/atlantides.org/downloads/pleiades recurse=yes state=directory owner=www-data mode=0775
+
     - name: Create atlantides dump dir
-      file: path=/var/www/atlantides.org/downloads/pleiades/dumps/ recurse=yes state=directory owner=www-data mode=0775
+      file: path=/var/www/atlantides.org/downloads/pleiades/dumps/ state=directory owner=plone_daemon mode=0775
 
     - name: Create atlantides kml dir
-      file: path=/var/www/atlantides.org/downloads/pleiades/kml/ recurse=yes state=directory owner=www-data mode=0775
+      file: path=/var/www/atlantides.org/downloads/pleiades/kml/ state=directory owner=plone_daemon mode=0775
 
     - name: Create atlantides rdf dir
-      file: path=/var/www/atlantides.org/downloads/pleiades/rdf/ recurse=yes state=directory owner=www-data mode=0775
+      file: path=/var/www/atlantides.org/downloads/pleiades/rdf/ state=directory owner=plone_daemon mode=0775
 
     - name: Create concordia vhost dir
       file: path=/var/www/concordia.atlantides.org/ recurse=yes state=directory owner=www-data mode=0775
@@ -402,10 +396,6 @@
         - pleiades-instance2
         - pleiades-instance3
         - pleiades-instance4
-
-    - name: Restart pleaides 4
-      command: supervisorctl restart pleiades4-instance1
-      when: buildout_pleiades4 is defined
 
     - name: Restart vaytrou
       command: supervisorctl restart vtpleiades3
