@@ -1,0 +1,18 @@
+Application:
+  license_key: {{ newrelic_license_key }}
+  poll_interval: 60
+
+  apache_httpd:
+     -  name: pleiades apache
+        scheme: http
+        host: localhost
+        port: 80
+        path: /server-status
+        #verify_ssl_cert: true
+
+  haproxy:
+    name: plone
+    host: localhost
+    port: 1080
+    path: /admin?stats;csv
+    scheme: http
