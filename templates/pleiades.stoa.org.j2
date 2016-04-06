@@ -11,6 +11,11 @@ AddType application/json .json
   HostnameLookups off
   ProxyPreserveHost On
 
+  <Location /server-status>
+    SetHandler server-status
+    Require ip 127.0.0.1
+  </Location>
+
   # define a list of user agents to block entirely because they are 'bad bots'
   
   # bad bots from https://github.com/bluedragonz/bad-bot-blocker/blob/master/.htaccess 24 Feb 2014
@@ -552,6 +557,7 @@ AddType application/json .json
   #RewriteRule ^/places/(\d+)/json$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json [L]
 
   # Finally 
+  RewriteCond %{REQUEST_URI} !=/server-status
   RewriteRule ^/(.*) http://localhost:{{ varnish_listen_port }}/$1 [P,L]
 
   <LocationMatch "^[^/]">

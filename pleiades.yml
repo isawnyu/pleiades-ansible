@@ -6,6 +6,11 @@
     max_clients: 200
     varnish_listen_port: 6081
     haproxy_port: 8081
+    newrelic_license_key: yes
+    newrelic_service_state: started
+    newrelic_license_key: 269dfc52df973c3089f1c254c609544d1ed99dfc
+    meetme_newrelic_plugin_agent_template: templates/newrelic-plugin-agent.yml.j2
+    newrelic_appname: Pleiades Staging
   become: true
   become_user: root
   become_method: sudo
@@ -119,6 +124,11 @@
         - iotop
         - sysstat
         - joe
+        - zip
+        - default-jre
+        - nodejs
+        - nodejs-legacy
+        - ruby
 
     - name: Install pleiades dependencies
       apt: pkg={{ item }}
@@ -147,6 +157,12 @@
       user:
         name=plone_buildout
         group=plone_group
+
+    - name: buildout dir for newrelic config
+      file: path=/srv/python27-apps/pleiades4 recurse=yes state=directory owner=plone_buildout group=plone_group
+
+    - name: Newrelic Python config
+      template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
 
   roles:
 
@@ -305,6 +321,16 @@
       apache_state: stopped
       apache_ignore_missing_ssl_certificate: true
 
+    - role: franklinkim.newrelic
+
+    - role: modcloth.meetme-newrelic-plugin-agent
+
+    - role: ansible-role-modcloth-npi
+      new_relic_license_key: "{{ newrelic_license_key }}"
+      npi_plugins:
+        ar.com.3legs.newrelic.varnish:
+          template: templates/plugins.json.j2
+
   tasks:
 
     - name: Apache pleiades config
@@ -386,6 +412,9 @@
 
     - name: Start apache
       service: name=apache2 state=started
+
+    - name: Start NR Varnish monitor
+      service: name=ar.com.3legs.newrelic.varnish state=started
 
   post_tasks:
     - name: Restart pleiades
