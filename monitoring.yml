@@ -1,0 +1,35 @@
+---
+- hosts: all
+  vars:
+    newrelic_service_state: started
+    meetme_newrelic_plugin_agent_template: templates/newrelic-plugin-agent.yml.j2
+  become: true
+  become_user: root
+  become_method: sudo
+
+  pre_tasks:
+    - name: Install required packages
+      apt: pkg="{{ item }}" state=present
+      with_items:
+        - build-essential
+        - python-dev
+        - default-jre
+        - nodejs
+        - nodejs-legacy
+
+  roles:
+
+    - role: franklinkim.newrelic
+
+    - role: modcloth.meetme-newrelic-plugin-agent
+
+    - role: ansible-role-modcloth-npi
+      new_relic_license_key: "{{ newrelic_license_key }}"
+      npi_plugins:
+        ar.com.3legs.newrelic.varnish:
+          template: templates/plugins.json.j2
+
+  tasks:
+
+    - name: Start NR Varnish monitor
+      service: name=ar.com.3legs.newrelic.varnish state=started

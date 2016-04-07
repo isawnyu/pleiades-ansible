@@ -8,4 +8,8 @@ roles/geerlingguy.varnish
 roles/geerlingguy.apache
 roles/geerlingguy.postfix
 roles/nickhammond.logrotate
+roles/ansible-role-modcloth-npi/
+roles/franklinkim.newrelic/
+roles/modcloth.meetme-newrelic-plugin-agent/
+roles/modcloth.npi/
 *.retry

@@ -1,0 +1,5 @@
+---
+
+newrelic_appname: Pleiades Staging
+newrelic_license_key: 269dfc52df973c3089f1c254c609544d1ed99dfc
+plone_instance_count: 3

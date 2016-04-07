@@ -3,7 +3,7 @@ Application:
   poll_interval: 60
 
   apache_httpd:
-     -  name: pleiades apache
+     -  name: {{ newrelic_appname }} Apache
         scheme: http
         host: localhost
         port: 80
@@ -11,7 +11,7 @@ Application:
         #verify_ssl_cert: true
 
   haproxy:
-    name: plone
+    name: {{ newrelic_appname }} Balancer
     host: localhost
     port: 1080
     path: /admin?stats;csv
