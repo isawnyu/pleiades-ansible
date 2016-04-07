@@ -1,0 +1,30 @@
+---
+
+  http_port: 80
+  max_clients: 200
+  varnish_listen_port: 6081
+  haproxy_port: 8081
+  cache_preload_urls:
+    - /plone
+    - /plone/places
+  supervisor_tasks:
+    - name: pleiades-zeoserver
+      command: /srv/python27-apps/pleiades4/bin/zeoserver console
+      directory: /srv/python27-apps/pleiades4
+      user: plone_daemon
+      redirect_stderr: true
+      stopwaitsecs: 30
+      autostart: true
+      autorestart: true
+
+    - name: vtpleiades3
+      command:  /srv/python26-apps/vaytrou/bin/vtpython scripts/vtserve -d vtdata pleiades3-three -p 8887
+      user: plone_daemon
+      directory: /srv/python26-apps/vaytrou
+      environment: LD_LIBRARY_PATH="/srv/python26-apps/vaytrou/parts/libgeos/lib:/srv/python26-apps/vaytrou/parts/libspatialindex/lib"
+      stopwaitsecs: 30
+      stdout_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
+      stdout_logfile_maxbytes: 50MB
+      stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
+      autostart: true
+      autorestart: true

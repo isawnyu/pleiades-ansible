@@ -41,7 +41,7 @@
     version={{ buildout_version | default('HEAD') }}
     depth=1
     accept_hostkey=yes
-  register: git_updated
+  register: git_updated-{{ instance_name }}
   sudo_user: "{{ buildout_user }}"
   notify:
     - Bootstrap buildout {{ instance_name }}

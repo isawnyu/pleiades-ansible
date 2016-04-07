@@ -1,0 +1,82 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  become_method: sudo
+  serial: 1
+  vars:
+    sleep_time: "{{ ((restart_delay|default(60))/2)|int|abs }}"
+
+  pre_tasks:
+    - name: Newrelic Python config
+      template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
+      when: newrelic_license_key is defined
+
+    - set_fact:
+        instance_task:
+          name: pleiades-instance{{ item }}
+          command: /srv/python27-apps/pleiades4/bin/instance{{ item }} console
+          directory: /srv/python27-apps/pleiades4
+          user: plone_daemon
+          redirect_stderr: true
+          stopwaitsecs: 30
+          autostart: true
+          autorestart: true
+      with_sequence: start=1 end={{ plone_instance_count }}
+      register: instance_task_results
+
+    - set_fact:
+        supervisor_tasks: "{{instance_task_results.results | map(attribute='ansible_facts.instance_task') | list + supervisor_tasks}}"
+
+    - set_fact:
+        balancer_client:
+          name: plone_{{ item }}
+          port: 840{{ item }}
+          number: "{{ item }}"
+          preload_command: "{% for i in cache_preload_urls %}curl http://localhost:840{{ item }}{{ i }} -s -o - > /dev/null; {%endfor%}"
+      with_sequence: start=1 end={{ plone_instance_count }}
+      register: balancer_client_results
+
+    - set_fact:
+        balancer_clients: "{{balancer_client_results.results | map(attribute='ansible_facts.balancer_client') | list}}"
+
+  roles:
+
+    - {role: 'buildout',
+        base_dir: '/srv/python27-apps',
+        instance_name: 'pleiades4',
+        buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
+        buildout_version: 'jazkarta-plone4',
+        buildout_file: 'production.cfg',
+        tags: ['plone4', 'buildout'],
+      }
+
+    - role: 'Stouts.supervisor'
+      supervisor_superlance: yes
+
+      tags: ['supervisor']
+
+    - role: haproxy
+      listen_name: plone
+      listen_port: "{{ haproxy_port }}"
+      clients: "{{ balancer_clients }}"
+      tags: ['haproxy']
+
+  tasks:
+
+    - name: Run buildout pleiades4
+      command: bin/buildout -c production.cfg
+      args:
+        chdir: /srv/python27-apps/pleiades4
+      when: not buildout_{{ instance_name }} is defined
+      sudo: yes
+      sudo_user: plone_buildout
+
+  post_tasks:
+
+    - name: Restart admin instance
+      command: supervisorctl restart pleiades-instance1
+
+    - name: Rolling restart of load balanced instances
+      shell: echo "disable server plone/{{ item.name }}" | socat /var/run/haproxy.sock stdio && supervisorctl stop pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && supervisorctl start pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && {{ item.preload_command }} echo "enable server plone/{{ item.name }}" | socat /var/run/haproxy.sock stdio
+      with_items: "{{ balancer_clients }}"

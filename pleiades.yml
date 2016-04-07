@@ -1,34 +1,5 @@
 ---
 - hosts: all
-  vars:
-    p4_port: 9080
-    http_port: 80
-    max_clients: 200
-    varnish_listen_port: 6081
-    haproxy_port: 8081
-    supervisor_tasks:
-      - name: pleiades-zeoserver
-        command: /srv/python27-apps/pleiades4/bin/zeoserver console
-        directory: /srv/python27-apps/pleiades4
-        user: plone_daemon
-        redirect_stderr: true
-        stopwaitsecs: 30
-        autostart: true
-        autorestart: true
-
-      - name: vtpleiades3
-        command:  /srv/python26-apps/vaytrou/bin/vtpython scripts/vtserve -d vtdata pleiades3-three -p 8887
-        user: plone_daemon
-        directory: /srv/python26-apps/vaytrou
-        environment: LD_LIBRARY_PATH="/srv/python26-apps/vaytrou/parts/libgeos/lib:/srv/python26-apps/vaytrou/parts/libspatialindex/lib"
-        stopwaitsecs: 30
-        stdout_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
-        stdout_logfile_maxbytes: 50MB
-        stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
-        autostart: true
-        autorestart: true
-
-
   become: true
   become_user: root
   become_method: sudo
@@ -385,12 +356,12 @@
   post_tasks:
     - name: Restart pleiades
       command: supervisorctl restart pleiades-instance{{ item }}
-      when: buildout_pleiades3 is defined
+      when: (buildout_pleiades4 is defined and buildout_pleiades4.changed)
       with_sequence: start=1 end={{plone_instance_count}}
 
     - name: Restart vaytrou
       command: supervisorctl restart vtpleiades3
-      when: buildout_vaytrou is defined
+      when: (buildout_vaytrou is defined and buildout_vaytrou.changed)
 
     - name: Cron dumps
       copy: src=files/pleiades-dumps dest=/etc/cron.daily/pleiades-dumps owner=root group=root mode=0755
