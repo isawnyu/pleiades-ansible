@@ -114,6 +114,8 @@ update firewall rules.
 monitoring.yml
 --------------
 
+Targets: all
+
 Sets up New Relic monitoring for server, along with plugins to monitor Apache,
 HAProxy and Varnish. New Relic app monitoring setup is done in
 ``pleiades.yml`` and ``deploy.yml``.
