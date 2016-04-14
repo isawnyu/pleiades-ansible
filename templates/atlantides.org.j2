@@ -106,4 +106,24 @@ AddType application/atom+xml .atom
   #   </Limit>
   # </Location>
 
+  # redirect old concordia traffic to new locations
+  RewriteEngine on
+  RewriteRule "^/trac/concordia/browser/ala2iaph-concordance.*" "https://github.com/isawnyu/concordia-ala2iaph-concordance" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/Bingo.*" "https://github.com/isawnyu/concordia-bingo" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/concordia.matchtool.*" "https://github.com/isawnyu/concordia.matchtool" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/concrawl.*" "https://github.com/isawnyu/concordia-concrawl" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/epidoc2atom.*" "https://github.com/isawnyu/concordia-epidoc2atom" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/gawd-vocab.*" "https://github.com/isawnyu/concordia-gawd-vocab" [R=301,L]
+  RewriteRule "^/trac/concordia/browser/reports.*" "https://github.com/isawnyu/concordia-reports" [R=301,L]
+  RewriteRule "^/trac/concordia/login/?$" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/settings/?$" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/search/?$" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/timeline/?$" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/roadmap(.*)" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/milestone(.*)" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/report(.*)" "http://concordia.atlantides.org/archived.html" [R=301,L]
+  RewriteRule "^/trac/concordia/?$" "http://concordia.atlantides.org/wiki/WikiStart" [R=301,L]
+  RewriteRule "^/trac/concordia/(.+)" "http://concordia.atlantides.org/$1" [R=301,L]
+
+
 </VirtualHost>
