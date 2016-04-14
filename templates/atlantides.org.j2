@@ -83,7 +83,6 @@ AddType application/atom+xml .atom
   # RewriteEngine On
   # RewriteRule ^/batlas/static/(.*) http://atlantides.org/features/@@static/$1 [P,L]
   # RewriteRule ^/batlas/([\w-]+)$ http://atlantides.org/features/$1 [P,L]
-  # RewriteRule ^/terms/(.*) http://atlantides.org/trac/concordia/wiki/ConcordiaThesaurus [P,L]
 
   # Alias /zotero /var/www/zotero
 
@@ -107,15 +106,4 @@ AddType application/atom+xml .atom
   #   </Limit>
   # </Location>
 
-</VirtualHost>
-
-<VirtualHost *:*>
-  ServerName concordia.atlantides.org
-  ServerAdmin tom.elliott@nyu.edu
-  DocumentRoot /var/www/concordia.atlantides.org/
-  <Location "/">
-    Options Indexes FollowSymLinks MultiViews
-    Order allow,deny
-    allow from all
-  </Location>
 </VirtualHost>
