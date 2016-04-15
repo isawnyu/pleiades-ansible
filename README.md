@@ -88,7 +88,7 @@ Installs required packages and sets up:
 * haproxy
 * varnish
 * Repositories for static websites from ``pleiades-frontpage`` and ``pleiades-api``
-* apache (virtualhosts for ``pleiades.stoa.org``, ``api.pleiades.stoa.org``, ``atlantides.org``, and ``concordia.atlantides.org``)
+* apache (virtualhosts for ``pleiades.stoa.org``, ``api.pleiades.stoa.org``, and ``atlantides.org``)
 * Sets server timezone to ``America/New_York``
 * Creates nightly cron jobs for CSV, KML, and sitemap exports (Plone 4)
 * Creates weekly cron job for RDF export (Plone 4)
