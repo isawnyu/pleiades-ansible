@@ -2,11 +2,14 @@
 
   http_port: 80
   max_clients: 200
-  varnish_listen_port: 6081
+  proxycache_port: 6081
+  proxycache_method: file,/var/lib/varnish/varnish_storage.bin
+  proxycache_size: 512m
   haproxy_port: 8081
   cache_preload_urls:
     - /plone
     - /plone/places
+  plone_client_base_port: 8401
   supervisor_tasks:
     - name: pleiades-zeoserver
       command: /srv/python27-apps/pleiades4/bin/zeoserver console
@@ -18,13 +21,20 @@
       autorestart: true
 
     - name: vtpleiades3
-      command:  /srv/python26-apps/vaytrou/bin/vtpython scripts/vtserve -d vtdata pleiades3-three -p 8887
+      command:  /srv/python27-apps/vaytrou/bin/vtpython scripts/vtserve -d vtdata pleiades3-three -p 8887
       user: plone_daemon
-      directory: /srv/python26-apps/vaytrou
-      environment: LD_LIBRARY_PATH="/srv/python26-apps/vaytrou/parts/libgeos/lib:/srv/python26-apps/vaytrou/parts/libspatialindex/lib"
+      directory: /srv/python27-apps/vaytrou
+      environment: LD_LIBRARY_PATH="/srv/python27-apps/vaytrou/parts/libgeos/lib:/srv/python27-apps/vaytrou/parts/libspatialindex/lib"
       stopwaitsecs: 30
-      stdout_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
+      stdout_logfile: /srv/python27-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
       stdout_logfile_maxbytes: 50MB
-      stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
+      stderr_logfile: /srv/python27-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
       autostart: true
       autorestart: true
+  playbook_plones:
+    - plone_instance_name: default
+      loadbalancer_port: "{{haproxy_port}}"
+      plone_client_base_port: 8401
+      webserver_virtualhosts:
+        - host: default
+          plone_path: /plone

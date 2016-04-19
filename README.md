@@ -9,7 +9,17 @@ These do not handle live data transfer.
 Prerequisites
 -------------
 
-Ubuntu 14.04 server and an ssh login with full sudo. Install required roles::
+Ubuntu 16.04 server and an ssh login with full sudo. The server must have the
+following packages installed::
+
+  * python
+  * aptitude
+  * language-pack-en (?)
+
+    sudo apt-get update
+    sudo apt-get install language-pack-en aptitude python
+
+Install required roles::
 
     ansible-galaxy -p roles install -r install_roles.yml
 
@@ -52,7 +62,7 @@ each server:
   monitoring
 * newrelic_appname: Sets the prefix to be used in new relic for all apps and
   plugins.
-* plone_instance_count: Sets the number of plone instances to run on the
+* plone_client_count: Sets the number of plone instances to run on the
   server (limit 5, the first will not be included in the load balancer and is
   accessed directly for administrative purposes only)
 * restart_delay: Sets the number of seconds to wait between rolling instance
@@ -61,6 +71,14 @@ each server:
 * cache_preload_urls: url paths (including site path) to load after restarting
   an instance. This helps prevent slowness after reload by pre-filling the
   Zope and ZEO caches with frequently used objects.
+* playbook_plones: a list of loadbalanced backeds to create, each should define:
+  * plone_instance_name: A name for the backend
+  * loadbalancer_port: The port the loadbalancer listens on
+  * plone_client_base_port: The port for the first plone instance
+  * webserver_virtualhosts: A list of virtual host mappings, consisting of:
+    * host: the host name
+    * plone_path: the path to the site root
+
 
 Playbooks
 ---------

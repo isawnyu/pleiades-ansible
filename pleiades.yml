@@ -11,9 +11,6 @@
     - name: Install repo management
       apt: pkg=python-software-properties
 
-    - name: Install old python repos
-      apt_repository: repo='ppa:fkrull/deadsnakes'
-
     - name: Update packages
       apt: upgrade=safe update_cache=yes
 
@@ -21,65 +18,6 @@
       apt: pkg="{{ item }}"
       with_items:
         - python-dev
-        - python2.4-dev
-        - python2.6-dev
-
-    - name: download ez_setup
-      get_url: url=http://peak.telecommunity.com/dist/ez_setup.py dest=/srv/ez_setup.py
-
-    - name: install easy_installs
-      command: python{{ item }} /srv/ez_setup.py creates=/usr/local/bin/easy_install-{{ item }}
-      with_items:
-        - 2.4
-        - 2.6
-
-    - name: Link easy_install
-      file: src=/usr/bin/easy_install-2.4 dest=/usr/local/bin/easy_install-2.4 state=link
-
-    - name: Remove easy_install
-      file: path=/usr/local/bin/easy_install state=absent
-
-    - name: Install old PIPs
-      easy_install: executable="easy_install-{{ item.py_version }}" name="pip=={{item.pip_version}}" state='present'
-      with_items:
-        - {py_version: 2.4, pip_version: 1.1}
-        - {py_version: 2.6, pip_version: "8.0.3"}
-
-    - name: Link for pip-2.6
-      file: src=/usr/local/bin/pip2.6 dest=/usr/local/bin/pip-2.6 state=link
-
-    - name: Remove pip
-      file: path=/usr/local/bin/pip state=absent
-
-    - name: Install 2.4 and 2.6 virtualenv
-      pip: executable="pip-{{ item.pip_version }}" name='virtualenv' version="{{ item.version }}"
-      with_items:
-        - {pip_version: 2.4, version: 1.7}
-        - {pip_version: 2.6, version: 14.0.6}
-
-    - name: check virtualenv-2.4
-      command: grep -Fq "python2.4" /usr/bin/virtualenv
-      register: venv24_present
-      ignore_errors: True
-      changed_when: False
-
-    - name: move virtualenv-2.4
-      command: mv /usr/bin/virtualenv /usr/local/bin/virtualenv-2.4
-      when: venv24_present.rc == 0
-
-    - name: check virtualenv-2.6
-      command: grep -Fq "python2.6" /usr/local/bin/virtualenv
-      register: venv26_present
-      ignore_errors: True
-      changed_when: False
-
-    - name: Remove virtualenv link
-      file: path=/usr/local/bin/virtualenv-2.6 state=absent
-      when: venv26_present.rc == 0
-
-    - name: Move virtualenv-2.6
-      command: mv /usr/local/bin/virtualenv /usr/local/bin/virtualenv-2.6
-      when: venv26_present.rc == 0
 
     - name: Install default python tools
       apt: pkg="{{ item }}" force=yes state=latest
@@ -87,14 +25,10 @@
         - python-pip
         - python-setuptools
         - python-virtualenv
+        - supervisor
 
-    - name: Create 2.4 and 2.6 virtualenvs and add packages
-      pip: executable="pip-{{ item.py_version }}" name="{{ item.name }}" version="{{ item.version }}" virtualenv="{{ item.env }}" virtualenv_python="python{{ item.py_version }}" virtualenv_command="virtualenv-{{ item.py_version }}" virtualenv_site_packages=no
-      with_items:
-        - {py_version: 2.4, name: "Paste", version: "1.7.5", env: "/srv/python24-apps"}
-        - {py_version: 2.4, name: "PasteScript", version: "1.7.5", env: "/srv/python24-apps"}
-        - {py_version: 2.4, name: "Pillow", version: "1.7.5", env: "/srv/python24-apps"}
-        - {py_version: 2.6, name: "Paste", version: "1.7.5", env: "/srv/python26-apps"}
+    - name: Create 2.7 virtualenv
+      pip: name="Pillow" version="1.7.5" virtualenv="/srv/python27-apps" virtualenv_site_packages=no
 
     - name: Install required packages
       apt: pkg="{{ item }}" state=present
@@ -119,6 +53,7 @@
       apt: pkg={{ item }}
       with_items:
         - libgeos-dev
+        - libspatialindex-dev
         - openldap-utils
         - ldap-server
         - libsasl2-dev
@@ -143,13 +78,6 @@
         name=plone_buildout
         group=plone_group
 
-    - name: buildout dir for newrelic config
-      file: path=/srv/python27-apps/pleiades4 recurse=yes state=directory owner=plone_buildout group=plone_group
-
-    - name: Newrelic Python config
-      template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
-      when: newrelic_license_key is defined
-
     - set_fact:
         instance_task:
           name: pleiades-instance{{ item }}
@@ -160,7 +88,7 @@
           stopwaitsecs: 30
           autostart: true
           autorestart: true
-      with_sequence: start=1 end={{ plone_instance_count }}
+      with_sequence: start=1 end={{ plone_client_count }}
       register: instance_task_results
 
     - set_fact:
@@ -170,7 +98,7 @@
         balancer_client:
           name: plone_{{ item }}
           port: 840{{ item }}
-      with_sequence: start=2 end={{ plone_instance_count }}
+      with_sequence: start=2 end={{ plone_client_count }}
       register: balancer_client_results
 
     - set_fact:
@@ -183,18 +111,8 @@
     - geerlingguy.postfix
 
     - {role: 'buildout',
-        base_dir: '/srv/python24-apps',
-        buildout_python: '/srv/python24-apps/bin/python2.4',
-        instance_name: 'pleiades3',
-        buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
-        buildout_version: 'jazkarta-fixes',
-        buildout_file: 'production.cfg',
-        tags: ['plone', 'buildout'],
-      }
-
-    - {role: 'buildout',
-        base_dir: '/srv/python26-apps',
-        buildout_python: '/srv/python26-apps/bin/python2.6',
+        base_dir: '/srv/python27-apps',
+        buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'vaytrou',
         buildout_repo: 'https://github.com/isawnyu/vaytrou.git',
         buildout_version: 'jazkarta-fixes',
@@ -221,12 +139,7 @@
       clients: "{{ balancer_clients }}"
       tags: ['haproxy']
 
-    - role: geerlingguy.varnish
-      varnish_secret: "1d3739d74843dc3eadf59a329bc420d4"
-      varnish_default_vcl_template_path: "plone.vcl.j2"
-      varnish_default_backend_host: "127.0.0.1"
-      varnish_default_backend_port: "{{ haproxy_port }}"
-      varnish_storage: "file,/var/lib/varnish/varnish_storage.bin,256M"
+    - role: varnish
 
     - role: geerlingguy.apache
       apache_remove_default_vhost: true
@@ -265,13 +178,18 @@
       apache_packages:
         - apache2
         - apache2-utils
-        - apache2-threaded-dev
+        - apache2-dev
         - libapache2-mod-wsgi
         - libapache2-svn
       apache_state: stopped
       apache_ignore_missing_ssl_certificate: true
 
   tasks:
+
+    - name: Newrelic Python config
+      template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
+      when: newrelic_license_key is defined
+      notify: Restart pleiades
 
     - name: Apache pleiades config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
@@ -342,7 +260,7 @@
       sudo_user: "www-data"
 
     - name: Create vaytrou log dir
-      file: path=/srv/python26-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
+      file: path=/srv/python27-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
 
     - name: Set timezone
       file: src=/usr/share/zoneinfo/America/New_York dest=/etc/localtime state=link owner=root force=yes
@@ -357,7 +275,7 @@
     - name: Restart pleiades
       command: supervisorctl restart pleiades-instance{{ item }}
       when: (buildout_pleiades4 is defined and buildout_pleiades4.changed)
-      with_sequence: start=1 end={{plone_instance_count}}
+      with_sequence: start=1 end={{plone_client_count}}
 
     - name: Restart vaytrou
       command: supervisorctl restart vtpleiades3

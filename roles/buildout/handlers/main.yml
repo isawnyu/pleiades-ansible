@@ -5,12 +5,11 @@
     chdir: "{{ base_dir }}/{{ instance_name }}"
   sudo: yes
   sudo_user: "{{ buildout_user }}"
-  when: git_updated-{{ instance_name }}.changed
   notify:
     - Run buildout {{ instance_name }}
 
 - name: Run buildout {{ instance_name }}
-  command: bin/buildout -c {{ buildout_file }}
+  command: bin/buildout -c "{{ buildout_file }}"
   args:
     chdir: "{{ base_dir }}/{{ instance_name }}"
   when: run_buildout

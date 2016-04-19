@@ -1,18 +1,10 @@
 ---
 
-- name: haproxy installed
-  apt: pkg=haproxy state=present
+- include: "{{ ansible_os_family }}.yml"
 
-- name: socat installed
-  apt: pkg=socat state=present
-
-- name: haproxy enabled
-  copy:
-    src=haproxy_enabled
-    dest=/etc/default/haproxy
-    owner=root
-    group=root
-    mode=644
+- name: Enable selinux boolean haproxy_connect_any
+  when: ansible_selinux
+  seboolean: name=haproxy_connect_any state=yes persistent=yes
 
 - name: haproxy config
   template:
@@ -22,12 +14,9 @@
     group=root
     mode=644
     backup=true
-  sudo: yes
-  register: haproxy_config
 
 - name: haproxy started
   service: name=haproxy state=started
 
 - name: reload haproxy
   service: name=haproxy state=reloaded
-  when: haproxy_config.changed

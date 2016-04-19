@@ -22,7 +22,7 @@
           stopwaitsecs: 30
           autostart: true
           autorestart: true
-      with_sequence: start=1 end={{ plone_instance_count }}
+      with_sequence: start=1 end={{ plone_client_count }}
       register: instance_task_results
 
     - set_fact:
@@ -34,7 +34,7 @@
           port: 840{{ item }}
           number: "{{ item }}"
           preload_command: "{% for i in cache_preload_urls %}curl http://localhost:840{{ item }}{{ i }} -s -o - > /dev/null; {%endfor%}"
-      with_sequence: start=1 end={{ plone_instance_count }}
+      with_sequence: start=1 end={{ plone_client_count }}
       register: balancer_client_results
 
     - set_fact:

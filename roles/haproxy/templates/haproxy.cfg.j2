@@ -33,32 +33,18 @@ defaults
     option httpchk
 
 listen admin
-    bind 127.0.0.1:1080
+    bind *:{{ loadbalancer_monitor_port }}
     stats enable
     stats uri /admin
     # We're only connecting via ssh
     # stats auth haproxy:{{ admin_secret|default('notsosecret') }}
 
-# Set default options for all the backend servers below.
-# maxconn 4          = maximum of 4 connections that will be queued to this backend
-#                      (set higher than the # of Zope threads, as it will stream
-#                      blobs using additional threads)
-# check              = perform health checks
-# inter 10000        = Do a health check every 10 seconds when the server is up.
-# downinter 2000     = Do a health check every 2 seconds when the server is down.
-# rise               = number of consecutive health checks that must succeed
-#                      before a down backend is considered up
-# fall               = number of consecutive health checks that must fail
-#                      before an up backend is considered down
-# on-error mark-down = Consider the backend down if (error_limit) connection failures occur.
-# error-limit 5      = Perform the on-error action after 5 consecutive failures.
+{% for front_end in playbook_plones %}
+listen {{ front_end.plone_instance_name|default(plone_instance_name) }}
+    bind *:{{ front_end.loadbalancer_port|default(loadbalancer_port) }}
 
+{% for client in range(1, front_end.plone_client_count|default(plone_client_count)|int) %}
+    server client{{ client + 1 }} 127.0.0.1:{{ "%s" % (front_end.plone_client_base_port|default(plone_client_base_port)|int + client) }} check {{ front_end.loadbalancer_options|default(loadbalancer_options) }}
+{% endfor %}
 
-{% if (listen_name is defined) and (listen_port is defined) and (clients is defined) %}
-listen {{ listen_name }} *:{{ listen_port }}
-    default-server maxconn 1 inter 10000 downinter 2000 rise 3 fall 2 on-error mark-down error-limit 15
-
-    {% for client in clients %}
-    server {{ client.name }} 127.0.0.1:{{ client.port }} check
-    {% endfor %}
-{% endif %}
+{% endfor %}
