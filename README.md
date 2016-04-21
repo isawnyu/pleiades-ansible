@@ -1,5 +1,5 @@
-Pleiades Ansible Playbook
-=========================
+Pleiades Ansible Playbooks
+==========================
 
 Ansible playbooks meant to be sufficient to build or rebuild a server with
 minimal preparation.
@@ -35,7 +35,7 @@ If the server is installed on a cloud with its own firewall (like EC2), see
 ``firewall.yml`` for ports that must be opened manually using that service.
 
 Inventory
-~~~~~~~~~
+---------
 
 The default inventory file is ``inventory.cfg``.
 It defines both live and staging groups.
@@ -44,7 +44,7 @@ There is a matching vbox-host.cfg that defines the same groups, but targets the 
 Usage: ``ansible-playbook -i vbox-host.cfg pleiades.yml``
 
 Host and Group Variables
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 For each host in the inventory, it is possible to customize deployment some
 variables using the files in ``host_vars``. For example
@@ -80,11 +80,11 @@ each server:
     * plone_path: the path to the site root
 
 
-Playbooks
----------
+The Playbooks
+=============
 
 add_users.yml
-~~~~~~~~~~~~~
+-------------
 
 Targets: all
 
@@ -93,7 +93,7 @@ for the first time. Only needs to be run to create/update user accounts on the
 server.
 
 pleiades.yml
-~~~~~~~~~~~~
+------------
 
 Targets: all
 
@@ -106,14 +106,14 @@ Installs required packages and sets up:
 * haproxy
 * varnish
 * Repositories for static websites from ``pleiades-frontpage`` and ``pleiades-api``
-* apache (virtualhosts for ``pleiades.stoa.org``, ``api.pleiades.stoa.org``, ``atlantides.org``, and ``concordia.atlantides.org``)
+* apache (virtualhosts for ``pleiades.stoa.org``, ``api.pleiades.stoa.org``, and ``atlantides.org``)
 * Sets server timezone to ``America/New_York``
 * Creates nightly cron jobs for CSV, KML, and sitemap exports (Plone 4)
 * Creates weekly cron job for RDF export (Plone 4)
 * Automated nightly Ubuntu security updates
 
 deploy.yml
-~~~~~~~~~~
+----------
 
 Targets: all
 
@@ -122,7 +122,7 @@ plone instances with configurable delay. Can only be run after a successful
 initial server deploy using ``pleiades.yml``.
 
 firewall.yml
-~~~~~~~~~~~~
+------------
 
 Targets: all
 
@@ -130,7 +130,9 @@ Closes all ports except 80, 443, 8080. Uses ufw. Only needs to be run to
 update firewall rules.
 
 monitoring.yml
-~~~~~~~~~~~~~~
+--------------
+
+Targets: all
 
 Sets up New Relic monitoring for server, along with plugins to monitor Apache,
 HAProxy and Varnish. New Relic app monitoring setup is done in
