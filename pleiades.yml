@@ -316,9 +316,6 @@
     - name: Create atlantides rdf dir
       file: path=/var/www/atlantides.org/downloads/pleiades/rdf/ state=directory owner=plone_daemon mode=0775
 
-    - name: Create concordia vhost dir
-      file: path=/var/www/concordia.atlantides.org/ recurse=yes state=directory owner=www-data mode=0775
-
     - name: Pleiades frontpage git checkout
       git:
         repo=https://github.com/isawnyu/pleiades-frontpage.git
