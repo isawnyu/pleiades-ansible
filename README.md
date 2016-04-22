@@ -17,7 +17,7 @@ following packages installed::
   * language-pack-en (?)
 
     sudo apt-get update
-    sudo apt-get install language-pack-en aptitude python
+    sudo apt-get install aptitude python
 
 Install required roles::
 

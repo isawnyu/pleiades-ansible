@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: jbzdak.compile-python, python: "{{ python27 }}" }

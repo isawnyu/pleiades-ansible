@@ -27,13 +27,13 @@
         - python-virtualenv
         - supervisor
 
-    - name: Create 2.7 virtualenv
-      pip: name="Pillow" version="1.7.5" virtualenv="/srv/python27-apps" virtualenv_site_packages=no
-
     - name: Install required packages
       apt: pkg="{{ item }}" state=present
       with_items:
         - build-essential
+        - libzip-dev
+        - libsqlite3-dev
+        - libreadline-dev
         - libz-dev
         - libssl-dev
         - libjpeg-dev
@@ -106,6 +106,8 @@
 
   roles:
 
+    - venv
+
     - jnv.unattended-upgrades
 
     - geerlingguy.postfix
@@ -121,6 +123,7 @@
 
     - {role: 'buildout',
         base_dir: '/srv/python27-apps',
+        buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
         buildout_version: 'jazkarta-plone4',

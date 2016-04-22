@@ -26,3 +26,6 @@
 
 - src: https://github.com/phillipuniverse/ansible-role-modcloth-npi.git
   version: d9509de294fda18b9c5171432640e0d0e59843d6
+
+- src: jbzdak.compile-python
+  version: 0ec842b5a22d9d649521b7698b27c52512c0679d
