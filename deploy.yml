@@ -8,6 +8,10 @@
     sleep_time: "{{ ((restart_delay|default(60))/2)|int|abs }}"
 
   pre_tasks:
+
+    - name: socat installed
+      apt: pkg=socat state=present
+
     - name: Newrelic Python config
       template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
       when: newrelic_license_key is defined
