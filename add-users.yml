@@ -43,7 +43,7 @@
           commands: ALL
           nopasswd: yes
         authorized_keys:
-          - key: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAxRBT8vE5SwtuQbj5mgHvR95zeX8dHjgfg4MFe8nbGBDg/cO3Ur0hGYMOGeW4tQ773b8vNqDIYxxa65Y9LI/41hUF869OiRzQ+bL7al/lEm+571tc8258L6NB37H7U69jgCv0uCzm+VGw6qofvMmqISU4uGwQ8go1L3NVskeQQl6IowKAuGZYTzjQ6mHB9Xim/ZU35EHcBKn7v2J+aS9ybityNNSW4LT4DpbGSx//l29H+mmQGpgrz1NR5hNd8neEskd1wAVxej0zzmGUPd2YJGhYRjIus7PeEXgMxdhDXHcwGPN2CU+W8IeAZ0/4ml9pgaISx6hwbfKtvEFS1QMfww== tom.elliott@nyu.edu
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0rhT70jvNCeEf/JAACFFDjvLc4jzH16Td4FjiT8zvvFh8GqFKhLkeKdRtEeC69aZNWaYe+ugMeYr7faTeRHLA9ZnRPvscui7hU8qbQi4hRTt0JaB3A8stT1stcaPFJRr09vHYhQAMiuE1CG7GJHILd44W/6zKjw0+8rwUR8Vfj5EOrbVu9wOztfHCtriN1W5EiN1QoF6x2RXlJuLOqlgm9dr5XM1T+caIYl0LndzJkKQtypwEJzgNe9foVzICAKwWA5pJstqviWyaV8Z1g25JRzPAuSO2vYZe1WH37edGJPzPYxVH5u8Hi+aXfvDdIBxnB9ZoisHkV6fVQgm/wMdh tom.elliott@nyu.edu
       - name: cguardia
         shell: /bin/bash
         createhome: yes

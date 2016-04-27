@@ -237,8 +237,8 @@
     - name: Create atlantides rdf dir
       file: path=/var/www/atlantides.org/downloads/pleiades/rdf/ state=directory owner=plone_daemon mode=0775
 
-    - name: Create concordia vhost dir
-      file: path=/var/www/concordia.atlantides.org/ recurse=yes state=directory owner=www-data mode=0775
+    - name: Create atlantides json dir
+      file: path=/var/www/atlantides.org/downloads/pleiades/json/ state=directory owner=plone_daemon mode=0755
 
     - name: Pleiades frontpage git checkout
       git:
@@ -295,3 +295,6 @@
 
     - name: Cron rdf
       copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
+
+    - name: Cron json
+      copy: src=files/pleiades-json dest=/etc/cron.daily/pleiades-json owner=root group=root mode=0755
