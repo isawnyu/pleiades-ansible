@@ -524,12 +524,6 @@ AddType application/json .json
   RewriteRule ^/news/blog/RSS /news/blog/collector/RSS [R=301]
   RewriteRule ^/news/recently-modified(.*) /news/recently-published$1 [R=301]
 
-  # RDF conneg
-  RewriteCond %{REQUEST_URI} ^/places/\d+$
-  RewriteCond %{HTTP_ACCEPT} !html 
-  RewriteCond %{HTTP_ACCEPT} !^\*/\*$
-  RewriteRule ^/places/(.*) http://localhost:{{ proxycache_port }}/conneg?pid=$1 [P,L]
-  
   # Places index, @@ views are valid, all other non-place resources are gone 
   RewriteRule ^/places/index_html(.*) http://localhost:{{ proxycache_port }}/places/index_html$1 [P,L]
   RewriteRule ^/places/(.*)-index http://localhost:{{ proxycache_port }}/places/$1-index [P,L]
