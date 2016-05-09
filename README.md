@@ -14,10 +14,17 @@ following packages installed::
 
   * python
   * aptitude
-  * language-pack-en (?)
 
     sudo apt-get update
     sudo apt-get install aptitude python
+
+You may need to disable requiretty in sudoers, by adding the line:
+
+  Defaults !requiretty
+  Defaults visiblepw
+
+You may also need to ensure the apt src repositories are available by
+uncommenting apt-src locations in ``/etc/apt/sources.list``.
 
 Install required roles::
 
