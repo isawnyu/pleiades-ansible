@@ -2,6 +2,6 @@
 
 newrelic_appname: Pleiades Production
 newrelic_license_key: 269dfc52df973c3089f1c254c609544d1ed99dfc
-plone_client_count: 3
-restart_delay: 10
+plone_client_count: 5
+restart_delay: 30
 pleiades_buildout_file: production.cfg

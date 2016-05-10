@@ -72,5 +72,5 @@
       command: supervisorctl restart pleiades-instance1
 
     - name: Rolling restart of load balanced instances
-      shell: echo "disable server plone/{{ item.name }}" | socat /var/run/haproxy.sock stdio && supervisorctl stop pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && supervisorctl start pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && {{ item.preload_command }} echo "enable server plone/{{ item.name }}" | socat /var/run/haproxy.sock stdio
+      shell: echo "disable server default/{{ item.name }}" | socat /var/run/haproxy.sock stdio && supervisorctl stop pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && supervisorctl start pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && {{ item.preload_command }} echo "enable server default/{{ item.name }}" | socat /var/run/haproxy.sock stdio
       with_items: "{{ balancer_clients }}"
