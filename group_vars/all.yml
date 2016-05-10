@@ -38,3 +38,4 @@
       webserver_virtualhosts:
         - host: default
           plone_path: /plone
+  pleiades_buildout_file: staging.cfg
