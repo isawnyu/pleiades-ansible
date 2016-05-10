@@ -28,3 +28,4 @@
       stderr_logfile: /srv/python26-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
       autostart: true
       autorestart: true
+  pleiades_buildout_file: staging.cfg
