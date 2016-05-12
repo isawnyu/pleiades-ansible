@@ -226,7 +226,7 @@
       file: path=/var/www/pleiades.stoa.org recurse=yes state=directory owner=www-data mode=0775
 
     - name: Create pleiades vhost dir
-      file: path=/var/www/atlantides.org/downloads/pleiades recurse=yes state=directory owner=www-data mode=0775
+      file: path=/var/www/atlantides.org/downloads/pleiades recurse=yes state=directory owner=plone_daemon mode=0775
 
     - name: Create atlantides dump dir
       file: path=/var/www/atlantides.org/downloads/pleiades/dumps/ state=directory owner=plone_daemon mode=0775
@@ -284,6 +284,12 @@
       command: supervisorctl restart vtpleiades3
       when: (buildout_vaytrou is defined and buildout_vaytrou.changed)
 
+
+- hosts: live
+  become: true
+  become_user: root
+  become_method: sudo
+  post_tasks:
     - name: Cron dumps
       copy: src=files/pleiades-dumps dest=/etc/cron.daily/pleiades-dumps owner=root group=root mode=0755
 
@@ -296,5 +302,10 @@
     - name: Cron rdf
       copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
 
-    - name: Cron json
-      copy: src=files/pleiades-json dest=/etc/cron.daily/pleiades-json owner=root group=root mode=0755
+- hosts: staging
+  become: true
+  become_user: root
+  become_method: sudo
+  post_tasks:
+    - name: Cron dump all
+      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755

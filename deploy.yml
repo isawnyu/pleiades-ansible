@@ -59,7 +59,7 @@
   tasks:
 
     - name: Run buildout pleiades4
-      command: bin/buildout -c production.cfg
+      command: bin/buildout -c {{ pleiades_buildout_file }}
       args:
         chdir: /srv/python27-apps/pleiades4
       when: not buildout_pleiades4 is defined

@@ -1,0 +1,35 @@
+#! /bin/sh
+
+# pleiades-json
+
+set -e
+
+PLEIADES_HOME=/srv/python27-apps/pleiades4/
+DEST=/var/www/atlantides.org/downloads/pleiades
+DATE=`date +%Y%m%d`
+
+# Dump all formats
+cd $PLEIADES_HOME
+su plone_daemon -c "./bin/debug-instance -Oplone run src/Products.PleiadesEntity/Products/PleiadesEntity/commands/dump.py $DEST" 2> dump.log
+
+# Post-process:
+# gzip, label with date, add '-latest' symlink
+
+cd $DEST
+
+# JSON
+gzip json/pleiades.json
+mv json/pleiades.json.gz json/pleiades-json-$DATE.json.gz
+ln -sf $DEST/pleiades.json-$DATE.json.gz $DEST/json/pleiades-latest.json.gz
+
+# CSV
+gzip dumps/pleiades-places.csv
+mv dumps/pleiades-places.csv.gz dumps/pleiades-places-$DATE.csv.gz
+ln -sf $DEST/dumps/pleiades-places-$DATE.csv.gz $DEST/dumps/pleiades-places-latest.csv.gz
+
+# fix permissions
+chown -R plone_daemon.www-data $DEST
+chmod -R u=rwX,g=rX,o=rX $DEST
+
+# delete old dumps
+find . -name "*.gz" -mtime +7 -delete
