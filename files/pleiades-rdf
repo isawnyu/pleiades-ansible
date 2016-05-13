@@ -12,19 +12,19 @@ DATE=`date +%Y%m%d`
 cd $PLEIADES_HOME
 # . ./setenv
 
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -a -u sgillies > $DEST/authors.ttl" 2> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -v time-periods > $DEST/time-periods.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -v place-types > $DEST/place-types.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -e 1,z -r > $DEST/errata.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 0,2 -r > $DEST/places-1.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 2,3 -r > $DEST/places-2.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 3,4 -r > $DEST/places-3.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 4,5 -r > $DEST/places-4.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 5,6 -r > $DEST/places-5.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 6,7 -r > $DEST/places-6.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 7,8 -r > $DEST/places-7.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 8,9 -r > $DEST/places-8.ttl" 2>> dump.log
-SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 9,z -r > $DEST/places-9.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -a -u sgillies > $DEST/authors.ttl" 2> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -v time-periods > $DEST/time-periods.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -v place-types > $DEST/place-types.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -e 1,z -r > $DEST/errata.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 0,2 -r > $DEST/places-1.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 2,3 -r > $DEST/places-2.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 3,4 -r > $DEST/places-3.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 4,5 -r > $DEST/places-4.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 5,6 -r > $DEST/places-5.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 6,7 -r > $DEST/places-6.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 7,8 -r > $DEST/places-7.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 8,9 -r > $DEST/places-8.ttl" 2>> dump.log
+SERVER_NAME="pleiades.stoa.org" VH_ROOT="/plone/" su plone_daemon -c "./bin/debug-instance run ./dump-scripts/rdf.py -p 9,z -r > $DEST/places-9.ttl" 2>> dump.log
 
 # GZIP
 cd $DEST
