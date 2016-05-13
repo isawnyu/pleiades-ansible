@@ -1,6 +1,6 @@
 ---
 
 newrelic_appname: Pleiades Staging
-newrelic_license_key: 269dfc52df973c3089f1c254c609544d1ed99dfc
+newrelic_license_key: 3a9e8872ccdd305ff9425a29a63525a1557c0d29
 plone_client_count: 3
 restart_delay: 10
