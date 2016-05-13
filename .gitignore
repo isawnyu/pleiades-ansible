@@ -13,3 +13,4 @@ roles/modcloth.meetme-newrelic-plugin-agent/
 roles/modcloth.npi/
 roles/jbzdak.compile-python/
 *.retry
+vaultpass
