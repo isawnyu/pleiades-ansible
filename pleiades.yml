@@ -137,7 +137,6 @@
       tags: ['supervisor']
 
     - role: haproxy
-      listen_name: plone
       listen_port: "{{ haproxy_port }}"
       clients: "{{ balancer_clients }}"
       tags: ['haproxy']
@@ -269,10 +268,10 @@
       file: src=/usr/share/zoneinfo/America/New_York dest=/etc/localtime state=link owner=root force=yes
 
     - name: Start supervisor
-      service: name=supervisor state=started
+      service: name=supervisor state=started enabled=yes
 
     - name: Start apache
-      service: name=apache2 state=started
+      service: name=apache2 state=started enabled=yes
 
   post_tasks:
     - name: Restart pleiades
