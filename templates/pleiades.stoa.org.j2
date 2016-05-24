@@ -389,15 +389,15 @@ AddType application/json .json
   #RewriteRule .* /down.html [L,R=503]  
 
   # tell Dickinson College Commentary referalls to get lost for a while
-  RewriteCond %{HTTP_REFERER} dcc\.dickinson\.edu [NC]
-  RewriteRule ^/.*$ - [L,R=503]
+  #RewriteCond %{HTTP_REFERER} dcc\.dickinson\.edu [NC]
+  #RewriteRule ^/.*$ - [L,R=503]
 
   # tell all bots to get lost for a while (this works)
   #RewriteCond %{HTTP_USER_AGENT} (uptimerobot|google|archive.org) [NC]
-  RewriteCond %{HTTP_USER_AGENT} (uptimerobot) [NC]
-  RewriteRule ^/.*$ - [S=2]
-  RewriteCond %{HTTP_USER_AGENT} (feedspot|spider|spyder|bot|crawler) [NC] 
-  RewriteRule ^/.*$ - [L,R=503]
+  #RewriteCond %{HTTP_USER_AGENT} (uptimerobot) [NC]
+  #RewriteRule ^/.*$ - [S=2]
+  #RewriteCond %{HTTP_USER_AGENT} (feedspot|spider|spyder|bot|crawler) [NC] 
+  #RewriteRule ^/.*$ - [L,R=503]
 
   RewriteRule ^/css/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/css/$1 [L]
   RewriteRule ^/js/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/js/$1 [L]
