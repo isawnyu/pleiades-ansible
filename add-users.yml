@@ -56,6 +56,18 @@
           nopasswd: yes
         authorized_keys:
           - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCw9LYyIRaLlaUk3eBvEYxf4JBfSS6gQpngDds2+4rHZ83OmwEFkfbEiNJWInqxGegYEj5M8Z3tkWqJ6N7Cc0ORgYTYpdCrZOkD/IcO8OFqrS5oZCvU0E+UuTbXP+q8JsOYDNRO4cenrDSeB02bP9tRYS4EAhbEH/BkS9FD+zOl8dFYR9cj46FTSCauet2fEvySrypawq44ZkUvDpCMDUTzdxOCIne8kybOX9XS+gooZNiU2Id3m8qz2xrWJUmGXsudlLmPcRavVXeHRlA/5eCcmlyV9QHn/cK86jCkT0nmKnfLqRdq0SQT3s9k9gJPTyBNfRG8v5ya4t+dzAJhXRL9 cguardia@yahoo.com
+      - name: witekdev
+        shell: /bin/bash
+        createhome: yes
+        groups:
+          - plone_group
+        sudo:
+          hosts: ALL
+          as: ALL
+          commands: ALL
+          nopasswd: yes
+        authorized_keys:
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/4N5ov8HMUcHDlRefr3C8PuAQxVpvRs/V0tGnPJn+BV7YzPnmHJyKwjmROMphsCppEv5Lc33qsEoMOwNfPRz3IWLpB4vBwwq9nyvvq67YwClevZPL4O7/gBrqPAmiLIvhOEGNWn1VCDsBHWDN7y1511JZagaLYslv+t5U6+xFIJBdz7kT4ZcXjGx0oawF7ErybYBrIcQbEHcunyPAobM0l/JENV8MiDjsHZ+yQuoHwUQy6YuAelK4uosG+a2GdXxWVxXF0coDyMj43/9dcwY//HnEozlvLBsAO5TOptGuiPMg6NJPnSIzq3sVpDpv9T7UQbukV0Fwa83p+px0xlC5 witekdev@gmail.com
 
   pre_tasks:
     - name: Ensure plone_group
