@@ -9,6 +9,8 @@ These do not handle live data transfer.
 Prerequisites
 -------------
 
+Ansible >= 2.0.2.
+
 Ubuntu 16.04 server and an ssh login with full sudo. The server must have the
 following packages installed::
 
