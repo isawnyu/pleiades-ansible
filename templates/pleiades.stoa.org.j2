@@ -381,6 +381,13 @@ AddType application/json .json
   </IfModule>
 
   RewriteEngine On
+  RewriteCond "%{HTTP_HOST}" "!^pleiades\."
+  RewriteCond "%{SERVER_PROTOCOL}" "!^HTTPS"
+  RewriteRule ^(.*)$ http://pleiades.stoa.org$1 [R=301,L]
+
+  RewriteCond "%{HTTP_HOST}" "!^pleiades\."
+  RewriteRule ^(.*)$ https://pleiades.stoa.org$1 [R=301,L]
+
   #RewriteLog /var/log/apache2/pleiades.stoa.org-rewrite.log
   #RewriteLogLevel 3
 
