@@ -2,6 +2,8 @@
 backend {{ backend.plone_instance_name|default(plone_instance_name) }} {
 	.host = "127.0.0.1";
 	.port = "{{ backend.loadbalancer_port|default(loadbalancer_port) }}";
+    .first_byte_timeout = {{ varnish_first_byte_timeout }}s;
+    .between_bytes_timeout = {{ varnish_between_bytes_timeout }}s;
 }
 {% endfor %}
 
