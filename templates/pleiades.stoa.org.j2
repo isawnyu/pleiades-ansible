@@ -541,8 +541,6 @@ AddType application/json .json
   RewriteRule ^/places/vocab(.*) http://localhost:{{ proxycache_port }}/docs/using-our-data/pleiades-rdf-vocabulary$1 [P,L]
   RewriteRule ^/places/reconcile http://localhost:{{ proxycache_port }}/places/reconcile [P,L,QSA]
 
-  RewriteRule ^/places/\D - [G]
-
   # Dot-formatted URLs are expected by some clients
   RewriteRule ^/(.*).atom$ http://localhost:{{ proxycache_port }}/$1/atom [P,L]
   RewriteRule ^/(.*)\.kml$ http://localhost:{{ proxycache_port }}/$1/kml [P,L]
