@@ -18,9 +18,12 @@ su plone_daemon -c "./bin/debug-instance -Oplone run src/Products.PleiadesEntity
 cd $DEST
 
 # JSON
-gzip json/pleiades.json
-mv json/pleiades.json.gz json/pleiades-json-$DATE.json.gz
-ln -sf $DEST/pleiades.json-$DATE.json.gz $DEST/json/pleiades-latest.json.gz
+gzip json/pleiades-places.json
+mv json/pleiades-places.json.gz json/pleiades-places-$DATE.json.gz
+ln -sf $DEST/pleiades-places-$DATE.json.gz $DEST/json/pleiades-places-latest.json.gz
+gzip json/pleiades-errata.json
+mv json/pleiades-errata.json.gz json/pleiades-errata-$DATE.json.gz
+ln -sf $DEST/pleiades-errata-$DATE.json.gz $DEST/json/pleiades-errata-latest.json.gz
 
 # CSV
 gzip dumps/pleiades-places.csv
