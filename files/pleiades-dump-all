@@ -20,10 +20,10 @@ cd $DEST
 # JSON
 gzip json/pleiades-places.json
 mv json/pleiades-places.json.gz json/pleiades-places-$DATE.json.gz
-ln -sf $DEST/pleiades-places-$DATE.json.gz $DEST/json/pleiades-places-latest.json.gz
+ln -sf $DEST/json/pleiades-places-$DATE.json.gz $DEST/json/pleiades-places-latest.json.gz
 gzip json/pleiades-errata.json
 mv json/pleiades-errata.json.gz json/pleiades-errata-$DATE.json.gz
-ln -sf $DEST/pleiades-errata-$DATE.json.gz $DEST/json/pleiades-errata-latest.json.gz
+ln -sf $DEST/json/pleiades-errata-$DATE.json.gz $DEST/json/pleiades-errata-latest.json.gz
 
 # CSV
 gzip dumps/pleiades-places.csv
