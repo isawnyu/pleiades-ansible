@@ -289,9 +289,6 @@
   become_user: root
   become_method: sudo
   post_tasks:
-    - name: Cron dumps
-      copy: src=files/pleiades-dumps dest=/etc/cron.daily/pleiades-dumps owner=root group=root mode=0755
-
     - name: Cron kml
       copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
 
@@ -300,6 +297,9 @@
 
     - name: Cron rdf
       copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
+
+    - name: Cron dump all
+      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
 
 - hosts: staging
   become: true
