@@ -515,11 +515,6 @@ AddType application/json .json
 
   RewriteRule ^/ol/(.*) /var/www/pleiades.stoa.org/ol/$1 [L]
  
-  # Tell clients that the following resources are gone forever
-  RewriteRule ^/names - [G]
-  RewriteRule ^/locations - [G]
-  RewriteRule ^/join_form - [G]
- 
   RewriteRule ^/news/RSS /news/aggregator/RSS [R=301]
   RewriteRule ^/news/aggregator/RSS /news/blog/collector/RSS [R=301]
   RewriteRule ^/RSS /news/blog/collector/RSS [R=301]
