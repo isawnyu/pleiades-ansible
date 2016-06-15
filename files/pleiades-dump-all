@@ -30,10 +30,10 @@ gzip dumps/pleiades-places.csv
 mv dumps/pleiades-places.csv.gz dumps/pleiades-places-$DATE.csv.gz
 ln -sf $DEST/dumps/pleiades-places-$DATE.csv.gz $DEST/dumps/pleiades-places-latest.csv.gz
 gzip dumps/pleiades-names.csv
-mv dumps/pleiades-names.csv.gz dumps/pleaides-names-$DATE.csv.gz
+mv dumps/pleiades-names.csv.gz dumps/pleiades-names-$DATE.csv.gz
 ln -sf $DEST/dumps/pleiades-names-$DATE.csv.gz $DEST/dumps/pleiades-names-latest.csv.gz
 gzip dumps/pleiades-locations.csv
-mv dumps/pleiades-locations.csv.gz dumps/pleaides-locations-$DATE.csv.gz
+mv dumps/pleiades-locations.csv.gz dumps/pleiades-locations-$DATE.csv.gz
 ln -sf $DEST/dumps/pleiades-locations-$DATE.csv.gz $DEST/dumps/pleiades-locations-latest.csv.gz
 
 # fix permissions
