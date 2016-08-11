@@ -15,6 +15,7 @@ su plone_daemon -c "./bin/debug-instance run ./dump-scripts/kml.py > /tmp/doc.km
 zip $DEST/pleiades-$DATE.kmz /tmp/doc.kml
 
 cd $DEST
+ln -sf $DEST/pleiades-$DATE.kmz $DEST/pleiades-latest.kmz
 find . -name "*.kmz" -mtime +7 -delete
 chown www-data.www-data pleiades*.kmz
 chmod 644 pleiades*.kmz
