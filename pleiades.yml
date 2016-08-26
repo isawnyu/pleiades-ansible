@@ -231,7 +231,7 @@
       file: path=/var/www/atlantides.org/downloads/pleiades/dumps/ state=directory owner=plone_daemon mode=0775
 
     - name: Symlink to pleiades.dump README
-      file: src=/srv/python27-apps/pleiades4/src/pleiades.dump/README.rst dest=/var/www/atlantides.org/downloads/pleiades/dumps/README.txt state=link
+      file: src=/srv/python27-apps/pleiades4/src/pleiades.dump/README.rst dest=/var/www/atlantides.org/downloads/pleiades/dumps/README.txt state=link force=yes
 
     - name: Create atlantides kml dir
       file: path=/var/www/atlantides.org/downloads/pleiades/kml/ state=directory owner=plone_daemon mode=0775
