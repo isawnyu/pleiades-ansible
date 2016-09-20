@@ -1,0 +1,12 @@
+---
+
+pleiades_key_file: "{{letsencrypt_key_dir}}/pleiades.jazkarta.com.key"
+pleiades_cert_file: "{{letsencrypt_certs_dir}}/pleiades.jazkarta.com.crt"
+pleiades_chained_file: "{{letsencrypt_certs_dir}}/pleiades.jazkarta.com-chained.crt"
+pleiades_ssl_vhost: "pleiades.jazkarta.com"
+letsencrypt_certs:
+  - name: "pleiades-staging-cert"
+    keypath: "{{pleiades_key_file}}"
+    certpath: "{{pleiades_cert_file}}"
+    chainedcertpath: "{{pleiades_chained_file}}"
+    host: "{{pleiades_ssl_vhost}}"

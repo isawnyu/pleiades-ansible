@@ -48,3 +48,9 @@
         - host: default
           plone_path: /plone
   pleiades_buildout_file: staging.cfg
+
+  letsencrypt_default_key_group: ssl-cert
+  letsencrypt_default_key_permissions: 640
+  acme_tiny_challenges_directory: /var/www/pleiades.stoa.org/.well-known/acme-challenge/
+  acme_tiny_commit: daba51d37efd7c1f205f9da383b9b09968e30d29
+

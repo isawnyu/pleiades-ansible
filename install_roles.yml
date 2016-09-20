@@ -21,6 +21,9 @@
 - src: franklinkim.newrelic
   version: 1.2.0
 
+- src: https://github.com/andreaswolf/ansible-role-letsencrypt.git
+  version: 0e292997640c8bd002e6abed3b727a6b473c2b79
+
 - src: modcloth.meetme-newrelic-plugin-agent
   version: a69819e7bbee8dd3f05fb2cb8b617ccec1c657cf
 
@@ -29,3 +32,4 @@
 
 - src: jbzdak.compile-python
   version: 0ec842b5a22d9d649521b7698b27c52512c0679d
+

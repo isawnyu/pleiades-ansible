@@ -177,6 +177,7 @@
         - setenvif.conf
         - status.load
         - status.conf
+        - ssl.load
       apache_packages:
         - apache2
         - apache2-utils
@@ -186,6 +187,8 @@
       apache_state: stopped
       apache_ignore_missing_ssl_certificate: true
 
+    - ansible-role-letsencrypt
+
   tasks:
 
     - name: Newrelic Python config
@@ -193,7 +196,11 @@
       when: newrelic_license_key is defined
       notify: Restart pleiades
 
-    - name: Apache pleiades config
+    - name: Apache pleiades include config
+      template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
+      notify: restart apache
+
+    - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
       notify: restart apache
 
