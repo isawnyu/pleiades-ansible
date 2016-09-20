@@ -11,7 +11,7 @@ acl purge {
 sub vcl_recv {
 
     # For now handle virtual host mapping here
-    set req.url = "/VirtualHostBase/http/" + req.http.host + "/plone/VirtualHostRoot" + req.url;
+    set req.url = "/VirtualHostBase/" + req.http.X-Forwarded-Proto + "/" + req.http.host + "/plone/VirtualHostRoot" + req.url;
 
     # Sanitize compression handling
     if (req.http.Accept-Encoding) {
