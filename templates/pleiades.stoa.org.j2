@@ -5,8 +5,16 @@ AddType application/json .json
 
 <VirtualHost _default_:*>
   ServerName pleiades.stoa.org
-  include /etc/apache2/conf-available/pleiades-server.conf
+
+  {% if pleiades_ssl_vhost is defined %}
+  RewriteEngine On
+  RewriteCond "%{HTTP_HOST}" "^pleiades\."
+  RewriteCond "%{SERVER_PROTOCOL}" "!^HTTPS"
+  RewriteRule ^(.*)$ https://{{pleiades_ssl_vhost}}$1 [R=301,L]
+  {% endif %}
   RequestHeader set X-Forwarded-Proto "http" 
+  include /etc/apache2/conf-available/pleiades-server.conf
+
 </VirtualHost>
 
 <VirtualHost *:443>
