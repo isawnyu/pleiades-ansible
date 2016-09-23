@@ -1,0 +1,12 @@
+AddType application/vnd.google-earth.kml+xml .kml  
+AddType application/vnd.google-earth.kmz .kmz
+AddType application/atom+xml .atom
+AddType application/json .json
+
+<VirtualHost _default_:*>
+  ServerName pleiades.stoa.org
+
+  RequestHeader set X-Forwarded-Proto "http" 
+  include /etc/apache2/conf-available/pleiades-server.conf
+
+</VirtualHost>
