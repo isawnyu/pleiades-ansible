@@ -5,8 +5,7 @@ AddType application/json .json
 
 <VirtualHost _default_:*>
   ServerName pleiades.stoa.org
-
-  {% if pleiades_ssl_vhost is defined %}
+  {% if pleiades_ssl_vhost is defined and ssl_certificate is defined and ssl_certificate.stat.exists %}
   RewriteEngine On
   RewriteCond "%{HTTP_HOST}" "^pleiades\."
   RewriteCond "%{SERVER_PROTOCOL}" "!^HTTPS"
@@ -17,6 +16,7 @@ AddType application/json .json
 
 </VirtualHost>
 
+{% if pleiades_ssl_vhost is defined and ssl_certificate is defined and ssl_certificate.stat.exists %}
 <VirtualHost *:443>
   ServerName {{pleiades_ssl_vhost}}
   SSLEngine on
@@ -29,3 +29,4 @@ AddType application/json .json
   RequestHeader set X-Forwarded-Proto "https" 
   include /etc/apache2/conf-available/pleiades-server.conf
 </VirtualHost>
+{% endif %}

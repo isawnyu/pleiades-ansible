@@ -104,6 +104,10 @@
     - set_fact:
         balancer_clients: "{{balancer_client_results.results | map(attribute='ansible_facts.balancer_client') | list}}"
 
+    - name: Check whether certificate exists
+      stat: "path={{ pleiades_cert_file }}"
+      register: ssl_certificate
+
   roles:
 
     - venv
@@ -186,8 +190,6 @@
         - libapache2-svn
       apache_state: stopped
       apache_ignore_missing_ssl_certificate: true
-
-    - ansible-role-letsencrypt
 
   tasks:
 

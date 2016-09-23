@@ -6,10 +6,14 @@
 
   pre_tasks:
 
+    - name: Check whether certificate exists
+      stat: "path={{ pleiades_cert_file }}"
+      register: ssl_certificate
+
     - name: Create apache conf dir
       file: path=/etc/apache2/conf-available/ recurse=yes state=directory owner=root
 
-    - name: Create apache sites dire
+    - name: Create apache sites dir
       file: path=/etc/apache2/sites-available/ recurse=yes state=directory owner=root
 
     - name: Create apache enabled sites dir
@@ -19,10 +23,10 @@
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
 
     - name: Apache pleiades site config
-      template: src=templates/pleiades.no-ssl.j2 dest=/etc/apache2/sites-available/pleiades.no-ssl.conf owner=root group=root mode=0644
+      template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
 
     - name: Apache pleiades symlink
-      file: src=/etc/apache2/sites-available/pleiades.no-ssl.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
+      file: src=/etc/apache2/sites-available/pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
 
     - name: Start apache
       service: name=apache2 state=restarted enabled=yes
@@ -77,11 +81,12 @@
 
   tasks:
 
+    - name: Check whether certificate exists
+      stat: "path={{ pleiades_cert_file }}"
+      register: ssl_certificate
+
     - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
-
-    - name: Apache pleiades symlink
-      file: src=/etc/apache2/sites-available/pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
 
     - name: Start apache
       service: name=apache2 state=restarted enabled=yes
