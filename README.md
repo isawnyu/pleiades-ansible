@@ -101,6 +101,14 @@ Establishes basic user set, generally should be run befor running pleiades.yml
 for the first time. Only needs to be run to create/update user accounts on the
 server.
 
+ssl-cert.yml
+------------
+
+Requests a new SSL certificate for the server from Let's Encrypt, will output a
+public key to be entered at e.g. ``https://gethttpsforfree.com`` on the first run. On
+the next run will setup apache with SSL support. Must be run to completion before
+``pleiades.yml``.
+
 pleiades.yml
 ------------
 
