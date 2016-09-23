@@ -25,6 +25,7 @@ AddType application/json .json
   SSLHonorCipherOrder On
   SSLCompression off
   SSLCertificateFile {{pleiades_cert_file}}
+  SSLCertificateChainFile {{pleiades_chained_file}}
   SSLCertificateKeyFile {{pleiades_key_file}}
   RequestHeader set X-Forwarded-Proto "https" 
   include /etc/apache2/conf-available/pleiades-server.conf
