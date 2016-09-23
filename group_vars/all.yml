@@ -11,6 +11,7 @@
   ansible_selinux: false
   http_port: 80
   max_clients: 200
+  varnish_default_vcl_template_path: plone.vcl.j2
   proxycache_port: 6081
   proxycache_method: file,/var/lib/varnish/varnish_storage.bin
   proxycache_size: 512m
