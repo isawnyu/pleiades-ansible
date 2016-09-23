@@ -1,8 +1,8 @@
 ---
 
-pleiades_key_file: "{{letsencrypt_key_dir}}/pleiades.stoa.org.key"
-pleiades_cert_file: "{{letsencrypt_certs_dir}}/pleiades.stoa.org.crt"
-pleiades_chained_file: "{{letsencrypt_certs_dir}}/pleiades.stoa.org-chained.crt"
+pleiades_key_file: "/etc/ssl/letsencrypt/keys/pleiades.stoa.org.key"
+pleiades_cert_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org.crt"
+pleiades_chained_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org-chained.crt"
 pleiades_ssl_vhost: "pleiades.stoa.org"
 letsencrypt_certs:
   - name: "pleiades-cert"

@@ -1,8 +1,8 @@
 ---
 
-pleiades_key_file: "{{letsencrypt_key_dir}}/pleiades.jazkarta.com.key"
-pleiades_cert_file: "{{letsencrypt_certs_dir}}/pleiades.jazkarta.com.crt"
-pleiades_chained_file: "{{letsencrypt_certs_dir}}/pleiades.jazkarta.com-chained.crt"
+pleiades_key_file: "/etc/ssl/letsencrypt/keys/pleiades.jazkarta.com.key"
+pleiades_cert_file: "/etc/ssl/letsencrypt/certs/pleiades.jazkarta.com.crt"
+pleiades_chained_file: "/etc/ssl/letsencrypt/certs/pleiades.jazkarta.com-chained.crt"
 pleiades_ssl_vhost: "pleiades.jazkarta.com"
 letsencrypt_certs:
   - name: "pleiades-staging-cert"
