@@ -19,10 +19,10 @@
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
 
     - name: Apache pleiades site config
-      template: src=templates/pleiades.no-ssl.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
+      template: src=templates/pleiades.no-ssl.j2 dest=/etc/apache2/sites-available/pleiades.no-ssl.conf owner=root group=root mode=0644
 
     - name: Apache pleiades symlink
-      file: src=/etc/apache2/sites-available/pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
+      file: src=/etc/apache2/sites-available/pleiades.no-ssl.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
 
     - name: Start apache
       service: name=apache2 state=restarted enabled=yes
