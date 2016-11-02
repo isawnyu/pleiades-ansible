@@ -376,12 +376,15 @@ ExpiresByType text/turtle "access plus 1 day"
 #  Header set Cache-Control "max-age=86400, s-maxage=11988"
 #  ExpiresDefault "access plus 1 day"
 #</LocationMatch>
-
+# Add CORS allow header on all requests to be redirected to HTTPS
+<If "%{HTTPS} != 'on'">
+  Header always set Access-Control-Allow-Origin "*"
+</If>
 </IfModule>
 
 RewriteEngine On
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
-RewriteCond "%{SERVER_PROTOCOL}" "!^HTTPS"
+RewriteCond "%{HTTPS}" "!=on"
 RewriteRule ^(.*)$ http://pleiades.stoa.org$1 [R=301,L]
 
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
