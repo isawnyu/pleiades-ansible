@@ -21,16 +21,16 @@ sub vcl_recv {
 {% for site in backend.webserver_virtualhosts|default([{'hostname':'default'}]) %}
     if (req.url ~ "/{{ site.hostname }}:80/") {
         set req.backend_hint = {{ backend.plone_instance_name|default(plone_instance_name) }};
-        set req.url = "/VirtualHostBase/http/" + req.http.host + "{{ site.plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
+        set req.url = "/VirtualHostBase/" + req.http.X-Forwarded-Proto + "/" + req.http.host + "{{ site.plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
     }
 {% endfor %}
 {% endfor %}
     else {
         set req.backend_hint = {{ playbook_plones[0].plone_instance_name|default(plone_instance_name) }};
-        set req.url = "/VirtualHostBase/http/" + req.http.host + "{{ playbook_plones[0].webserver_virtualhosts[0].plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
+        set req.url = "/VirtualHostBase/" + req.http.X-Forwarded-Proto + "/" + req.http.host + "{{ playbook_plones[0].webserver_virtualhosts[0].plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
     }
 {% else %}
-    set req.url = "/VirtualHostBase/http/" + req.http.host + "{{ playbook_plones[0].webserver_virtualhosts[0].plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
+    set req.url = "/VirtualHostBase/" + req.http.X-Forwarded-Proto + "/" + req.http.host + "{{ playbook_plones[0].webserver_virtualhosts[0].plone_path|default(plone_path) }}" + "/VirtualHostRoot" + req.url;
 {% endif %}
 
     # Sanitize compression handling
