@@ -261,6 +261,8 @@
         force=yes
         accept_hostkey=yes
       sudo_user: "www-data"
+      tags:
+        - frontpage
 
     - name: Pleiades api git checkout
       git:
