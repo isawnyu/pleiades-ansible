@@ -137,7 +137,7 @@
 
     - role: 'Stouts.supervisor'
       supervisor_superlance: yes
-          
+
       tags: ['supervisor']
 
     - role: haproxy
@@ -201,6 +201,8 @@
     - name: Apache pleiades include config
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
