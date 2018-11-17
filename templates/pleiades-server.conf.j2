@@ -75,7 +75,7 @@ SetEnvIfNoCase User-Agent "^Grafula" bad_bot
 SetEnvIfNoCase User-Agent "^Harvest" bad_bot
 SetEnvIfNoCase User-Agent "^hloader" bad_bot
 SetEnvIfNoCase User-Agent "^HMView" bad_bot
-SetEnvIfNoCase User-Agent "HTTrack" bad_bot  
+SetEnvIfNoCase User-Agent "HTTrack" bad_bot
 SetEnvIfNoCase User-Agent "^humanlinks" bad_bot
 SetEnvIfNoCase User-Agent "^IlseBot" bad_bot
 SetEnvIfNoCase User-Agent "^Image\ Stripper" bad_bot
@@ -240,7 +240,7 @@ SetEnvIfNoCase User-Agent "Yandex" bad_bot
 
 
 # If someone can’t be arsed to set a user-agent, why should you serve him anything?
-SetEnvIfNoCase User-Agent ^$ bad_bot 
+SetEnvIfNoCase User-Agent ^$ bad_bot
 SetEnvIfNoCase User-Agent ^-$ bad_bot
 SetEnvIfNoCase User-Agent ^java$ bad_bot
 
@@ -250,7 +250,7 @@ BrowserMatchNoCase cowbot bad_bot
 BrowserMatchNoCase daum bad_bot
 BrowserMatchNoCase ezooms bad_bot
 BrowserMatchNoCase ichiro bad_bot
-BrowserMatchNoCase ltx71 bad_bot 
+BrowserMatchNoCase ltx71 bad_bot
 BrowserMatchNoCase magpie-crawler bad_bot
 BrowserMatchNoCase mj12bot bad_bot
 BrowserMatchNoCase mogimogi bad_bot
@@ -265,12 +265,15 @@ BrowserMatchNoCase xovibot bad_bot
 BrowserMatchNoCase yahoocachesystem bad_bot
 BrowserMatchNoCase yeti bad_bot
 BrowserMatchNoCase youdaobot bad_bot
+BrowserMatchNoCase centurybot bad_bot
+BrowserMatchNoCase piplbot bad_bot
+BrowserMatchNoCase istellabot bad_bot
 # end Pleiades bad bot definitions
 
 <Location "/">
 Order allow,deny
 allow from all
-deny from env=bad_bot 
+deny from env=bad_bot
 
 # deranged flickr machine-tag servers (as of 2013-10-17, hopefully temporary?)
 deny from 98.139.190.55
@@ -311,19 +314,19 @@ deny from 65.222.185.72/29
 <Location "/pleiades-frontpage">
 Order allow,deny
 allow from all
-deny from env=bad_bot 
+deny from env=bad_bot
 </Location>
 
 <Location "/pleiades-api">
 Order allow,deny
 allow from all
-deny from env=bad_bot 
+deny from env=bad_bot
 </Location>
 
 <Location "/.well-known">
 Order allow,deny
 allow from all
-deny from env=bad_bot 
+deny from env=bad_bot
 </Location>
 
 ErrorLog /var/log/apache2/pleiades.stoa.org-error.log
@@ -395,13 +398,13 @@ RewriteRule ^(.*)$ https://pleiades.stoa.org$1 [R=301,L]
 
 # tell everyone the site is down (this works)
 #RewriteCond %{ENV:REDIRECT_STATUS} !=503
-#RewriteRule .* /down.html [L,R=503]  
+#RewriteRule .* /down.html [L,R=503]
 
 # tell all bots to get lost for a while (this works)
 #RewriteCond %{HTTP_USER_AGENT} (uptimerobot|google|archive.org) [NC]
 #RewriteCond %{HTTP_USER_AGENT} (uptimerobot) [NC]
 #RewriteRule ^/.*$ - [S=2]
-#RewriteCond %{HTTP_USER_AGENT} (feedspot|spider|spyder|bot|crawler) [NC] 
+#RewriteCond %{HTTP_USER_AGENT} (feedspot|spider|spyder|bot|crawler) [NC]
 #RewriteRule ^/.*$ - [L,R=503]
 
 RewriteRule ^/css/(.+) /var/www/pleiades.stoa.org/pleiades-frontpage/css/$1 [L]
@@ -465,7 +468,7 @@ RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
 RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
 RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
-RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
 RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
 RewriteCond %{HTTP_USER_AGENT} TVersity
@@ -473,12 +476,12 @@ RewriteRule ^/(places|errata)/\d+/.+ - [F,L]
 
 RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
-RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
 RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
 RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
-RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
 RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
 RewriteCond %{HTTP_USER_AGENT} TVersity
@@ -486,12 +489,12 @@ RewriteRule search - [F,L]
 
 RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
-RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
 RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
 RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
-RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
 RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
 RewriteCond %{HTTP_USER_AGENT} TVersity
@@ -499,12 +502,12 @@ RewriteRule acl|history|Members - [F,L]
 
 # RewriteCond %{HTTP_USER_AGENT} bot [NC,OR]  -- commented out because blocking lod-cloud.net/robot, semrushbot
 RewriteCond %{HTTP_USER_AGENT} crawler [NC,OR]
-RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} dapper [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} spider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} FlipboardProxy [OR]
 RewriteCond %{HTTP_USER_AGENT} Google\ Page\ Speed\ Insights [OR]
 RewriteCond %{HTTP_USER_AGENT} Kml-Google [OR]
-RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]  
+RewriteCond %{HTTP_USER_AGENT} nutch [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} PeoplePal [OR]
 RewriteCond %{HTTP_USER_AGENT} Slurp [OR]
 RewriteCond %{HTTP_USER_AGENT} TVersity
@@ -527,7 +530,7 @@ RewriteRule ^/feed$ /news/blog/collector/RSS [R=301]
 RewriteRule ^/news/blog/RSS /news/blog/collector/RSS [R=301]
 RewriteRule ^/news/recently-modified(.*) /news/recently-published$1 [R=301]
 
-# Places index, @@ views are valid, all other non-place resources are gone 
+# Places index, @@ views are valid, all other non-place resources are gone
 RewriteRule ^/places/index_html(.*) http://localhost:{{ proxycache_port }}/places/index_html$1 [P,L]
 RewriteRule ^/places/(.*)-index http://localhost:{{ proxycache_port }}/places/$1-index [P,L]
 RewriteRule ^/places/createObject(.*) http://localhost:{{ proxycache_port }}/places/createObject$1 [P,L,QSA]
@@ -551,7 +554,7 @@ RewriteRule ^/(.*)\.kml$ http://localhost:{{ proxycache_port }}/$1/kml [P,L]
 #RewriteCond /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json -f
 #RewriteRule ^/places/(\d+)/json$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json [L]
 
-# Finally 
+# Finally
 RewriteCond %{REQUEST_URI} !=/server-status
 RewriteRule ^/(.*) http://localhost:{{ proxycache_port }}/$1 [P,L]
 
