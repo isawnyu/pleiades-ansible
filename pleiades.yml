@@ -37,6 +37,7 @@
         - libz-dev
         - libssl-dev
         - libjpeg-dev
+        - libfreetype6-dev
         - libxslt1-dev
         - libxml2-dev
         - poppler-utils
@@ -321,6 +322,14 @@
     - name: Cron dump all
       copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
 
+    - name: cron backups
+      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/repozo -vBz -f /srv/python27-apps/pleiades4/var/filestorage/Data.fs -r /srv/python27-apps/pleiades4/var/backup/"
+      when: enable_backups
+
+    - name: cron pack
+      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
+      when: enable_backups
+
 - hosts: staging
   become: true
   become_user: root
@@ -335,3 +344,6 @@
     - name: Cron rdf
       copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
 
+    - name: cron pack
+      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
+      when: enable_backups

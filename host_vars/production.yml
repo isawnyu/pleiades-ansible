@@ -4,6 +4,7 @@ pleiades_key_file: "/etc/ssl/letsencrypt/keys/pleiades.stoa.org.key"
 pleiades_cert_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org.crt"
 pleiades_chained_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org-chained.crt"
 pleiades_ssl_vhost: "pleiades.stoa.org"
+enable_backups: true
 letsencrypt_certs:
   - name: "pleiades-cert"
     keypath: "{{pleiades_key_file}}"

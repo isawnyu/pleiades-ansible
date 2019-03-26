@@ -49,6 +49,7 @@
           plone_path: /plone
   pleiades_buildout_file: staging.cfg
   pleiades_cert_file: false
+  enable_backups: false
 
   letsencrypt_default_key_group: ssl-cert
   letsencrypt_default_key_permissions: 640
