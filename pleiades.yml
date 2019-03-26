@@ -99,8 +99,9 @@
         balancer_client:
           name: plone_{{ item }}
           port: 840{{ item }}
-      with_sequence: start=2 end={{ plone_client_count }}
+      with_sequence: start=2 end={{ max(plone_client_count, 2) }}
       register: balancer_client_results
+      when: plone_client_count >= 2
 
     - set_fact:
         balancer_clients: "{{balancer_client_results.results | map(attribute='ansible_facts.balancer_client') | list}}"
