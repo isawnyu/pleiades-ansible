@@ -1,4 +1,4 @@
 ---
 
   - name: Create 2.7 virtualenv
-    pip: name="Pillow" version="1.7.5" virtualenv_python="/usr/local/python/2.7.11/bin/python2.7" virtualenv="/srv/python27-apps" virtualenv_site_packages=no
+    pip: name="Pillow" version="3.3.3" virtualenv_python="/usr/local/python/2.7.11/bin/python2.7" virtualenv="/srv/python27-apps" virtualenv_site_packages=no
