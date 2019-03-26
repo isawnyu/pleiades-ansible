@@ -289,6 +289,10 @@
     - name: Start apache
       service: name=apache2 state=started enabled=yes
 
+    - name: Create ZODB backups dir
+      file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
+
+
   post_tasks:
     - name: Restart pleiades
       command: supervisorctl restart pleiades-instance{{ item }}
