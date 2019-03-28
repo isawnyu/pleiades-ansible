@@ -3,7 +3,7 @@
 - include: "{{ ansible_os_family }}.yml"
 
 - name: Enable selinux boolean haproxy_connect_any
-  when: ansible_selinux
+  when: false
   seboolean: name=haproxy_connect_any state=yes persistent=yes
 
 - name: haproxy config
