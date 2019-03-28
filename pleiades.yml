@@ -114,7 +114,6 @@
       pip:
         virtualenv: /srv/python27-apps
         virtualenv_python: /usr/bin/python2.7
-        executable: pip2
         name: setuptools
         version: 33.1.1
 
@@ -297,6 +296,9 @@
 
     - name: Start apache
       service: name=apache2 state=started enabled=yes
+
+    - name: Create ZODB var dir
+      file: path=/srv/python27-apps/pleiades4/var recurse=yes state=directory owner=plone_daemon
 
     - name: Create ZODB backups dir
       file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
