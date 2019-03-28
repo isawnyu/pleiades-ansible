@@ -2,6 +2,7 @@
 
 - name: restart haproxy
   service: name=haproxy state=restarted
+  ignore_errors: yes
 
 - name: reload haproxy
   service: name=haproxy state=reloaded

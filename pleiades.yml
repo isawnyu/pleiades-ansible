@@ -149,11 +149,6 @@
         tags: ['plone4', 'buildout'],
       }
 
-    - role: 'Stouts.supervisor'
-      supervisor_superlance: yes
-
-      tags: ['supervisor']
-
     - role: haproxy
       listen_port: "{{ haproxy_port }}"
       clients: "{{ balancer_clients }}"
@@ -306,15 +301,34 @@
     - name: Create ZODB backups dir
       file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
 
+    - name: Create supervisor tasks
+      template: src=templates/supervisor_task.conf.j2 dest=/etc/supervisor/conf.d/pleiades.conf
+      notify: Restart supervisor
+      tags: ['supervisor']
+
+
+  handlers:
+
+    - name: Restart supervisor
+      service:
+        name: supervisor
+        state: restarted
+      tags: ['supervisor']
+
 
   post_tasks:
+
     - name: Restart pleiades
-      command: supervisorctl restart pleiades-instance{{ item }}
+      supervisorctl:
+        name: pleiades-instance{{ item }}
+        state: restarted
       when: (buildout_pleiades4 is defined and buildout_pleiades4.changed)
       with_sequence: start=1 end={{plone_client_count}}
 
     - name: Restart vaytrou
-      command: supervisorctl restart vtpleiades3
+      supervisorctl:
+        name: vtpleiades3
+        state: restarted
       when: (buildout_vaytrou is defined and buildout_vaytrou.changed)
 
 
