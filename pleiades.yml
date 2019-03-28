@@ -41,6 +41,7 @@
         - libxslt1-dev
         - libxml2-dev
         - python-selinux
+        - python-semanage
         - poppler-utils
         - lynx-cur
         - unzip
