@@ -5,5 +5,4 @@
 
 - name: reload haproxy
   service: name=haproxy state=reloaded
-
-
+  ignore_errors: yes

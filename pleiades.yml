@@ -110,9 +110,21 @@
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
 
-  roles:
+    - name: Install virtualenv
+      pip:
+        virtualenv: /srv/python27-apps
+        virtualenv_python: /usr/bin/python2.7
+        executable: pip2
+        name: setuptools
+        version: 33.1.1
 
-    - venv
+    - name: Install Pillow
+      pip:
+        virtualenv: /srv/python27-apps
+        name: Pillow
+        version: 3.3.3
+
+  roles:
 
     - jnv.unattended-upgrades
 

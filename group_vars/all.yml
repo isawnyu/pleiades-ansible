@@ -19,7 +19,7 @@
     - /plone
     - /plone/places
   plone_client_base_port: 8401
-  plone_client_count: 1
+  plone_client_count: 2
   supervisor_tasks:
     - name: pleiades-zeoserver
       command: /srv/python27-apps/pleiades4/bin/zeoserver console
