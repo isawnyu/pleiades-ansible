@@ -4,7 +4,7 @@
   become: true
   become_user: root
   become_method: sudo
-  gather_facts: no
+  gather_facts: yes
 
   vars:
     management_user_list:
@@ -13,6 +13,7 @@
         createhome: yes
         groups:
           - plone_group
+          - sudo
         sudo:
           hosts: ALL
           as: ALL
@@ -20,23 +21,12 @@
           nopasswd: yes
         authorized_keys:
           - key: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA1Wp63G60D9rNG+iu301OEjYcBIGcPzwA6eGCmQoizAhc8eHx27YOxlkNPlZ6pdensAft9A2Gd/0bdg5rNtf9XmxPbWmY3LMyat0UafJNX/r4z4x5zqdlnEVdXykXbhmfZta4/ESNMwF4i03wjy+9+EOcdfRswBg1Hc1jXrLlJy0= alec@alec
-      - name: dglick
-        shell: /bin/bash
-        createhome: yes
-        groups:
-          - plone_group
-        sudo:
-          hosts: ALL
-          as: ALL
-          commands: ALL
-          nopasswd: yes
-        authorized_keys:
-          - key: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvciaA3+R2TvROzVNlhAh/XI5jtzu2Y9sX4K6tYBJ+CqjPFAGuz7q71EyUgtXn+7UvHbwwjFXQpKCYcrC2RsNzdoWTyMjgAEXot8YJW2lLBM54whljvUvjGhPGuFpOlvFyvgqP0KbyifR3MAKRmlJuqoTgFTXq8rt0g4yyokyMCSqf1WVBCR6AqIK97GjTqr7Ib2DMQVA+HWp/mdfKvFSVQtZxbkWnGVz1N/iTnNhQ2qEhSFLsBL1AW5kLjKmOTTUhJY0Y+H3ykVjYF3LwyBQUXfq8BQ4KGX/holG9Eg4Ouq+Qpd8ku+rgFv1xHh6EQ7YoDMblcWMV1YG+SYYnrjhlQ== dglick@gmail.com
       - name: thomase
         shell: /bin/bash
         createhome: yes
         groups:
           - plone_group
+          - sudo
         sudo:
           hosts: ALL
           as: ALL
@@ -49,6 +39,7 @@
         createhome: yes
         groups:
           - plone_group
+          - sudo
         sudo:
           hosts: ALL
           as: ALL
@@ -61,6 +52,7 @@
         createhome: yes
         groups:
           - plone_group
+          - sudo
         sudo:
           hosts: ALL
           as: ALL
@@ -73,6 +65,7 @@
         createhome: yes
         groups:
           - plone_group
+          - sudo
         sudo:
           hosts: ALL
           as: ALL

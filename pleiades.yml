@@ -3,6 +3,7 @@
   become: true
   become_user: root
   become_method: sudo
+  gather_facts: yes
 
   pre_tasks:
     - name: Update apt cache
