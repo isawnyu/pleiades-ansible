@@ -128,8 +128,6 @@
 
   roles:
 
-    - jnv.unattended-upgrades
-
     - geerlingguy.postfix
 
     - {role: 'buildout',
@@ -269,7 +267,7 @@
         repo=https://github.com/isawnyu/pleiades-frontpage.git
         update=yes
         dest=/var/www/pleiades.stoa.org/pleiades-frontpage
-        version=master
+        version={{pleiades_static_branch}}
         depth=1
         force=yes
         accept_hostkey=yes
@@ -366,6 +364,8 @@
   become: true
   become_user: root
   become_method: sudo
+  roles:
+    - jnv.unattended-upgrades
   post_tasks:
     - name: Cron dump all
       copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755

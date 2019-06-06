@@ -1,0 +1,13 @@
+---
+
+  pleiades_key_file: "/etc/letsencrypt/live/pleiades-plone5.jazkarta.com/privkey.pem"
+  pleiades_cert_file: "/etc/letsencrypt/live/pleiades-plone5.jazkarta.com/cert.pem"
+  pleiades_chained_file: "/etc/letsencrypt/live/pleiades-plone5.jazkarta.com/fullchain.pem"
+  pleiades_ssl_vhost: "pleiades-plone5.jazkarta.com"
+  plone_client_count: 1
+  letsencrypt_certs:
+    - name: "pleiades-plone5-cert"
+      keypath: "{{pleiades_key_file}}"
+      certpath: "{{pleiades_cert_file}}"
+      chainedcertpath: "{{pleiades_chained_file}}"
+      host: "{{pleiades_ssl_vhost}}"

@@ -66,6 +66,19 @@
       sudo: yes
       sudo_user: plone_buildout
 
+    - name: Pleiades frontpage update
+      git:
+        repo=https://github.com/isawnyu/pleiades-frontpage.git
+        update=yes
+        dest=/var/www/pleiades.stoa.org/pleiades-frontpage
+        version={{pleiades_static_branch}}
+        depth=1
+        force=yes
+        accept_hostkey=yes
+      sudo_user: "www-data"
+      tags:
+        - frontpage
+
   post_tasks:
 
     - name: Restart admin instance

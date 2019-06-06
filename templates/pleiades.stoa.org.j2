@@ -4,7 +4,11 @@ AddType application/atom+xml .atom
 AddType application/json .json
 
 <VirtualHost _default_:*>
+  {% if pleiades_ssl_vhost is defined %}
+  ServerName {{pleiades_ssl_vhost}}
+  {% else %}
   ServerName pleiades.stoa.org
+  {% endif %}
   {% if pleiades_ssl_vhost is defined and ssl_certificate is defined and ssl_certificate.stat.exists %}
   RewriteEngine On
   RewriteCond "%{HTTP_HOST}" "^pleiades\."

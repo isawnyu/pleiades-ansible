@@ -3,3 +3,4 @@
 newrelic_appname: Pleiades Staging
 plone_client_count: 3
 restart_delay: 10
+pleiades_static_branch: staging

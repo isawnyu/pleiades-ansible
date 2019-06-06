@@ -385,6 +385,7 @@ ExpiresByType text/turtle "access plus 1 day"
 </If>
 </IfModule>
 
+{% if pleiades_ssl_vhost == 'pleiades.stoa.org' %}
 RewriteEngine On
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
 RewriteCond "%{HTTPS}" "!=on"
@@ -392,6 +393,7 @@ RewriteRule ^(.*)$ http://pleiades.stoa.org$1 [R=301,L]
 
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
 RewriteRule ^(.*)$ https://pleiades.stoa.org$1 [R=301,L]
+{% endif %}
 
 #RewriteLog /var/log/apache2/pleiades.stoa.org-rewrite.log
 #RewriteLogLevel 3
