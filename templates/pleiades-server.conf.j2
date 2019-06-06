@@ -543,7 +543,7 @@ RewriteRule ^/places/copy_of(.*).kml$ http://localhost:{{ proxycache_port }}/pla
 RewriteRule ^/places/copy_of(.*) http://localhost:{{ proxycache_port }}/places/copy_of$1 [P,L]
 #  RewriteRule ^/places/browse_names /places/names-index [R=301,L]
 RewriteRule ^/places/(.*)_(.*) http://localhost:{{ proxycache_port }}/places/$1_$2 [P,L]
-RewriteRule ^/places/vocab(.*) http://localhost:{{ proxycache_port }}/docs/using-our-data/pleiades-rdf-vocabulary$1 [P,L]
+RewriteRule ^/places/vocab(.*) http://localhost:{{ proxycache_port }}/help/pleiades-rdf-vocabulary$1 [P,L]
 RewriteRule ^/places/reconcile http://localhost:{{ proxycache_port }}/places/reconcile [P,L,QSA]
 
 # Dot-formatted URLs are expected by some clients
