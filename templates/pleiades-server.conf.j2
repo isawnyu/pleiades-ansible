@@ -554,6 +554,9 @@ RewriteRule ^/(.*)\.kml$ http://localhost:{{ proxycache_port }}/$1/kml [P,L]
 #RewriteCond /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json -f
 #RewriteRule ^/places/(\d+)/json$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}/json [L]
 
+# Neighborhood-kml is discontinued
+RewriteRule ^/places/(\d+)/neighborhood-kml$ - [G]
+
 # Finally
 RewriteCond %{REQUEST_URI} !=/server-status
 RewriteRule ^/(.*) http://localhost:{{ proxycache_port }}/$1 [P,L]
