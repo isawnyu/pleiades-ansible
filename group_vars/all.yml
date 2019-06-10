@@ -20,7 +20,7 @@
     - /plone/places
   plone_client_base_port: 8401
   plone_client_count: 2
-  supervisor_events: []
+  memmon_limit: 1000MB
   supervisor_tasks:
     - name: pleiades-zeoserver
       command: /srv/python27-apps/pleiades4/bin/zeoserver console
@@ -40,6 +40,14 @@
       stdout_logfile: /srv/python27-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou.log
       stdout_logfile_maxbytes: 50MB
       stderr_logfile: /srv/python27-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
+      autostart: true
+      autorestart: true
+  supervisor_events:
+    - name: pleiades-memmon
+      command: /usr/local/bin/memmon -a {{memmon_limit}} --name='Pleiades memmon'
+      events: TICK_60
+      user: root
+      stopwaitsecs: 10
       autostart: true
       autorestart: true
   playbook_plones:

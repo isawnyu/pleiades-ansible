@@ -271,7 +271,7 @@
         depth=1
         force=yes
         accept_hostkey=yes
-      sudo_user: "www-data"
+      become_user: "www-data"
       tags:
         - frontpage
 
@@ -284,7 +284,7 @@
         depth=1
         force=yes
         accept_hostkey=yes
-      sudo_user: "www-data"
+      become_user: "www-data"
 
     - name: Create vaytrou log dir
       file: path=/srv/python27-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon

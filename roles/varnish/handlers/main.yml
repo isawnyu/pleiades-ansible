@@ -10,4 +10,4 @@
   service: name=varnish state=started
 
 - name: varnish running
-  service: name=varnish state=running
+  service: name=varnish state=started

@@ -63,8 +63,8 @@
       args:
         chdir: /srv/python27-apps/pleiades4
       when: not buildout_pleiades4 is defined
-      sudo: yes
-      sudo_user: plone_buildout
+      become: yes
+      become_user: plone_buildout
 
     - name: Pleiades frontpage update
       git:
@@ -75,7 +75,7 @@
         depth=1
         force=yes
         accept_hostkey=yes
-      sudo_user: "www-data"
+      become_user: "www-data"
       tags:
         - frontpage
 
