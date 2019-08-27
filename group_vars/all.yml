@@ -1,5 +1,5 @@
 ---
-
+  ansible_selinux: false
   http_port: 80
   max_clients: 200
   proxycache_port: 6081

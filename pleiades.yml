@@ -3,8 +3,10 @@
   become: true
   become_user: root
   become_method: sudo
+  vars:
+    ansible_selinux_status: "{{(ansible_selinux and ansible_selinux == True or ansible_selinux.get('status') == 'enabled')}}"
 
-  pre_tasks:
+    pre_tasks:
     - name: Update apt cache
       apt: update_cache=yes cache_valid_time=3600
 
