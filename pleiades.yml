@@ -26,7 +26,6 @@
         - python-pip
         - python-setuptools
         - python-virtualenv
-        - supervisor
 
     - name: Install required packages
       apt: pkg="{{ item }}" state=present
@@ -49,6 +48,7 @@
         - git
         - wv
         - iotop
+        - supervisor
         - sysstat
         - joe
         - zip
@@ -65,6 +65,9 @@
         - libffi-dev
         - autoconf
         - patch
+
+    - name: Superlance installed
+      pip: name=superlance version=0.11 extra_args='--index-url=https://pypi.python.org/simple/'
 
     - name: Ensure plone_group
       group: name=plone_group
