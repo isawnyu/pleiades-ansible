@@ -1,8 +1,8 @@
 ---
 
-pleiades_key_file: "/etc/ssl/letsencrypt/keys/pleiades.stoa.org.key"
-pleiades_cert_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org.crt"
-pleiades_chained_file: "/etc/ssl/letsencrypt/certs/pleiades.stoa.org-chained.crt"
+pleiades_key_file: "/etc/letsencrypt/live/pleiades.stoa.org/privkey.pem"
+pleiades_cert_file: "/etc/letsencrypt/live/pleiades.stoa.org/cert.pem"
+pleiades_chained_file: "/etc/letsencrypt/live/pleiades.stoa.org/fullchain.pem"
 pleiades_ssl_vhost: "pleiades.stoa.org"
 enable_backups: true
 supervisor_events: []
