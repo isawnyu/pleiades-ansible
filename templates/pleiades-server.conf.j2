@@ -417,14 +417,9 @@ RewriteRule ^/.well-known/(.+) /var/www/pleiades.stoa.org/.well-known/$1 [L]
 
 # Pleiades 3 frontpage redesign redirects
 RewriteRule ^/downloads/$ /downloads [L,R=301]
-RewriteRule ^/downloads$ /var/www/pleiades.stoa.org/pleiades-frontpage/downloads.html [L]
 RewriteRule ^/participate/$ /participate [L,R=301]
-RewriteRule ^/participate$ /var/www/pleiades.stoa.org/pleiades-frontpage/participate.html [L]
 RewriteRule ^/welcome$ /participate [L,R=301]
-#RewriteRule ^/places/$ /places [L,R=301]
-#RewriteRule ^/places$ /var/www/pleiades.stoa.org/pleiades-frontpage/places.html [L]
 RewriteRule ^/help/data-structure/$ /help/data-structure [L,R=301]
-RewriteRule ^/help/data-structure$ /var/www/pleiades.stoa.org/pleiades-frontpage/help/data-structure.html [L]
 RewriteRule ^/places/browse_names$ /places [L,R=307]
 RewriteRule ^/contents/$ /places [L,R=301]
 RewriteRule ^/contents$ /places [L,R=301]
@@ -432,15 +427,6 @@ RewriteRule ^/places/places-index/$ /places/places-index [L,R=301]
 RewriteRule ^/places/places-index$ /places [L,R=307]
 RewriteRule ^/places/names-index/$ /places/names-index [L,R=301]
 RewriteRule ^/places/names-index$ /places [L,R=307]
-#RewriteRule ^/search/$ /search [L,R=301]
-#RewriteRule ^/search$ / [L,R=301]
-
-# temporary rule for access to new-fangled JSON
-# RewriteMap jsonmap prg:/var/www/pleiades.stoa.org/json/jsonmap.py
-# RewriteCond /var/www/pleiades.stoa.org/json/${jsonmap:$1}.json -f
-# RewriteRule ^/places/(\d+)/json2$ /var/www/pleiades.stoa.org/json/${jsonmap:$1}.json [L]
-
-# RewriteRule ^/places/(\d+)/json2$ /places/$1/json2 [L,R=303]
 
 RewriteRule ^/api/index.html$ /var/www/pleiades.stoa.org/pleiades-api/html/index.html [L]
 RewriteRule ^/api(/)?$ /var/www/pleiades.stoa.org/pleiades-api/html/index.html [L]
