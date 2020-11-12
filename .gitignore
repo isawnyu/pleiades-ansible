@@ -14,5 +14,8 @@ roles/modcloth.npi/
 roles/jbzdak.compile-python/
 roles/ansible-role-letsencrypt/
 roles/geerlingguy.varnish/
+roles/GROG.package
+roles/newrelic.newrelic-infra
+roles/weareinteractive.newrelic
 *.retry
 vaultpass

@@ -6,6 +6,13 @@
 
   pre_tasks:
 
+    - name: Install letsencrypt packages
+      apt:
+        pkg:
+          - certbot
+          - python3-certbot
+          - python3-certbot-apache
+
     - name: Check whether certificate exists
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
@@ -73,17 +80,18 @@
         - apache2-utils
         - apache2-dev
         - libapache2-mod-wsgi
-        - libapache2-svn
-      apache_state: stopped
+        - libapache2-mod-svn
       apache_ignore_missing_ssl_certificate: true
-
-    - ansible-role-letsencrypt
 
   tasks:
 
     - name: Check whether certificate exists
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
+
+    - name: Run certbot certificate install if missing
+      command: certbot certonly --apache --email {{ certbot_account_email }}-d  {{ pleiades_ssl_vhost }} --agree-tos --non-interactive
+      when: pleiades_ssl_vhost is defined and not ssl_certificate
 
     - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644

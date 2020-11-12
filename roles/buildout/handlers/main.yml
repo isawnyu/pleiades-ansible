@@ -15,4 +15,6 @@
   when: run_buildout
   become: yes
   become_user: "{{ buildout_user }}"
-  register: buildout_{{ instance_name }}
+  register: buildout_run
+  notify:
+    - Restart buildout {{ instance_name }}

@@ -385,7 +385,7 @@ ExpiresByType text/turtle "access plus 1 day"
 </If>
 </IfModule>
 
-{% if pleiades_ssl_vhost == 'pleiades.stoa.org' %}
+{% if pleiades_ssl_vhost is defined and pleiades_ssl_vhost == 'pleiades.stoa.org' %}
 RewriteEngine On
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
 RewriteCond "%{HTTPS}" "!=on"
@@ -421,7 +421,7 @@ RewriteRule ^/.well-known/(.+) /var/www/pleiades.stoa.org/.well-known/$1 [L]
 RewriteRule ^/downloads/$ /downloads [L,R=301]
 RewriteRule ^/downloads$ /var/www/pleiades.stoa.org/pleiades-frontpage/downloads.html [L]
 RewriteRule ^/participate/$ /participate [L,R=301]
-RewriteRule ^/participate$ /var/www/pleiades.stoa.org/pleiades-frontpage/participate.html [L]
+#RewriteRule ^/participate$ /var/www/pleiades.stoa.org/pleiades-frontpage/participate.html [L]
 RewriteRule ^/welcome$ /participate [L,R=301]
 #RewriteRule ^/places/$ /places [L,R=301]
 #RewriteRule ^/places$ /var/www/pleiades.stoa.org/pleiades-frontpage/places.html [L]

@@ -9,65 +9,63 @@
     - name: Update apt cache
       apt: update_cache=yes cache_valid_time=3600
 
-    - name: Install repo management
-      apt: pkg=python-software-properties
-
     - name: Update packages
       apt: upgrade=safe update_cache=yes
 
-    - name: Install pythons
-      apt: pkg="{{ item }}"
-      with_items:
-        - python-dev
-
     - name: Install default python tools
-      apt: pkg="{{ item }}" force=yes state=latest
-      with_items:
-        - python-pip
-        - python-setuptools
-        - python-virtualenv
+      apt:
+        state: latest
+        pkg:
+          - python2-dev
+          - python-setuptools
+          - virtualenv
 
     - name: Install required packages
-      apt: pkg="{{ item }}" state=present
-      with_items:
-        - build-essential
-        - libzip-dev
-        - libsqlite3-dev
-        - libreadline-dev
-        - libz-dev
-        - libssl-dev
-        - libjpeg-dev
-        - libfreetype6-dev
-        - libxslt1-dev
-        - libxml2-dev
-        - python-selinux
-        - python-semanage
-        - poppler-utils
-        - lynx-cur
-        - unzip
-        - git
-        - wv
-        - iotop
-        - supervisor
-        - sysstat
-        - joe
-        - zip
+      apt:
+        pkg:
+          - build-essential
+          - libzip-dev
+          - libsqlite3-dev
+          - libreadline-dev
+          - libz-dev
+          - libssl-dev
+          - libjpeg-dev
+          - libfreetype6-dev
+          - libxslt1-dev
+          - libxml2-dev
+          - python3-selinux
+          - python3-semanage
+          - poppler-utils
+          - lynx
+          - unzip
+          - git
+          - wv
+          - iotop
+          - supervisor
+          - sysstat
+          - joe
+          - zip
 
     - name: Install pleiades dependencies
-      apt: pkg={{ item }}
-      with_items:
-        - libgeos-dev
-        - libspatialindex-dev
-        - openldap-utils
-        - ldap-server
-        - libsasl2-dev
-        - libldap-dev
-        - libffi-dev
-        - autoconf
-        - patch
+      apt:
+        pkg:
+          - libgeos-dev
+          - libspatialindex-dev
+          - slapd-contrib
+          - slapd
+          - libsasl2-dev
+          - libldap-dev
+          - libffi-dev
+          - autoconf
+          - patch
 
     - name: Superlance installed
-      pip: name=superlance version=0.11 extra_args='--index-url=https://pypi.python.org/simple/'
+      pip:
+        name: superlance
+        version: "0.11"
+        extra_args: "--index-url=https://pypi.python.org/simple/"
+        virtualenv: /srv/python27-apps
+        virtualenv_python: /usr/bin/python2.7
 
     - name: Ensure plone_group
       group: name=plone_group
@@ -199,7 +197,7 @@
         - apache2-utils
         - apache2-dev
         - libapache2-mod-wsgi
-        - libapache2-svn
+        - libapache2-mod-svn
       apache_state: stopped
       apache_ignore_missing_ssl_certificate: true
 
@@ -208,7 +206,7 @@
     - name: Newrelic Python config
       template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
       when: newrelic_license_key is defined
-      notify: Restart pleiades
+      notify: Buildout restart pleiades4
 
     - name: Apache pleiades include config
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
@@ -312,7 +310,6 @@
       notify: Restart supervisor
       tags: ['supervisor']
 
-
   handlers:
 
     - name: Restart supervisor
@@ -321,21 +318,16 @@
         state: restarted
       tags: ['supervisor']
 
-
-  post_tasks:
-
-    - name: Restart pleiades
+    - name: Buildout restart pleiades4
       supervisorctl:
         name: pleiades-instance{{ item }}
         state: restarted
-      when: (buildout_pleiades4 is defined and buildout_pleiades4.changed)
       with_sequence: start=1 end={{plone_client_count}}
 
-    - name: Restart vaytrou
+    - name: Buildout restart vaytrou
       supervisorctl:
         name: vtpleiades3
         state: restarted
-      when: (buildout_vaytrou is defined and buildout_vaytrou.changed)
 
 
 - hosts: live

@@ -18,7 +18,7 @@ following packages installed::
   * aptitude
 
     sudo apt-get update
-    sudo apt-get install aptitude python
+    sudo apt-get install aptitude python2
 
 You may need to disable requiretty in sudoers, by adding the line:
 
@@ -30,7 +30,7 @@ uncommenting apt-src locations in ``/etc/apt/sources.list``.
 
 Install required roles::
 
-    ansible-galaxy -p roles install -r install_roles.yml
+    ansible-galaxy install -r install_roles.yml -p roles
 
 Typical use::
 
