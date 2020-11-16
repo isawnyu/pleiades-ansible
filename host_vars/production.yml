@@ -1,14 +1,5 @@
 ---
 
-pleiades_key_file: "/etc/letsencrypt/live/pleiades.stoa.org/privkey.pem"
-pleiades_cert_file: "/etc/letsencrypt/live/pleiades.stoa.org/cert.pem"
-pleiades_chained_file: "/etc/letsencrypt/live/pleiades.stoa.org/fullchain.pem"
 pleiades_ssl_vhost: "pleiades.stoa.org"
 enable_backups: true
 supervisor_events: []
-letsencrypt_certs:
-  - name: "pleiades-cert"
-    keypath: "{{pleiades_key_file}}"
-    certpath: "{{pleiades_cert_file}}"
-    chainedcertpath: "{{pleiades_chained_file}}"
-    host: "{{pleiades_ssl_vhost}}"

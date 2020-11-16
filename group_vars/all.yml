@@ -69,12 +69,60 @@
         - host: default
           plone_path: /plone
   pleiades_buildout_file: staging.cfg
-  pleiades_cert_file: false
   pleiades_static_branch: master
+  pleiades_buildout_branch: jazkarta-plone4
+  vaytrou_branch: pypi-updates
   enable_backups: false
 
+  pleiades_ssl_vhost: off
+  pleiades_cert_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/cert.pem
+  pleiades_key_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/privkey.pem
+  pleiades_chained_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/fullchain.pem
+
   certbot_account_email: alecpm@gmail.com
-  letsencrypt_default_key_group: ssl-cert
-  letsencrypt_default_key_permissions: 640
-  acme_tiny_challenges_directory: /var/www/pleiades.stoa.org/.well-known/acme-challenge/
-  acme_tiny_commit: daba51d37efd7c1f205f9da383b9b09968e30d29
+
+  # Apache defaults
+  apache_create_vhosts: false
+  apache_remove_default_vhost: true
+  apache_global_vhost_settings: |
+    index.html index.htm
+  apache_mods_enabled:
+    - alias.load
+    - alias.conf
+    - auth_basic.load
+    - authn_file.load
+    - authz_core.load
+    - authz_groupfile.load
+    - authz_host.load
+    - authz_user.load
+    - autoindex.load
+    - autoindex.conf
+    - cgid.load
+    - deflate.load
+    - deflate.conf
+    - dir.load
+    - dir.conf
+    - env.load
+    - expires.load
+    - headers.load
+    - mime.load
+    - mime.conf
+    - negotiation.load
+    - negotiation.conf
+    - proxy.load
+    - proxy.conf
+    - proxy_connect.load
+    - proxy_http.load
+    - rewrite.load
+    - setenvif.load
+    - setenvif.conf
+    - status.load
+    - status.conf
+    - ssl.load
+  apache_packages:
+    - apache2
+    - apache2-utils
+    - apache2-dev
+    - libapache2-mod-wsgi
+    - libapache2-mod-svn
+  apache_ignore_missing_ssl_certificate: true

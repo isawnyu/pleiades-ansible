@@ -1,4 +1,19 @@
 ---
+- name: App var directory {{ instance_name }}
+  file:
+    path={{ base_dir }}/{{ instance_name }}/var
+    state=directory
+    owner={{ daemon_user }}
+    group=plone_group
+    mode=02775
+
+- name: Python eggs directory {{ instance_name }}
+  file:
+    path={{ base_dir }}/{{ instance_name }}/var/.python-eggs
+    state=directory
+    owner={{ daemon_user }}
+    group=plone_group
+
 - name: Bootstrap buildout {{ instance_name }}
   command: "{{ buildout_python }} bootstrap.py -c {{ buildout_file }}"
   args:
@@ -9,7 +24,7 @@
     - Run buildout {{ instance_name }}
 
 - name: Run buildout {{ instance_name }}
-  command: bin/buildout -c "{{ buildout_file }}"
+  shell: bin/buildout -c "{{ buildout_file }}"
   args:
     chdir: "{{ base_dir }}/{{ instance_name }}"
   when: run_buildout

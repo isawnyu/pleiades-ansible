@@ -6,16 +6,16 @@
 
   pre_tasks:
 
+    - name: Check whether certificate exists
+      stat: "path={{ pleiades_cert_file }}"
+      register: ssl_certificate
+
     - name: Install letsencrypt packages
       apt:
         pkg:
           - certbot
           - python3-certbot
           - python3-certbot-apache
-
-    - name: Check whether certificate exists
-      stat: "path={{ pleiades_cert_file }}"
-      register: ssl_certificate
 
     - name: Create apache conf dir
       file: path=/etc/apache2/conf-available/ recurse=yes state=directory owner=root
@@ -41,57 +41,19 @@
   roles:
 
     - role: geerlingguy.apache
-      apache_remove_default_vhost: true
-      apache_mods_enabled:
-        - alias.load
-        - alias.conf
-        - auth_basic.load
-        - authn_file.load
-        - authz_core.load
-        - authz_groupfile.load
-        - authz_host.load
-        - authz_user.load
-        - autoindex.load
-        - autoindex.conf
-        - cgid.load
-        - deflate.load
-        - deflate.conf
-        - dir.load
-        - dir.conf
-        - env.load
-        - expires.load
-        - headers.load
-        - mime.load
-        - mime.conf
-        - negotiation.load
-        - negotiation.conf
-        - proxy.load
-        - proxy.conf
-        - proxy_connect.load
-        - proxy_http.load
-        - rewrite.load
-        - setenvif.load
-        - setenvif.conf
-        - status.load
-        - status.conf
-        - ssl.load
-      apache_packages:
-        - apache2
-        - apache2-utils
-        - apache2-dev
-        - libapache2-mod-wsgi
-        - libapache2-mod-svn
       apache_ignore_missing_ssl_certificate: true
 
   tasks:
 
+    - name: Run certbot certificate install if missing
+      command:
+        cmd: certbot certonly --apache --email {{ certbot_account_email }} -d  {{ pleiades_ssl_vhost }} --agree-tos --non-interactive
+        creates: "{{ pleiades_cert_file }}"
+      when: pleiades_ssl_vhost is defined
+
     - name: Check whether certificate exists
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
-
-    - name: Run certbot certificate install if missing
-      command: certbot certonly --apache --email {{ certbot_account_email }}-d  {{ pleiades_ssl_vhost }} --agree-tos --non-interactive
-      when: pleiades_ssl_vhost is defined and not ssl_certificate
 
     - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644

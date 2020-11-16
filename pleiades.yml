@@ -4,6 +4,8 @@
   become_user: root
   become_method: sudo
   gather_facts: yes
+  environment:
+    CXX: "g++ -std=c++98"  # Needed to compile libgeos in vaytrou buildout
 
   pre_tasks:
     - name: Update apt cache
@@ -110,10 +112,6 @@
     - set_fact:
         balancer_clients: "{{balancer_client_results.results | map(attribute='balancer_client') | list}}"
 
-    - name: Check whether certificate exists
-      stat: "path={{ pleiades_cert_file }}"
-      register: ssl_certificate
-
     - name: Install virtualenv
       pip:
         virtualenv: /srv/python27-apps
@@ -127,6 +125,10 @@
         name: Pillow
         version: 3.3.3
 
+    - name: Check whether certificate exists
+      stat: "path={{ pleiades_cert_file }}"
+      register: ssl_certificate
+
   roles:
 
     - geerlingguy.postfix
@@ -136,7 +138,7 @@
         buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'vaytrou',
         buildout_repo: 'https://github.com/isawnyu/vaytrou.git',
-        buildout_version: 'pypi-updates',
+        buildout_version: "{{ vaytrou_branch }}",
         tags: ['vaytrou', 'buildout'],
       }
 
@@ -145,7 +147,7 @@
         buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
-        buildout_version: 'jazkarta-plone4',
+        buildout_version: "{{ pleiades_buildout_branch }}",
         buildout_file: "{{ pleiades_buildout_file }}",
         tags: ['plone4', 'buildout'],
       }
@@ -158,55 +160,14 @@
     - role: varnish
 
     - role: geerlingguy.apache
-      apache_remove_default_vhost: true
-      apache_mods_enabled:
-        - alias.load
-        - alias.conf
-        - auth_basic.load
-        - authn_file.load
-        - authz_core.load
-        - authz_groupfile.load
-        - authz_host.load
-        - authz_user.load
-        - autoindex.load
-        - autoindex.conf
-        - cgid.load
-        - deflate.load
-        - deflate.conf
-        - dir.load
-        - dir.conf
-        - env.load
-        - expires.load
-        - headers.load
-        - mime.load
-        - mime.conf
-        - negotiation.load
-        - negotiation.conf
-        - proxy.load
-        - proxy.conf
-        - proxy_connect.load
-        - proxy_http.load
-        - rewrite.load
-        - setenvif.load
-        - setenvif.conf
-        - status.load
-        - status.conf
-        - ssl.load
-      apache_packages:
-        - apache2
-        - apache2-utils
-        - apache2-dev
-        - libapache2-mod-wsgi
-        - libapache2-mod-svn
       apache_state: stopped
-      apache_ignore_missing_ssl_certificate: true
 
   tasks:
 
     - name: Newrelic Python config
       template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
       when: newrelic_license_key is defined
-      notify: Buildout restart pleiades4
+      notify: Restart buildout pleiades4
 
     - name: Apache pleiades include config
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
@@ -318,13 +279,13 @@
         state: restarted
       tags: ['supervisor']
 
-    - name: Buildout restart pleiades4
+    - name: Restart buildout pleiades4
       supervisorctl:
         name: pleiades-instance{{ item }}
         state: restarted
       with_sequence: start=1 end={{plone_client_count}}
 
-    - name: Buildout restart vaytrou
+    - name: Restart buildout vaytrou
       supervisorctl:
         name: vtpleiades3
         state: restarted
@@ -348,7 +309,7 @@
       copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
 
     - name: cron backups
-      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/repozo -vBz -f /srv/python27-apps/pleiades4/var/filestorage/Data.fs -r /srv/python27-apps/pleiades4/var/backup/"
+      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/backup"
       when: enable_backups
 
     - name: cron pack
