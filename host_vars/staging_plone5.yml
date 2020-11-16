@@ -2,3 +2,4 @@
 
   pleiades_ssl_vhost: "pleiades-plone5.jazkarta.com"
   plone_client_count: 2
+  enable_unattended_upgrades: true

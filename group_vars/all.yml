@@ -1,5 +1,7 @@
 ---
 
+  enable_unattended_upgrades: false
+  enable_sitemap: false
   newrelic_license_key: !vault |
         $ANSIBLE_VAULT;1.1;AES256
         30616639656431626432613637666339613134326139396666306533363462353237303765373537

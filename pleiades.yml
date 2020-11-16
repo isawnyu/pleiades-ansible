@@ -162,6 +162,9 @@
     - role: geerlingguy.apache
       apache_state: stopped
 
+    - role: jnv.unattended-upgrades
+      when: enable_unattended_upgrades
+
   tasks:
 
     - name: Newrelic Python config
@@ -271,6 +274,29 @@
       notify: Restart supervisor
       tags: ['supervisor']
 
+  post_tasks:
+
+    - name: Cron sitemap
+      copy: src=files/pleiades-sitemap dest=/etc/cron.daily/pleiades-sitemap owner=root group=root mode=0755
+      when: enable_sitemap
+
+    - name: Cron kml
+      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
+
+    - name: Cron rdf
+      copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
+
+    - name: Cron dump all
+      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
+
+    - name: cron backups
+      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/backup"
+      when: enable_backups
+
+    - name: cron pack
+      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
+
+
   handlers:
 
     - name: Restart supervisor
@@ -289,49 +315,3 @@
       supervisorctl:
         name: vtpleiades3
         state: restarted
-
-
-- hosts: live
-  become: true
-  become_user: root
-  become_method: sudo
-  post_tasks:
-    - name: Cron kml
-      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
-
-    - name: Cron sitemap
-      copy: src=files/pleiades-sitemap dest=/etc/cron.daily/pleiades-sitemap owner=root group=root mode=0755
-
-    - name: Cron rdf
-      copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
-
-    - name: Cron dump all
-      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
-
-    - name: cron backups
-      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/backup"
-      when: enable_backups
-
-    - name: cron pack
-      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
-      when: enable_backups
-
-- hosts: staging
-  become: true
-  become_user: root
-  become_method: sudo
-  roles:
-    - jnv.unattended-upgrades
-  post_tasks:
-    - name: Cron dump all
-      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
-
-    - name: Cron kml
-      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
-
-    - name: Cron rdf
-      copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
-
-    - name: cron pack
-      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
-      when: enable_backups

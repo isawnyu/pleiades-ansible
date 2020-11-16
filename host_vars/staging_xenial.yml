@@ -1,3 +1,4 @@
 ---
 
 pleiades_ssl_vhost: "pleiades.jazkarta.com"
+enable_unattended_upgrades: true

@@ -1,5 +1,4 @@
 ---
 
 pleiades_ssl_vhost: "pleiades.stoa.org"
-enable_backups: true
 supervisor_events: []
