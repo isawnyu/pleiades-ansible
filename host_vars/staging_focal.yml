@@ -4,3 +4,4 @@ enable_backups: true
 enable_sitemap: true
 pleiades_ssl_vhost: pleiades.jazkarta.com
 pleiades_buildout_file: production.cfg
+pleiades_static_branch: master
