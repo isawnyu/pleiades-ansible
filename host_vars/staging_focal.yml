@@ -1,7 +1,8 @@
 ---
 plone_client_count: 5
+restart_delay: 5
 enable_backups: true
 enable_sitemap: true
 pleiades_ssl_vhost: pleiades.jazkarta.com
-pleiades_buildout_file: production.cfg
+pleiades_buildout_file: staging.cfg
 pleiades_static_branch: master
