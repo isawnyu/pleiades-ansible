@@ -5,3 +5,4 @@ enable_sitemap: true
 pleiades_ssl_vhost: pleiades.serenity.local
 pleiades_buildout_file: production.cfg
 pleiades_static_branch: master
+newrelic_license_key: off
