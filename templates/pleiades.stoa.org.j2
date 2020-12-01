@@ -4,14 +4,18 @@ AddType application/atom+xml .atom
 AddType application/json .json
 
 <VirtualHost _default_:*>
+  {% if pleiades_ssl_vhost is defined %}
+  ServerName {{pleiades_ssl_vhost}}
+  {% else %}
   ServerName pleiades.stoa.org
+  {% endif %}
   {% if pleiades_ssl_vhost is defined and ssl_certificate is defined and ssl_certificate.stat.exists %}
   RewriteEngine On
   RewriteCond "%{HTTP_HOST}" "^pleiades\."
   RewriteCond "%{SERVER_PROTOCOL}" "!^HTTPS"
   RewriteRule ^(.*)$ https://{{pleiades_ssl_vhost}}$1 [R=301,L]
   {% endif %}
-  RequestHeader set X-Forwarded-Proto "http" 
+  RequestHeader set X-Forwarded-Proto "http"
   include /etc/apache2/conf-available/pleiades-server.conf
 
 </VirtualHost>
@@ -19,6 +23,7 @@ AddType application/json .json
 {% if pleiades_ssl_vhost is defined and ssl_certificate is defined and ssl_certificate.stat.exists %}
 <VirtualHost *:443>
   ServerName {{pleiades_ssl_vhost}}
+  RewriteEngine On
   SSLEngine on
   SSLCipherSuite AES256+EECDH:AES256+EDH
   SSLProtocol All -SSLv2 -SSLv3
@@ -27,7 +32,7 @@ AddType application/json .json
   SSLCertificateFile {{pleiades_cert_file}}
   SSLCertificateChainFile {{pleiades_chained_file}}
   SSLCertificateKeyFile {{pleiades_key_file}}
-  RequestHeader set X-Forwarded-Proto "https" 
+  RequestHeader set X-Forwarded-Proto "https"
   include /etc/apache2/conf-available/pleiades-server.conf
 </VirtualHost>
 {% endif %}

@@ -1,8 +1,9 @@
 ---
 
 newrelic_appname: Pleiades Production
-newrelic_license_key: 3a9e8872ccdd305ff9425a29a63525a1557c0d29
+enable_backups: true
+enable_sitemap: true
 plone_client_count: 5
 restart_delay: 30
 pleiades_buildout_file: production.cfg
-
+memmon_limit: 2000MB

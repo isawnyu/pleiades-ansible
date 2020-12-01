@@ -1,4 +1,26 @@
 ---
+
+  enable_unattended_upgrades: false
+  enable_sitemap: false
+  newrelic_license_key: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        30616639656431626432613637666339613134326139396666306533363462353237303765373537
+        6338646139353532616637366236666535656436323730380a643838663064396362376631326163
+        66366336663936623864363762366332336264653563383836356161363535663139323536323564
+        3030366466653931310a393661393564383761336134653633363433323030323262616262626462
+        61336565336633666534333463326563376231323834363031323962363262303336653532393338
+        6332306565333064626538623833623431653765643036353137
+  enable_nrinfra: false
+  nrinfragent_config:
+    license_key: "{{ newrelic_license_key }}"
+    log_file: /var/log/nr-infra.log
+    log_to_stdout: false
+    nrinfragent_integrations:
+      - { name: nri-apache, state: "latest" }
+      - { name: nri-varnish, state: "latest" }
+      - { name: nri-haproxy, state: "latest" }
+    nrinfragent_os_codename: bionic
+  nrinfragent_os_codename: bionic
   ansible_selinux: false
   http_port: 80
   max_clients: 200
@@ -10,7 +32,8 @@
     - /plone
     - /plone/places
   plone_client_base_port: 8401
-  plone_client_count: 1
+  plone_client_count: 2
+  memmon_limit: 1000MB
   supervisor_tasks:
     - name: pleiades-zeoserver
       command: /srv/python27-apps/pleiades4/bin/zeoserver console
@@ -32,6 +55,14 @@
       stderr_logfile: /srv/python27-apps/vaytrou/vtdata/pleiades3-three/log/vaytrou-error.log
       autostart: true
       autorestart: true
+  supervisor_events:
+    - name: pleiades-memmon
+      command: /srv/python27-apps/bin/memmon -a {{memmon_limit}} --name='Pleiades memmon'
+      events: TICK_60
+      user: root
+      stopwaitsecs: 10
+      autostart: true
+      autorestart: true
   playbook_plones:
     - plone_instance_name: default
       loadbalancer_port: "{{haproxy_port}}"
@@ -40,10 +71,60 @@
         - host: default
           plone_path: /plone
   pleiades_buildout_file: staging.cfg
-  pleiades_cert_file: false
+  pleiades_static_branch: master
+  pleiades_buildout_branch: jazkarta-plone4
+  vaytrou_branch: pypi-updates
   enable_backups: false
 
-  letsencrypt_default_key_group: ssl-cert
-  letsencrypt_default_key_permissions: 640
-  acme_tiny_challenges_directory: /var/www/pleiades.stoa.org/.well-known/acme-challenge/
-  acme_tiny_commit: daba51d37efd7c1f205f9da383b9b09968e30d29
+  pleiades_ssl_vhost: off
+  pleiades_cert_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/cert.pem
+  pleiades_key_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/privkey.pem
+  pleiades_chained_file: /etc/letsencrypt/live/{{ pleiades_ssl_vhost }}/fullchain.pem
+
+  certbot_account_email: alecpm@gmail.com
+
+  # Apache defaults
+  apache_create_vhosts: false
+  apache_remove_default_vhost: true
+  apache_global_vhost_settings: |
+    index.html index.htm
+  apache_mods_enabled:
+    - alias.load
+    - alias.conf
+    - auth_basic.load
+    - authn_file.load
+    - authz_core.load
+    - authz_groupfile.load
+    - authz_host.load
+    - authz_user.load
+    - autoindex.load
+    - autoindex.conf
+    - cgid.load
+    - deflate.load
+    - deflate.conf
+    - dir.load
+    - dir.conf
+    - env.load
+    - expires.load
+    - headers.load
+    - mime.load
+    - mime.conf
+    - negotiation.load
+    - negotiation.conf
+    - proxy.load
+    - proxy.conf
+    - proxy_connect.load
+    - proxy_http.load
+    - rewrite.load
+    - setenvif.load
+    - setenvif.conf
+    - status.load
+    - status.conf
+    - ssl.load
+  apache_packages:
+    - apache2
+    - apache2-utils
+    - apache2-dev
+    - libapache2-mod-wsgi
+    - libapache2-mod-svn
+  apache_ignore_missing_ssl_certificate: true

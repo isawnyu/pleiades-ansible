@@ -2,6 +2,10 @@
 
 - include: "{{ ansible_os_family }}.yml"
 
+- name: Enable selinux boolean haproxy_connect_any
+  when: false
+  seboolean: name=haproxy_connect_any state=yes persistent=yes
+
 - name: haproxy config
   template:
     src=haproxy.cfg.j2
@@ -13,6 +17,8 @@
 
 - name: haproxy started
   service: name=haproxy state=started
+  ignore_errors: true
 
 - name: reload haproxy
   service: name=haproxy state=reloaded
+  ignore_errors: true

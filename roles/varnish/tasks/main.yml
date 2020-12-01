@@ -8,11 +8,11 @@
   when: ansible_os_family == 'RedHat'
   yum: name=varnish state=present
 
-- name: Enable varnish to start on boot - CentOS
+- name: Enable varnish to start on boot
   service:
     name=varnish
+    state=started
     enabled=yes
-  when: ansible_os_family == 'RedHat'
 
 - name: Determine varnish version
   shell: '/usr/sbin/varnishd -V 2>&1 | grep varnishd | sed -r "s/.+varnish-([0-9.]+) .+/\1/"'
@@ -45,7 +45,7 @@
 - name: systemd setup - debian
   when: sysd_varnish.rc == 0 and ansible_os_family == 'Debian' and varnish_version < '4.1'
   ini_file:
-    dest=/etc/systemd/system/multi-user.target.wants/varnish.service
+    dest=/lib/systemd/system/varnish.service
     section=Service
     option=ExecStart
     value="/usr/sbin/varnishd -a :{{ proxycache_port }} -T localhost:{{ proxycache_port + 1}} -f /etc/varnish/default.vcl -S /etc/varnish/secret -s {{ proxycache_method }},{{ proxycache_size }} -u varnish -g varnish"
@@ -57,7 +57,7 @@
 - name: systemd setup - xenial
   when: sysd_varnish.rc == 0 and ansible_os_family == 'Debian' and varnish_version >= '4.1'
   ini_file:
-    dest=/etc/systemd/system/multi-user.target.wants/varnish.service
+    dest=/lib/systemd/system/varnish.service
     section=Service
     option=ExecStart
     value="/usr/sbin/varnishd  -j unix,user=vcache -F -a :{{ proxycache_port }} -T localhost:{{ proxycache_port + 1}} -f /etc/varnish/default.vcl -S /etc/varnish/secret -s {{ proxycache_method }},{{ proxycache_size }}"

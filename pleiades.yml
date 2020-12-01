@@ -3,67 +3,71 @@
   become: true
   become_user: root
   become_method: sudo
-  vars:
-    ansible_selinux_status: "{{(ansible_selinux and ansible_selinux == True or ansible_selinux.get('status') == 'enabled')}}"
+  gather_facts: yes
+  environment:
+    CXX: "g++ -std=c++98"  # Needed to compile libgeos in vaytrou buildout
 
     pre_tasks:
     - name: Update apt cache
       apt: update_cache=yes cache_valid_time=3600
 
-    - name: Install repo management
-      apt: pkg=python-software-properties
-
     - name: Update packages
       apt: upgrade=safe update_cache=yes
 
-    - name: Install pythons
-      apt: pkg="{{ item }}"
-      with_items:
-        - python-dev
-
     - name: Install default python tools
-      apt: pkg="{{ item }}" force=yes state=latest
-      with_items:
-        - python-pip
-        - python-setuptools
-        - python-virtualenv
-        - supervisor
+      apt:
+        state: latest
+        pkg:
+          - python2-dev
+          - python-setuptools
+          - virtualenv
 
     - name: Install required packages
-      apt: pkg="{{ item }}" state=present
-      with_items:
-        - build-essential
-        - libzip-dev
-        - libsqlite3-dev
-        - libreadline-dev
-        - libz-dev
-        - libssl-dev
-        - libjpeg-dev
-        - libfreetype6-dev
-        - libxslt1-dev
-        - libxml2-dev
-        - poppler-utils
-        - lynx-cur
-        - unzip
-        - git
-        - wv
-        - iotop
-        - sysstat
-        - joe
-        - zip
+      apt:
+        pkg:
+          - build-essential
+          - libzip-dev
+          - libsqlite3-dev
+          - libreadline-dev
+          - libz-dev
+          - libssl-dev
+          - libjpeg-dev
+          - libfreetype6-dev
+          - libxslt1-dev
+          - libxml2-dev
+          - python3-selinux
+          - python3-semanage
+          - poppler-utils
+          - lynx
+          - unzip
+          - git
+          - wv
+          - iotop
+          - supervisor
+          - sysstat
+          - joe
+          - zip
 
     - name: Install pleiades dependencies
-      apt: pkg={{ item }}
-      with_items:
-        - libgeos-dev
-        - libspatialindex-dev
-        - openldap-utils
-        - ldap-server
-        - libsasl2-dev
-        - libldap-dev
-        - libffi-dev
-        - autoconf
-        - patch
+      apt:
+        pkg:
+          - libgeos-dev
+          - libspatialindex-dev
+          - slapd-contrib
+          - slapd
+          - libsasl2-dev
+          - libldap-dev
+          - libffi-dev
+          - autoconf
+          - patch
+
+    - name: Superlance installed
+      pip:
+        name: superlance
+        version: "0.11"
+        extra_args: "--index-url=https://pypi.python.org/simple/"
+        virtualenv: /srv/python27-apps
+        virtualenv_python: /usr/bin/python2.7
 
     - name: Ensure plone_group
       group: name=plone_group
@@ -108,15 +112,24 @@
     - set_fact:
         balancer_clients: "{{balancer_client_results.results | map(attribute='balancer_client') | list}}"
 
+    - name: Install virtualenv
+      pip:
+        virtualenv: /srv/python27-apps
+        virtualenv_python: /usr/bin/python2.7
+        name: setuptools
+        version: 33.1.1
+
+    - name: Install Pillow
+      pip:
+        virtualenv: /srv/python27-apps
+        name: Pillow
+        version: 3.3.3
+
     - name: Check whether certificate exists
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
 
   roles:
-
-    - venv
-
-    - jnv.unattended-upgrades
 
     - geerlingguy.postfix
 
@@ -125,7 +138,7 @@
         buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'vaytrou',
         buildout_repo: 'https://github.com/isawnyu/vaytrou.git',
-        buildout_version: 'pypi-updates',
+        buildout_version: "{{ vaytrou_branch }}",
         tags: ['vaytrou', 'buildout'],
       }
 
@@ -134,15 +147,10 @@
         buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
-        buildout_version: 'jazkarta-plone4',
+        buildout_version: "{{ pleiades_buildout_branch }}",
         buildout_file: "{{ pleiades_buildout_file }}",
         tags: ['plone4', 'buildout'],
       }
-
-    - role: 'Stouts.supervisor'
-      supervisor_superlance: yes
-
-      tags: ['supervisor']
 
     - role: haproxy
       listen_port: "{{ haproxy_port }}"
@@ -152,55 +160,17 @@
     - role: varnish
 
     - role: geerlingguy.apache
-      apache_remove_default_vhost: true
-      apache_mods_enabled:
-        - alias.load
-        - alias.conf
-        - auth_basic.load
-        - authn_file.load
-        - authz_core.load
-        - authz_groupfile.load
-        - authz_host.load
-        - authz_user.load
-        - autoindex.load
-        - autoindex.conf
-        - cgid.load
-        - deflate.load
-        - deflate.conf
-        - dir.load
-        - dir.conf
-        - env.load
-        - expires.load
-        - headers.load
-        - mime.load
-        - mime.conf
-        - negotiation.load
-        - negotiation.conf
-        - proxy.load
-        - proxy.conf
-        - proxy_connect.load
-        - proxy_http.load
-        - rewrite.load
-        - setenvif.load
-        - setenvif.conf
-        - status.load
-        - status.conf
-        - ssl.load
-      apache_packages:
-        - apache2
-        - apache2-utils
-        - apache2-dev
-        - libapache2-mod-wsgi
-        - libapache2-svn
       apache_state: stopped
-      apache_ignore_missing_ssl_certificate: true
+
+    - role: jnv.unattended-upgrades
+      when: enable_unattended_upgrades
 
   tasks:
 
     - name: Newrelic Python config
       template: src=templates/newrelic.ini.j2 dest=/srv/python27-apps/pleiades4/newrelic.ini owner=plone_daemon group=plone_group mode=0644
       when: newrelic_license_key is defined
-      notify: Restart pleiades
+      notify: Restart buildout pleiades4
 
     - name: Apache pleiades include config
       template: src=templates/pleiades-server.conf.j2 dest=/etc/apache2/conf-available/pleiades-server.conf owner=root group=root mode=0644
@@ -262,11 +232,11 @@
         repo=https://github.com/isawnyu/pleiades-frontpage.git
         update=yes
         dest=/var/www/pleiades.stoa.org/pleiades-frontpage
-        version=master
+        version={{pleiades_static_branch}}
         depth=1
         force=yes
         accept_hostkey=yes
-      sudo_user: "www-data"
+      become_user: "www-data"
       tags:
         - frontpage
 
@@ -279,7 +249,7 @@
         depth=1
         force=yes
         accept_hostkey=yes
-      sudo_user: "www-data"
+      become_user: "www-data"
 
     - name: Create vaytrou log dir
       file: path=/srv/python27-apps/vaytrou/vtdata/pleiades3-three/log recurse=yes state=directory owner=plone_daemon
@@ -293,31 +263,25 @@
     - name: Start apache
       service: name=apache2 state=started enabled=yes
 
+    - name: Create ZODB var dir
+      file: path=/srv/python27-apps/pleiades4/var recurse=yes state=directory owner=plone_daemon
+
     - name: Create ZODB backups dir
-      file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
+      file: path=/srv/python27-apps/pleiades4/var/backups recurse=yes state=directory owner=plone_daemon
 
+    - name: Create supervisor tasks
+      template: src=templates/supervisor_task.conf.j2 dest=/etc/supervisor/conf.d/pleiades.conf
+      notify: Restart supervisor
+      tags: ['supervisor']
 
   post_tasks:
-    - name: Restart pleiades
-      command: supervisorctl restart pleiades-instance{{ item }}
-      when: (buildout_pleiades4 is defined and buildout_pleiades4.changed)
-      with_sequence: start=1 end={{plone_client_count}}
-
-    - name: Restart vaytrou
-      command: supervisorctl restart vtpleiades3
-      when: (buildout_vaytrou is defined and buildout_vaytrou.changed)
-
-
-- hosts: live
-  become: true
-  become_user: root
-  become_method: sudo
-  post_tasks:
-    - name: Cron kml
-      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
 
     - name: Cron sitemap
       copy: src=files/pleiades-sitemap dest=/etc/cron.daily/pleiades-sitemap owner=root group=root mode=0755
+      when: enable_sitemap
+
+    - name: Cron kml
+      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
 
     - name: Cron rdf
       copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
@@ -326,27 +290,30 @@
       copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
 
     - name: cron backups
-      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/repozo -vBz -f /srv/python27-apps/pleiades4/var/filestorage/Data.fs -r /srv/python27-apps/pleiades4/var/backup/"
+      cron: name="Nightly ZODB Backup" minute="0" user="plone_daemon" hour="2" job="/srv/python27-apps/pleiades4/bin/backup"
       when: enable_backups
 
     - name: cron pack
       cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
-      when: enable_backups
 
-- hosts: staging
-  become: true
-  become_user: root
-  become_method: sudo
-  post_tasks:
-    - name: Cron dump all
-      copy: src=files/pleiades-dump-all dest=/etc/cron.daily/pleiades-dump-all owner=root group=root mode=0755
 
-    - name: Cron kml
-      copy: src=files/pleiades-kmz dest=/etc/cron.daily/pleiades-kmz owner=root group=root mode=0755
+  handlers:
 
-    - name: Cron rdf
-      copy: src=files/pleiades-rdf dest=/etc/cron.weekly/pleiades-rdf owner=root group=root mode=0755
+    - name: Restart supervisor
+      service:
+        name: supervisor
+        state: restarted
+      tags: ['supervisor']
 
-    - name: cron pack
-      cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
-      when: enable_backups
+    - name: Restart buildout pleiades4
+      supervisorctl:
+        name: pleiades-instance{{ item }}
+        state: restarted
+      with_sequence: start=1 end={{plone_client_count}}
+      ignore_errors: yes
+
+    - name: Restart buildout vaytrou
+      supervisorctl:
+        name: vtpleiades3
+        state: restarted
+      ignore_errors: yes

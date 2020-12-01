@@ -16,8 +16,7 @@ AddType application/atom+xml .atom
   <Directory /var/www/atlantides.org>
     Options Indexes FollowSymLinks MultiViews
     AllowOverride FileInfo
-    Order allow,deny
-    allow from all
+    Require all granted
   </Directory>
 
   # ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/

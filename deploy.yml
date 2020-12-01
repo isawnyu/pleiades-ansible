@@ -51,7 +51,7 @@
         buildout_python: '/srv/python27-apps/bin/python2.7',
         instance_name: 'pleiades4',
         buildout_repo: 'https://github.com/isawnyu/pleiades3-buildout.git',
-        buildout_version: 'jazkarta-plone4',
+        buildout_version: "{{ pleiades_buildout_branch }}",
         buildout_file: "{{ pleiades_buildout_file }}",
         tags: ['plone4', 'buildout'],
       }
@@ -62,9 +62,22 @@
       command: bin/buildout -c {{ pleiades_buildout_file }}
       args:
         chdir: /srv/python27-apps/pleiades4
-      when: not buildout_pleiades4 is defined
-      sudo: yes
-      sudo_user: plone_buildout
+      when: not buildout_run is defined
+      become: yes
+      become_user: plone_buildout
+
+    - name: Pleiades frontpage update
+      git:
+        repo=https://github.com/isawnyu/pleiades-frontpage.git
+        update=yes
+        dest=/var/www/pleiades.stoa.org/pleiades-frontpage
+        version={{pleiades_static_branch}}
+        depth=1
+        force=yes
+        accept_hostkey=yes
+      become_user: "www-data"
+      tags:
+        - frontpage
 
   post_tasks:
 
@@ -74,3 +87,9 @@
     - name: Rolling restart of load balanced instances
       shell: echo "disable server default/{{ item.name }}" | socat /var/run/haproxy.sock stdio && supervisorctl stop pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && supervisorctl start pleiades-instance{{ item.number }} && sleep {{ sleep_time }} && {{ item.preload_command }} echo "enable server default/{{ item.name }}" | socat /var/run/haproxy.sock stdio
       with_items: "{{ balancer_clients }}"
+
+
+  handlers:
+
+    - name: Restart buildout pleiades4
+      meta: noop

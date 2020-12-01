@@ -1,0 +1,17 @@
+{% for section in supervisor_tasks %}
+[program:{{ section.name }}]
+{% for option, value in section.items() %}
+{% if option != 'name' %}
+{{ option }} = {{ value }}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% for section in supervisor_events %}
+[eventlistener:{{ section.name }}]
+{% for option, value in section.items() %}
+{% if option != 'name' %}
+{{ option }} = {{ value }}
+{% endif %}
+{% endfor %}
+{% endfor %}

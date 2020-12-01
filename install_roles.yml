@@ -3,33 +3,20 @@
 - src: jnv.unattended-upgrades
   version: v1.2.0
 
-- src: Stouts.supervisor
-  version: 1.2.0
-
 - src: GROG.management-user
-  version: v1.2.0
+  version: v1.2.2
 
 - src: geerlingguy.apache
-  version: 1.6.0
+  version: 3.1.4
 
 - src: geerlingguy.postfix
-  version: 1.1.0
+  version: 2.0.0
 
 - src: nickhammond.logrotate
   version: 9c40f66949c2ff65d51a830f5ed05f565f766ead
 
-- src: franklinkim.newrelic
-  version: 1.2.0
+- src: weareinteractive.newrelic
+  version: 1.8.0
 
-- src: https://github.com/andreaswolf/ansible-role-letsencrypt.git
-  version: 0e292997640c8bd002e6abed3b727a6b473c2b79
-
-- src: modcloth.meetme-newrelic-plugin-agent
-  version: a69819e7bbee8dd3f05fb2cb8b617ccec1c657cf
-
-- src: https://github.com/modcloth/ansible-role-modcloth-npi.git
-  version: d9509de294fda18b9c5171432640e0d0e59843d6
-
-- src: jbzdak.compile-python
-  version: 0ec842b5a22d9d649521b7698b27c52512c0679d
-
+- src: newrelic.newrelic-infra
+  version: 0.8.2

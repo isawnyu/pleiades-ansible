@@ -1,12 +1,4 @@
 ---
 
-pleiades_key_file: "/etc/ssl/letsencrypt/keys/pleiades.jazkarta.com.key"
-pleiades_cert_file: "/etc/ssl/letsencrypt/certs/pleiades.jazkarta.com.crt"
-pleiades_chained_file: "/etc/ssl/letsencrypt/certs/pleiades.jazkarta.com-chained.crt"
 pleiades_ssl_vhost: "pleiades.jazkarta.com"
-letsencrypt_certs:
-  - name: "pleiades-staging-cert"
-    keypath: "{{pleiades_key_file}}"
-    certpath: "{{pleiades_cert_file}}"
-    chainedcertpath: "{{pleiades_chained_file}}"
-    host: "{{pleiades_ssl_vhost}}"
+enable_unattended_upgrades: true
