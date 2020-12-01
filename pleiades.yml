@@ -267,7 +267,7 @@
       file: path=/srv/python27-apps/pleiades4/var recurse=yes state=directory owner=plone_daemon
 
     - name: Create ZODB backups dir
-      file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
+      file: path=/srv/python27-apps/pleiades4/var/backups recurse=yes state=directory owner=plone_daemon
 
     - name: Create supervisor tasks
       template: src=templates/supervisor_task.conf.j2 dest=/etc/supervisor/conf.d/pleiades.conf
