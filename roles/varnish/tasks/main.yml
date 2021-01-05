@@ -11,6 +11,7 @@
 - name: Enable varnish to start on boot
   service:
     name=varnish
+    state=started
     enabled=yes
 
 - name: Determine varnish version

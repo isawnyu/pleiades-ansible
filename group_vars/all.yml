@@ -72,7 +72,7 @@
           plone_path: /plone
   pleiades_buildout_file: staging.cfg
   pleiades_static_branch: master
-  pleiades_buildout_branch: jazkarta-plone4
+  pleiades_buildout_branch: master
   vaytrou_branch: pypi-updates
   enable_backups: false
 

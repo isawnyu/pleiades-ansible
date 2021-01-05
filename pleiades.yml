@@ -7,7 +7,7 @@
   environment:
     CXX: "g++ -std=c++98"  # Needed to compile libgeos in vaytrou buildout
 
-  pre_tasks:
+    pre_tasks:
     - name: Update apt cache
       apt: update_cache=yes cache_valid_time=3600
 
@@ -267,7 +267,7 @@
       file: path=/srv/python27-apps/pleiades4/var recurse=yes state=directory owner=plone_daemon
 
     - name: Create ZODB backups dir
-      file: path=/srv/python27-apps/pleiades4/var/backup recurse=yes state=directory owner=plone_daemon
+      file: path=/srv/python27-apps/pleiades4/var/backups recurse=yes state=directory owner=plone_daemon
 
     - name: Create supervisor tasks
       template: src=templates/supervisor_task.conf.j2 dest=/etc/supervisor/conf.d/pleiades.conf
@@ -310,8 +310,10 @@
         name: pleiades-instance{{ item }}
         state: restarted
       with_sequence: start=1 end={{plone_client_count}}
+      ignore_errors: yes
 
     - name: Restart buildout vaytrou
       supervisorctl:
         name: vtpleiades3
         state: restarted
+      ignore_errors: yes
