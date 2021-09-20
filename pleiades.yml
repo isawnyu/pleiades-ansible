@@ -7,7 +7,7 @@
   environment:
     CXX: "g++ -std=c++98"  # Needed to compile libgeos in vaytrou buildout
 
-    pre_tasks:
+  pre_tasks:
     - name: Update apt cache
       apt: update_cache=yes cache_valid_time=3600
 
@@ -117,7 +117,7 @@
         virtualenv: /srv/python27-apps
         virtualenv_python: /usr/bin/python2.7
         name: setuptools
-        version: 33.1.1
+        version: 42.0.2
 
     - name: Install Pillow
       pip:

@@ -8,3 +8,5 @@ buildout_user: plone_buildout
 daemon_user: plone_daemon
 buildout_file: buildout.cfg
 buildout_python: '/usr/bin/python'
+setuptools_version: 42.0.2
+zc_buildout_version: 2.13.3

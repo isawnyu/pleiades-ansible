@@ -15,7 +15,7 @@
     group=plone_group
 
 - name: Bootstrap buildout {{ instance_name }}
-  command: "{{ buildout_python }} bootstrap.py -c {{ buildout_file }}"
+  command: "{{ buildout_python }} bootstrap.py -c {{ buildout_file }} --setuptools-version {{ setuptools_version }} --buildout-version {{ zc_buildout_version }}"
   args:
     chdir: "{{ base_dir }}/{{ instance_name }}"
   become: yes
