@@ -233,7 +233,6 @@
         update=yes
         dest=/var/www/pleiades.stoa.org/pleiades-frontpage
         version={{pleiades_static_branch}}
-        depth=1
         force=yes
         accept_hostkey=yes
       become_user: "www-data"
@@ -246,7 +245,6 @@
         update=yes
         dest=/var/www/pleiades.stoa.org/pleiades-api
         version=master
-        depth=1
         force=yes
         accept_hostkey=yes
       become_user: "www-data"

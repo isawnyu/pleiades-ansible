@@ -39,7 +39,6 @@
     update=yes
     dest={{ base_dir }}/{{ instance_name }}
     version={{ buildout_version | default('HEAD') }}
-    depth=1
     accept_hostkey=yes
   become_user: "{{ buildout_user }}"
   notify:
