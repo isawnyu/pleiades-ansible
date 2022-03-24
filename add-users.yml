@@ -34,7 +34,7 @@
           nopasswd: yes
         authorized_keys:
           - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0rhT70jvNCeEf/JAACFFDjvLc4jzH16Td4FjiT8zvvFh8GqFKhLkeKdRtEeC69aZNWaYe+ugMeYr7faTeRHLA9ZnRPvscui7hU8qbQi4hRTt0JaB3A8stT1stcaPFJRr09vHYhQAMiuE1CG7GJHILd44W/6zKjw0+8rwUR8Vfj5EOrbVu9wOztfHCtriN1W5EiN1QoF6x2RXlJuLOqlgm9dr5XM1T+caIYl0LndzJkKQtypwEJzgNe9foVzICAKwWA5pJstqviWyaV8Z1g25JRzPAuSO2vYZe1WH37edGJPzPYxVH5u8Hi+aXfvDdIBxnB9ZoisHkV6fVQgm/wMdh tom.elliott@nyu.edu
-      - name: cguardia
+      - name: jessesnyder
         shell: /bin/bash
         createhome: yes
         groups:
@@ -46,7 +46,20 @@
           commands: ALL
           nopasswd: yes
         authorized_keys:
-          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCw9LYyIRaLlaUk3eBvEYxf4JBfSS6gQpngDds2+4rHZ83OmwEFkfbEiNJWInqxGegYEj5M8Z3tkWqJ6N7Cc0ORgYTYpdCrZOkD/IcO8OFqrS5oZCvU0E+UuTbXP+q8JsOYDNRO4cenrDSeB02bP9tRYS4EAhbEH/BkS9FD+zOl8dFYR9cj46FTSCauet2fEvySrypawq44ZkUvDpCMDUTzdxOCIne8kybOX9XS+gooZNiU2Id3m8qz2xrWJUmGXsudlLmPcRavVXeHRlA/5eCcmlyV9QHn/cK86jCkT0nmKnfLqRdq0SQT3s9k9gJPTyBNfRG8v5ya4t+dzAJhXRL9 cguardia@yahoo.com
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIgIyOj/JbCRH8nPnGbeyLN21EW89HajHM81P87xx8zRiKwl0v/odXjlmoUm2oM8kpo+Z1BXH10lk0mvvse0kZ7r/9UBUlBWq+wxnJIUW4QoRCDFW8kubcOyhq8HVEI5NDe94+UFOaMAXlqiagGLXmWXk6IYDGAC6cGuG2VFb4CW4bNw0DZ5Hocobtoj8zCTkh3l+V+KnCMdmY+hEfGh7yLWRtIQfD3neiZeXHEnvIbG9JUUrmRaS7e4BByKfdx8zyl7u8g5O0EwHMyhBkbfM16bTC/q48fQ4byQanZDyvKJGNHov8xqWrayKf0I8Bamo0z+8q9fEWam5F70BL0ynJ jessesnyder
+      - name: silviot
+        shell: /bin/bash
+        createhome: yes
+        groups:
+          - plone_group
+          - sudo
+        sudo:
+          hosts: ALL
+          as: ALL
+          commands: ALL
+          nopasswd: yes
+        authorized_keys:
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmgUxx70scoenssiRLjGGE4+pEDD5M016xEMZ9r4zmDxOY7bhssMCqBMJbBVj0oX3HIs9jdPZEOMW/RNkshRJgqyDt3GNZbCG1SnZH3KV0C/TldvMMRlF/60M0IWgm5WSVrmGrzI3GAbqaIBebWTY0wwBUrCCYR1SI3eXv61H1MS0LbWEzdo4klqEvEyVThu0YksFFcfXa5lfaRDv2B+fvQzdXBWgxP5hTDgJX6vq3S3IeEGBloVP+kghe07aELpIankPz1Hyuderd3q6pXSj7jmEIzMl1VO7YhcBLtbpECTWFGmHPvNZVRSKBqk47J5DHSEEbNAjQozg/iWJDthQidI4HME1Lk4BsOo4fObwWycEOOs8+FbAbLsjODVYWqMgdr6d5QJIfgRRaPG+RlIE4qPSoQ93+jRhv261tUE11zZzIReqT03uKZQq5KaWwrlVOIseXps5P2pF7gPh5bpZ0qEcHu40mtPQw6wVcacMgbqmHIkiV/1N41rNTjcNsLzU= silvio@spitspot 
       - name: witekdev
         shell: /bin/bash
         createhome: yes

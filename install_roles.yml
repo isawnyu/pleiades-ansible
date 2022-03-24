@@ -1,7 +1,7 @@
 # install_roles.yml
 
 - src: jnv.unattended-upgrades
-  version: v1.2.0
+  version: v1.12.1
 
 - src: GROG.management-user
   version: v1.2.2
@@ -20,3 +20,6 @@
 
 - src: newrelic.newrelic-infra
   version: 0.8.2
+
+- src: christiangda.amazon_cloudwatch_agent
+  version: 2.0.7

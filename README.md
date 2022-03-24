@@ -17,8 +17,8 @@ following packages installed::
   * python
   * aptitude
 
-    sudo apt-get update
-    sudo apt-get install aptitude python2
+    sudo apt update
+    sudo apt install acl aptitude python2
 
 You may need to disable requiretty in sudoers, by adding the line:
 

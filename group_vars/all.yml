@@ -1,6 +1,12 @@
 ---
 
-  enable_unattended_upgrades: false
+  enable_cloudwatch_agent: true
+  enable_unattended_upgrades: true
+  unattended_mail: tom.elliott@nyu.edu,alecpm@gmail.com
+  unattended_mail_only_on_error: true
+  unattended_automatic_reboot: true
+  install_reboot_dependency: true
+  unattended_automatic_reboot_time: 02:00
   enable_sitemap: false
   newrelic_license_key: !vault |
         $ANSIBLE_VAULT;1.1;AES256

@@ -354,7 +354,7 @@ ExpiresByType text/javascript "access plus 1 year"
 ExpiresByType application/javascript "access plus 1 year"
 #ExpiresByType text/html "access plus 1 day"
 #ExpiresByType application/xhtml+xml "access plus 1 day"
-ExpiresByType application/json "access plus 1 day"
+#ExpiresByType application/json "access plus 1 day"
 ExpiresByType application/atom+xml "access plus 1 day"
 ExpiresByType application/rdf+xml "access plus 1 day"
 ExpiresByType application/vnd.google-earth.kml+xml "access plus 1 day"
@@ -367,10 +367,10 @@ ExpiresByType text/turtle "access plus 1 day"
   Header set Cache-Control "max-age=86400, s-maxage=11988, public"
   ExpiresDefault "access plus 1 day"
 </Location>
-<LocationMatch "/places/\d+/(atom|json|kml|neighborhood-kml|rdf|turtle)$">
-  Header set Cache-Control "max-age=86400, s-maxage=11988"
-  ExpiresDefault "access plus 1 day"
-</LocationMatch>
+#<LocationMatch "/places/\d+/(atom|json|kml|neighborhood-kml|rdf|turtle)$">
+#  Header set Cache-Control "max-age=86400, s-maxage=11988"
+#  ExpiresDefault "access plus 1 day"
+#</LocationMatch>
 <LocationMatch "/(downloads|credits)$">
   Header set Cache-Control "max-age=86400, s-maxage=11988"
   ExpiresDefault "access plus 1 day"
@@ -385,8 +385,8 @@ ExpiresByType text/turtle "access plus 1 day"
 </If>
 </IfModule>
 
-{% if pleiades_ssl_vhost is defined and pleiades_ssl_vhost == 'pleiades.stoa.org' %}
 RewriteEngine On
+{% if pleiades_ssl_vhost is defined and pleiades_ssl_vhost == 'pleiades.stoa.org' %}
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
 RewriteCond "%{HTTPS}" "!=on"
 RewriteRule ^(.*)$ http://pleiades.stoa.org$1 [R=301,L]

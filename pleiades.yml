@@ -164,6 +164,13 @@
 
     - role: jnv.unattended-upgrades
       when: enable_unattended_upgrades
+      tags:
+        - os-updates
+
+    - role: christiangda.amazon_cloudwatch_agent
+      when: enable_cloudwatch_agent
+      tags:
+        - cloudwatch
 
   tasks:
 
@@ -293,6 +300,10 @@
 
     - name: cron pack
       cron: name="Weekly ZODB Pack" minute="30" user="plone_daemon" hour="3" weekday="0" job="/srv/python27-apps/pleiades4/bin/zeopack"
+
+    - name: Set a hostname
+      ansible.builtin.hostname:
+        name: "{{ pleiades_ssl_vhost }}"
 
 
   handlers:

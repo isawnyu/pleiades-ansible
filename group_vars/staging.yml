@@ -5,4 +5,4 @@ plone_client_count: 2
 restart_delay: 10
 pleiades_static_branch: staging
 memmon_limit: 750MB
-pleiades_buildout_branch: updated-pins
+pleiades_buildout_branch: staging
