@@ -92,3 +92,4 @@
 
     - name: Restart buildout pleiades4
       meta: noop
+      ignore_errors: yes
