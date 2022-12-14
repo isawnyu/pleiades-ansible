@@ -1,0 +1,9 @@
+---
+
+pleiades_ssl_vhost: "pleiades.jazkarta.com"
+supervisor_events:
+  - name: memmon
+    command: /srv/python27-apps/bin/memmon -a 1500MB
+    events: TICK_60
+
+enable_backups: false
