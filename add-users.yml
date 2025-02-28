@@ -60,6 +60,17 @@
           nopasswd: yes
         authorized_keys:
           - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmgUxx70scoenssiRLjGGE4+pEDD5M016xEMZ9r4zmDxOY7bhssMCqBMJbBVj0oX3HIs9jdPZEOMW/RNkshRJgqyDt3GNZbCG1SnZH3KV0C/TldvMMRlF/60M0IWgm5WSVrmGrzI3GAbqaIBebWTY0wwBUrCCYR1SI3eXv61H1MS0LbWEzdo4klqEvEyVThu0YksFFcfXa5lfaRDv2B+fvQzdXBWgxP5hTDgJX6vq3S3IeEGBloVP+kghe07aELpIankPz1Hyuderd3q6pXSj7jmEIzMl1VO7YhcBLtbpECTWFGmHPvNZVRSKBqk47J5DHSEEbNAjQozg/iWJDthQidI4HME1Lk4BsOo4fObwWycEOOs8+FbAbLsjODVYWqMgdr6d5QJIfgRRaPG+RlIE4qPSoQ93+jRhv261tUE11zZzIReqT03uKZQq5KaWwrlVOIseXps5P2pF7gPh5bpZ0qEcHu40mtPQw6wVcacMgbqmHIkiV/1N41rNTjcNsLzU= silvio@spitspot 
+      - name: marco
+        groups:
+          - plone_group
+          - sudo
+        sudo:
+          hosts: ALL
+          as: ALL
+          commands: ALL
+          nopasswd: yes
+        authorized_keys:
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDav16s5/3VniqxCy0VE4w6l64zQ96+4/CKEuIsP88svNO+0uuHp2m4Q5Xy0JTZYmImHfThtXEHjFpbHmBV5HCcDMQAEZW+AIveeKGkzkjZZNV+bsf96NSyxG8aZG3iRjxfoDryFNuKjKnRtJ9zzJsaGVr3Dq+4xsvvxl1mOWp9RO6YL2/yEaAz8GWQ+ypdF5/38S+rTHNibdhRMuCVFEiwOTAnRCTwV+nqRHEc5UcO2EhkUzzK+2OZMEucjH6k3mmLbpmhSmfK2A24+ahvLjD2Iw64DD8bsxbvZumUFzHoYkQJ41XdPhs2s/QoxntVdLgLisj6Ss/iVz7UKrxUYS+v
       - name: witekdev
         shell: /bin/bash
         createhome: yes
