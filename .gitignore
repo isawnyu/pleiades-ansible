@@ -19,3 +19,4 @@ roles/newrelic.newrelic-infra
 roles/weareinteractive.newrelic
 *.retry
 vaultpass
+.vaultpass

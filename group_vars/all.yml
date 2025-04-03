@@ -5,8 +5,13 @@
   unattended_mail: tom.elliott@nyu.edu,alecpm@gmail.com
   unattended_mail_only_on_error: true
   unattended_automatic_reboot: true
-  install_reboot_dependency: true
   unattended_automatic_reboot_time: 02:00
+  unattended_origins_patterns:
+    - 'origin=Ubuntu,archive=${distro_codename}-security'
+    - 'o=${distro_id},a=${distro_codename}'
+    - 'o=${distro_id},a=${distro_codename}-updates'
+    - 'o=${distro_id}ESMApps:${distro_codename}-apps-security'
+    - 'o=${distro_id}ESM:${distro_codename}-infra-security'
   enable_sitemap: false
   newrelic_license_key: !vault |
         $ANSIBLE_VAULT;1.1;AES256
