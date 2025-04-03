@@ -1,0 +1,68 @@
+---
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+
+  tasks:
+    - name: Upload InsightVM Files
+      ansible.builtin.copy:
+        src: files/insightvm
+        dest: /var/lib
+        owner: root
+        group: root
+        mode: "0700"
+        force: false
+      tags:
+        - insightvm
+
+    - name: Install InsightVM package
+      apt:
+        deb: /var/lib/insightvm/rapid7-insight-agent_4.0.13.32-1_amd64.deb
+        state: present
+      tags:
+        - insightvm
+
+    - name: Configure and enable agent
+      ansible.builtin.command:
+        cmd: /opt/rapid7/ir_agent/components/insight_agent/4.0.13.32/configure_agent.sh --certificate_package_installation=/var/lib/insightvm -v --attributes="ISAW" --start
+      tags:
+        - insightvm
+
+    - name: Create cortex config directory
+      ansible.builtin.file:
+        path: /etc/panw
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+      tags:
+        - cortex
+
+    - name: Install Cortex config
+      ansible.builtin.copy:
+        src: files/cortex/cortex.conf
+        dest: /etc/panw/
+        owner: root
+        group: root
+        mode: "0700"
+      tags:
+        - cortex
+
+    - name: Install Cortex installer in tmp dir
+      ansible.builtin.copy:
+        src: files/cortex/cortex-8.7.0.131661.sh
+        dest: /tmp/
+        owner: root
+        group: root
+        mode: "0700"
+      tags:
+        - cortex
+
+    - name: Install cortex
+      ansible.builtin.command:
+        cmd: /tmp/cortex-8.7.0.131661.sh
+        creates: /opt/traps/bin/cytool
+      tags:
+        - cortex

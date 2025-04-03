@@ -16,7 +16,11 @@ roles/ansible-role-letsencrypt/
 roles/geerlingguy.varnish/
 roles/GROG.package
 roles/newrelic.newrelic-infra
+roles/Oefenweb.fail2ban
+roles/christiangda.amazon_cloudwatch_agent
 roles/weareinteractive.newrelic
+files/insightvm/rapid7-insight-agent_4.0.13.32-1_amd64.deb
+files/cortex/cortex-8.7.0.131661.sh
 *.retry
 vaultpass
 .vaultpass

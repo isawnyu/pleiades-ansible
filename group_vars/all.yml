@@ -139,3 +139,27 @@
     - libapache2-mod-wsgi
     - libapache2-mod-svn
   apache_ignore_missing_ssl_certificate: true
+  install_fail2ban: true
+
+  fail2ban_services:
+    - name: sshd
+      enabled: true
+      mode: normal
+    - name: apache-overflows
+      enabled: true
+      filter: apache-overflows
+      logpath: /var/log/apache*/*error.log
+      port: http,https
+      maxretry: 2
+    - name: apache-noscript
+      filter: apache-noscript
+      enabled: true
+      logpath: /var/log/apache*/*error.log
+      port: http,https
+      maxretry: 2
+    - name: apache-badbots
+      filter: apache-badbots
+      enabled: true
+      logpath: /var/log/apache*/*access.log
+      port: http,https
+      maxretry: 4
