@@ -50,19 +50,35 @@
       tags:
         - cortex
 
-    - name: Install Cortex installer in tmp dir
+    - name: Check that the cytool exists
+      stat:
+        path: /opt/traps/bin/cytool
+      register: cytool_stat
+      tags:
+        - cortex
+
+    - name: Upload Cortex installer to tmp dir
       ansible.builtin.copy:
-        src: files/cortex/cortex-8.7.0.131661.sh
+        src: files/cortex/cortex-8.7.0.131661.deb
         dest: /tmp/
         owner: root
         group: root
         mode: "0700"
+      when: not cytool_stat.stat.exists
       tags:
         - cortex
 
     - name: Install cortex
-      ansible.builtin.command:
-        cmd: /tmp/cortex-8.7.0.131661.sh
-        creates: /opt/traps/bin/cytool
+      ansible.builtin.apt:
+        deb: /tmp/cortex-8.7.0.131661.deb
+        state: present
+      when: not cytool_stat.stat.exists
+      tags:
+        - cortex
+
+    - name: Remove cortex installer
+      ansible.builtin.file:
+        path: /tmp/cortex-8.7.0.131661.deb
+        state: absent
       tags:
         - cortex
