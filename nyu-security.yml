@@ -19,14 +19,14 @@
 
     - name: Install InsightVM package
       apt:
-        deb: /var/lib/insightvm/rapid7-insight-agent_4.0.13.32-1_amd64.deb
+        deb: /var/lib/insightvm/rapid7-insight-agent_4.0.15.31-1_arm64.deb
         state: present
       tags:
         - insightvm
 
     - name: Configure and enable agent
       ansible.builtin.command:
-        cmd: /opt/rapid7/ir_agent/components/insight_agent/4.0.13.32/configure_agent.sh --certificate_package_installation=/var/lib/insightvm -v --attributes="ISAW" --start
+        cmd: /opt/rapid7/ir_agent/components/insight_agent/4.0.15.31/configure_agent.sh --certificate_package_installation=/var/lib/insightvm -v --attributes="ISAW" --start
       tags:
         - insightvm
 
