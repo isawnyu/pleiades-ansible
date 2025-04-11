@@ -10,8 +10,10 @@
     - 'origin=Ubuntu,archive=${distro_codename}-security'
     - 'o=${distro_id},a=${distro_codename}'
     - 'o=${distro_id},a=${distro_codename}-updates'
-    - 'o=${distro_id},a=ESMApps:${distro_codename}-apps-security'
-    - 'o=${distro_id},a=ESM:${distro_codename}-infra-security'
+    - 'o=${distro_id}ESMApps,a=${distro_codename}-apps-security'
+    - 'o=${distro_id}ESMApps,a=${distro_codename}-apps-updates'
+    - 'o=${distro_id}ESM,a=${distro_codename}-infra-security'
+    - 'o=${distro_id}ESM,a=${distro_codename}-infra-updates'
   enable_sitemap: false
   newrelic_license_key: !vault |
         $ANSIBLE_VAULT;1.1;AES256
