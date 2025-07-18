@@ -130,6 +130,9 @@
     - name: Check whether certificate exists
       stat: "path={{ pleiades_cert_file }}"
       register: ssl_certificate
+      tags:
+        - apache-install
+        - apacheconf
 
   roles:
 
@@ -160,9 +163,14 @@
       tags: ['haproxy']
 
     - role: varnish
+      tags:
+        - varnish
 
     - role: geerlingguy.apache
       apache_state: stopped
+      tags:
+        - apache-install
+        - apacheconf
 
     - role: jnv.unattended-upgrades
       when: enable_unattended_upgrades
@@ -195,30 +203,50 @@
     - name: Apache pleiades site config
       template: src=templates/pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/pleiades.stoa.org.conf owner=root group=root mode=0644
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache pleiades-api config
       template: src=templates/api.pleiades.stoa.org.j2 dest=/etc/apache2/sites-available/api.pleiades.stoa.org.conf owner=root group=root mode=0644
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache atlantides config
       template: src=templates/atlantides.org.j2 dest=/etc/apache2/sites-available/atlantides.org.conf owner=root group=root mode=0644
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache pleiades symlink
       file: src=/etc/apache2/sites-available/pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/00-pleiades.stoa.org.conf state=link
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache pleiades-api symlink
       file: src=/etc/apache2/sites-available/api.pleiades.stoa.org.conf dest=/etc/apache2/sites-enabled/02-api.pleiades.stoa.org.conf state=link
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Apache atlantides symlink
       file: src=/etc/apache2/sites-available/atlantides.org.conf dest=/etc/apache2/sites-enabled/01-atlantides.org.conf state=link
       notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Remove default vhost symlink
       file: path=/etc/apache2/sites-enabled/vhosts.conf state=absent
       notify: restart apache
+      tags:
+        - apacheconf
+
+    - name: Mod evasive conf
+      ansible.builtin.copy: src=files/evasive.conf dest=/etc/apache2/mods-available/evasive.conf owner=root group=root mode=0644
+      notify: restart apache
+      tags:
+        - apacheconf
 
     - name: Create pleiades vhost dir
       file: path=/var/www/pleiades.stoa.org recurse=yes state=directory owner=www-data mode=0775
@@ -275,6 +303,9 @@
 
     - name: Start apache
       service: name=apache2 state=started enabled=yes
+      tags:
+        - apache-install
+        - apacheconf
 
     - name: Create ZODB var dir
       file: path=/srv/python27-apps/pleiades4/var recurse=yes state=directory owner=plone_daemon

@@ -113,6 +113,8 @@
     - autoindex.load
     - autoindex.conf
     - cgid.load
+    - evasive.load
+    - evasive.conf
     - deflate.load
     - deflate.conf
     - dir.load
@@ -128,6 +130,7 @@
     - proxy.conf
     - proxy_connect.load
     - proxy_http.load
+    - remoteip.load
     - rewrite.load
     - setenvif.load
     - setenvif.conf
@@ -140,8 +143,16 @@
     - apache2-dev
     - libapache2-mod-wsgi
     - libapache2-mod-svn
+    - libapache2-mod-evasive
   apache_ignore_missing_ssl_certificate: true
   install_fail2ban: true
+
+  fail2ban_filterd_path: "{{ playbook_dir }}/files/fail2ban/filter.d/" # Trailing slash is important!
+
+  fail2ban_ignoreips:
+    - 127.0.0.1/8
+    - ::1
+    - 216.240.59.58/32
 
   fail2ban_services:
     - name: sshd
@@ -150,18 +161,41 @@
     - name: apache-overflows
       enabled: true
       filter: apache-overflows
-      logpath: /var/log/apache*/*error.log
+      logpath: /var/log/apache2/pleiades.stoa.org-error.log
       port: http,https
       maxretry: 2
     - name: apache-noscript
       filter: apache-noscript
       enabled: true
-      logpath: /var/log/apache*/*error.log
+      logpath: /var/log/apache2/pleiades.stoa.org-error.log
+      port: http,https
+      maxretry: 2
+    - name: apache-blocked
+      filter: apache-blocked
+      enabled: true
+      logpath: /var/log/apache2/pleiades.stoa.org-error.log
+      findtime: "30m"
       port: http,https
       maxretry: 2
     - name: apache-badbots
       filter: apache-badbots
       enabled: true
-      logpath: /var/log/apache*/*access.log
+      logpath: /var/log/apache2/pleiades.stoa.org-access.log
       port: http,https
       maxretry: 4
+    - name: apache-unauth
+      filter: apache-unauth
+      enabled: true
+      logpath: /var/log/apache2/pleiades.stoa.org-access.log
+      port: http,https
+      findtime: "30m"
+      bantime: "1h"
+      maxretry: 2
+    - name: plone-logins
+      filter: apache-loginbots
+      enabled: true
+      logpath: /var/log/apache2/pleiades.stoa.org-access.log
+      port: http,https
+      findtime: "5m"
+      maxretry: 5
+

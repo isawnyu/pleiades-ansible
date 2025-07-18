@@ -3,6 +3,7 @@ DocumentRoot /var/www/pleiades.stoa.org
 SetOutputFilter DEFLATE
 HostnameLookups off
 ProxyPreserveHost On
+RemoteIPHeader X-Forwarded-For
 
 <Location /server-status>
 SetHandler server-status
@@ -13,7 +14,6 @@ Require ip 127.0.0.1
 
 # bad bots from https://github.com/bluedragonz/bad-bot-blocker/blob/master/.htaccess 24 Feb 2014
 SetEnvIfNoCase User-Agent "Aboundex" bad_bot
-SetEnvIfNoCase User-Agent "AhrefsBot" bad_bot
 SetEnvIfNoCase User-Agent "80legs" bad_bot
 SetEnvIfNoCase User-Agent "360Spider" bad_bot
 SetEnvIfNoCase User-Agent "^Cogentbot" bad_bot
@@ -268,6 +268,12 @@ BrowserMatchNoCase youdaobot bad_bot
 BrowserMatchNoCase centurybot bad_bot
 BrowserMatchNoCase piplbot bad_bot
 BrowserMatchNoCase istellabot bad_bot
+BrowserMatchNoCase semanticscholarbot bad_bot
+BrowserMatchNoCase semrushbot bad_bot
+BrowserMatchNoCase petalbot bad_bot
+BrowserMatchNoCase ahrefsbot bad_bot
+BrowserMatchNoCase amazonbot bad_bot
+BrowserMatchNoCase awariobot bad_bot
 # end Pleiades bad bot definitions
 
 <Location "/">
@@ -298,6 +304,27 @@ Require all granted
     Require ip 202.46.32
     # pounding all of our JSON redirects at speed 2018-10-11
     Require ip 67.195.177.182
+    # Chinese crawler range
+    Require ip 58.56.0.0/15
+    Require ip 101.44.176.0/20
+    # Turkish crawler range
+    Require ip 85.106.128.0/17
+    # Indian crawler range
+    Require ip 223.181.125.0/24
+    Require ip 223.237.0.0/16
+    Require ip 223.228.0.0/16
+    Require ip 223.227.0.0/16
+    Require ip 223.190.85.0/24
+    Require ip 223.189.128.0/17
+    Require ip 223.185.19.0/24
+    # SA crawler range
+    Require ip 197.185.128.0/18
+    # Morocco crawler range
+    Require ip 196.217.0.0/16
+    # Senegal crawler range
+    Require ip 196.207.224.0/21
+    # Ethiopia crawler range
+    Require ip 196.191.94.0/24
 
     # bluedragonz 24 Feb 2014
     # Cyveillance
@@ -312,6 +339,12 @@ Require all granted
     Require ip 65.222.176.96/27
     Require ip 65.222.185.72/29
     # end bluedragonz
+
+    # Bot switching up user-agent to evade detection
+    Require ip 66.249.70.133/32
+    Require ip 66.249.70.134/32
+    Require ip 152.42.204.94/32
+    # end UA switchers
   </RequireNone>
 </RequireAll>
 
