@@ -113,8 +113,6 @@
     - autoindex.load
     - autoindex.conf
     - cgid.load
-    - evasive.load
-    - evasive.conf
     - deflate.load
     - deflate.conf
     - dir.load
@@ -137,6 +135,9 @@
     - status.load
     - status.conf
     - ssl.load
+  apache_mods_disabled:
+    - evasive.load
+    - evasive.conf
   apache_packages:
     - apache2
     - apache2-utils
