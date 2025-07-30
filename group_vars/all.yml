@@ -200,3 +200,6 @@
       findtime: "5m"
       maxretry: 5
 
+  anubis_port: 8923
+  anubis_difficulty: 4
+  anubis_policy_file: /etc/anubis/pleiades.yaml

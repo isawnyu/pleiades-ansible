@@ -552,22 +552,22 @@ RewriteRule ^/news/blog/RSS /news/blog/collector/RSS [R=301]
 RewriteRule ^/news/recently-modified(.*) /news/recently-published$1 [R=301]
 
 # Places index, @@ views are valid, all other non-place resources are gone
-RewriteRule ^/places/index_html(.*) http://localhost:{{ proxycache_port }}/places/index_html$1 [P,L]
-RewriteRule ^/places/(.*)-index http://localhost:{{ proxycache_port }}/places/$1-index [P,L]
-RewriteRule ^/places/createObject(.*) http://localhost:{{ proxycache_port }}/places/createObject$1 [P,L,QSA]
-RewriteRule ^/places/@@(.*) http://localhost:{{ proxycache_port }}/places/@@$1 [P,L,QSA]
-RewriteRule ^/places/\+\+(.*) http://localhost:{{ proxycache_port }}/places/++$1 [P,L]
-RewriteRule ^/places/copy_of(.*).atom$ http://localhost:{{ proxycache_port }}/$1/places/copy_of$1/atom [P,L]
-RewriteRule ^/places/copy_of(.*).kml$ http://localhost:{{ proxycache_port }}/places/copy_of$1/kml [P,L]
-RewriteRule ^/places/copy_of(.*) http://localhost:{{ proxycache_port }}/places/copy_of$1 [P,L]
+RewriteRule ^/places/index_html(.*) http://localhost:{{ anubis_port }}/places/index_html$1 [P,L]
+RewriteRule ^/places/(.*)-index http://localhost:{{ anubis_port }}/places/$1-index [P,L]
+RewriteRule ^/places/createObject(.*) http://localhost:{{ anubis_port }}/places/createObject$1 [P,L,QSA]
+RewriteRule ^/places/@@(.*) http://localhost:{{ anubis_port }}/places/@@$1 [P,L,QSA]
+RewriteRule ^/places/\+\+(.*) http://localhost:{{ anubis_port }}/places/++$1 [P,L]
+RewriteRule ^/places/copy_of(.*).atom$ http://localhost:{{ anubis_port }}/$1/places/copy_of$1/atom [P,L]
+RewriteRule ^/places/copy_of(.*).kml$ http://localhost:{{ anubis_port }}/places/copy_of$1/kml [P,L]
+RewriteRule ^/places/copy_of(.*) http://localhost:{{ anubis_port }}/places/copy_of$1 [P,L]
 #  RewriteRule ^/places/browse_names /places/names-index [R=301,L]
-RewriteRule ^/places/(.*)_(.*) http://localhost:{{ proxycache_port }}/places/$1_$2 [P,L]
-RewriteRule ^/places/vocab(.*) http://localhost:{{ proxycache_port }}/help/pleiades-rdf-vocabulary$1 [P,L]
-RewriteRule ^/places/reconcile http://localhost:{{ proxycache_port }}/places/reconcile [P,L,QSA]
+RewriteRule ^/places/(.*)_(.*) http://localhost:{{ anubis_port }}/places/$1_$2 [P,L]
+RewriteRule ^/places/vocab(.*) http://localhost:{{ anubis_port }}/help/pleiades-rdf-vocabulary$1 [P,L]
+RewriteRule ^/places/reconcile http://localhost:{{ anubis_port }}/places/reconcile [P,L,QSA]
 
 # Dot-formatted URLs are expected by some clients
-RewriteRule ^/(.*).atom$ http://localhost:{{ proxycache_port }}/$1/atom [P,L]
-RewriteRule ^/(.*)\.kml$ http://localhost:{{ proxycache_port }}/$1/kml [P,L]
+RewriteRule ^/(.*).atom$ http://localhost:{{ anubis_port }}/$1/atom [P,L]
+RewriteRule ^/(.*)\.kml$ http://localhost:{{ anubis_port }}/$1/kml [P,L]
 
 # Try to find places json on the filesystem, if possible
 #RewriteMap jsonmap txt:/var/www/pleiades.stoa.org/json/jsonmap.txt
@@ -580,7 +580,7 @@ RewriteRule ^/places/(\d+)/neighborhood-kml$ - [G]
 
 # Finally
 RewriteCond %{REQUEST_URI} !=/server-status
-RewriteRule ^/(.*) http://localhost:{{ proxycache_port }}/$1 [P,L]
+RewriteRule ^/(.*) http://localhost:{{ anubis_port }}/$1 [P,L]
 
 <LocationMatch "^[^/]">
 Require all denied

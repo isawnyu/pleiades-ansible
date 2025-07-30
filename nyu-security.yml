@@ -6,6 +6,30 @@
   gather_facts: yes
 
   tasks:
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+      tags:
+        - insightvm
+
+    - name: Set fact if ir_agent service is running
+      set_fact:
+        ir_agent_exists: true
+      when:
+        - "'ir_agent.service' in ansible_facts.services"
+
+    - name: Set fact if ir_agent service is not running
+      set_fact:
+        ir_agent_exists: false
+      when: ir_agent_exists is not defined
+
+    - name: Check that the InsightVM tools exist
+      stat:
+        path: /opt/rapid7/ir_agent/ir_agent
+      register: ir_agent_stat
+      tags:
+        - insightvm
+
     - name: Upload InsightVM Files
       ansible.builtin.copy:
         src: files/insightvm
@@ -14,6 +38,7 @@
         group: root
         mode: "0700"
         force: false
+      when: not ir_agent_exists
       tags:
         - insightvm
 
@@ -21,12 +46,14 @@
       apt:
         deb: /var/lib/insightvm/rapid7-insight-agent_4.0.15.31-1_arm64.deb
         state: present
+      when: not ir_agent_exists
       tags:
         - insightvm
 
     - name: Configure and enable agent
       ansible.builtin.command:
-        cmd: /opt/rapid7/ir_agent/components/insight_agent/4.0.15.31/configure_agent.sh --certificate_package_installation=/var/lib/insightvm -v --attributes="ISAW" --start
+        cmd: /opt/rapid7/ir_agent/components/insight_agent/4.0.18.46/configure_agent.sh --certificate_package_installation=/var/lib/insightvm -v --attributes="ISAW" --start
+      when: not ir_agent_exists
       tags:
         - insightvm
 

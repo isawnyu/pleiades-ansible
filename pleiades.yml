@@ -1,4 +1,10 @@
 ---
+- name: Include NYU security playbook
+  ansible.builtin.import_playbook: nyu-security.yml
+
+- name: Include anubis playbook
+  ansible.builtin.import_playbook: anubis.yml
+
 - hosts: all
   become: true
   become_user: root

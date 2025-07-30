@@ -1,0 +1,90 @@
+---
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  tags:
+    - anubis
+
+  tasks:
+
+    - name: Check if anubis is installed
+      stat:
+        path: /usr/bin/anubis
+      register: anubis_stat
+
+    - block:
+
+      - name: Upload Anubis installer to tmp dir
+        ansible.builtin.copy:
+          src: files/anubis/anubis_1.21.3_arm64.deb
+          dest: /tmp/
+          owner: root
+          group: root
+          mode: "0700"
+
+      - name: Install Anubis (Intel)
+        ansible.builtin.apt:
+          deb: /tmp/anubis_1.21.3_arm64.deb
+          state: present
+
+      - name: Remove anubis installer
+        ansible.builtin.file:
+          path: /tmp/anubis_1.21.3_arm64.deb
+          state: absent
+
+      when: not anubis_stat.stat.exists and ansible_architecture == 'aarch64'
+
+    - block:
+
+      - name: Upload Anubis installer to tmp dir (Intel)
+        ansible.builtin.copy:
+          src: files/anubis/anubis_1.21.3_amd64.deb
+          dest: /tmp/
+          owner: root
+          group: root
+          mode: "0700"
+
+      - name: Install Anubis (Intel)
+        ansible.builtin.apt:
+          deb: /tmp/anubis_1.21.3_amd64.deb
+          state: present
+
+      - name: Remove anubis installer (Intel)
+        ansible.builtin.file:
+          path: /tmp/anubis_1.21.3_amd64.deb
+          state: absent
+
+      when: not anubis_stat.stat.exists and ansible_architecture == 'amd64'
+
+    - name: Anubis bot configuration
+      ansible.builtin.copy:
+        src: files/anubis/pleiades.yaml
+        dest: "{{ anubis_policy_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart anubis@pleiades.service
+
+    - name: Anubis service configuration
+      ansible.builtin.template:
+        src: templates/pleiades.env.j2
+        dest: /etc/anubis/pleiades.env
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart anubis@pleiades.service
+
+
+    - name: Enable and start anubis service
+      service:
+        name: anubis@pleiades.service
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart anubis@pleiades.service
+      service:
+        name: anubis@pleiades.service
+        state: restarted

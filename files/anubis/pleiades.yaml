@@ -1,0 +1,184 @@
+## Anubis has the ability to let you import snippets of configuration into the main
+## configuration file. This allows you to break up your config into smaller parts
+## that get logically assembled into one big file.
+##
+## Of note, a bot rule can either have inline bot configuration or import a
+## bot config snippet. You cannot do both in a single bot rule.
+##
+## Import paths can either be prefixed with (data) to import from the common/shared
+## rules in the data folder in the Anubis source tree or will point to absolute/relative
+## paths in your filesystem. If you don't have access to the Anubis source tree, check
+## /usr/share/docs/anubis/data or in the tarball you extracted Anubis from.
+
+bots:
+  # Emulate high load for testing purposes, this is not a real bot rule.
+  # Disable for production.
+  - name: emulate-high-load
+    action: WEIGH
+    expression: 'true'
+    weight:
+      adjust: 15
+
+  # Allow bots by UA:
+  - name: google-read-aloud
+    user_agent_regex: Google-Read-Aloud
+    action: ALLOW
+  - name: google-webmaster-bot
+    user_agent_regex: Google-Site-Verification
+    action: ALLOW
+  - name: facebook-externalhit
+    user_agent_regex: FacebookExternalHit
+    action: ALLOW
+  - name: meta-fetcher
+    user_agent_regex: Meta-ExternalFetcher
+    action: ALLOW
+
+  # Basic HTTP stuff
+  - name: sitemap-xml-gzip
+    path_regex: ^/sitemap.xml.gz$
+    action: ALLOW
+
+  # Plone stuff
+  - name: search-rss
+    path_regex: /search_rss
+    action: ALLOW
+
+  - name: rss
+    path_regex: /RSS$
+    action: ALLOW
+
+  - name: atom
+    path_regex: /atom$
+    action: ALLOW
+
+  - name: kml
+    path_regex: /kml$
+    action: ALLOW
+
+  - name: plone-session-cookie
+    action: ALLOW
+    expression:
+      all:
+        - '"Cookie" in headers'
+        - headers["Cookie"].contains("__ac=")
+
+  # Allow common "keeping the internet working" routes (well-known, favicon, robots.txt)
+  - import: (data)/common/keep-internet-working.yaml
+
+  # Pathological bots to deny
+  - import: (data)/bots/_deny-pathological.yaml
+
+  # Blocks all AI/LLM bots used for training or unknown/undocumented purposes
+  - import: (data)/meta/ai-block-moderate.yaml
+
+  # Search engine crawlers to allow, defaults to:
+  #   - Google (so they don't try to bypass Anubis)
+  #   - Apple
+  #   - Bing
+  #   - DuckDuckGo
+  #   - Qwant
+  #   - The Internet Archive
+  #   - Kagi
+  #   - Marginalia
+  #   - Mojeek
+  - import: (data)/crawlers/_allow-good.yaml
+
+  # ## System load based checks.
+  # # If the system is under high load, add weight.
+  - name: high-load-average
+    action: WEIGH
+    expression: load_1m >= 8.0 # make sure to end the load comparison in a .0
+    weight:
+      adjust: 15
+
+  ## If your backend service is running on the same operating system as Anubis,
+  ## you can uncomment this rule to make the challenge easier when the system is
+  ## under low load.
+  ##
+  ## If it is not, remove weight.
+  - name: low-load-average
+    action: WEIGH
+    expression: load_15m <= 4.0 # make sure to end the load comparison in a .0
+    weight:
+      adjust: -5
+
+dnsbl: false
+
+# Open Graph passthrough configuration, see here for more information:
+# https://anubis.techaro.lol/docs/admin/configuration/open-graph/
+openGraph:
+  # Enables Open Graph passthrough
+  enabled: true
+  # Enables the use of the HTTP host in the cache key, this enables
+  # caching metadata for multiple http hosts at once.
+  considerHost: false
+  # How long cached OpenGraph metadata should last in memory
+  ttl: 24h
+
+# By default, send HTTP 200 back to clients that either get issued a challenge
+# or a denial. This seems weird, but this is load-bearing due to the fact that
+# the most aggressive scraper bots seem to really, really, want an HTTP 200 and
+# will stop sending requests once they get it.
+status_codes:
+  CHALLENGE: 200
+  DENY: 200
+
+# Anubis can store temporary data in one of a few backends. See the storage
+# backends section of the docs for more information:
+#
+# https://anubis.techaro.lol/docs/admin/policies#storage-backends
+store:
+  backend: bbolt
+  parameters:
+    path: /var/lib/private/anubis/pleiades/pleiades.bdb
+
+# The weight thresholds for when to trigger individual challenges. Any
+# CHALLENGE will take precedence over this.
+#
+# A threshold has four configuration options:
+#
+#   - name: the name that is reported down the stack and used for metrics
+#   - expression: A CEL expression with the request weight in the variable
+#     weight
+#   - action: the Anubis action to apply, similar to in a bot policy
+#   - challenge: which challenge to send to the user, similar to in a bot policy
+#
+# See https://anubis.techaro.lol/docs/admin/configuration/thresholds for more
+# information.
+thresholds:
+  # By default Anubis ships with the following thresholds:
+  - name: minimal-suspicion # This client is likely fine, its soul is lighter than a feather
+    expression: weight <= 0 # a feather weighs zero units
+    action: ALLOW # Allow the traffic through
+  # For clients that had some weight reduced through custom rules, give them a
+  # lightweight challenge.
+  - name: mild-suspicion
+    expression:
+      all:
+        - weight > 0
+        - weight < 10
+    action: CHALLENGE
+    challenge:
+      algorithm: metarefresh
+      difficulty: 1
+      report_as: 1
+  # For clients that are browser-like but have either gained points from custom rules or
+  # report as a standard browser.
+  - name: moderate-suspicion
+    expression:
+      all:
+        - weight >= 10
+        - weight < 20
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 2 # two leading zeros, very fast for most clients
+      report_as: 2
+  # For clients that are browser like and have gained many points from custom rules
+  - name: extreme-suspicion
+    expression: weight >= 20
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 4
+      report_as: 4
