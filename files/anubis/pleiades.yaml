@@ -13,11 +13,11 @@
 bots:
   # Emulate high load for testing purposes, this is not a real bot rule.
   # Disable for production.
-  - name: emulate-high-load
-    action: WEIGH
-    expression: 'true'
-    weight:
-      adjust: 15
+  # - name: emulate-high-load
+  #   action: WEIGH
+  #   expression: 'true'
+  #   weight:
+  #     adjust: 15
 
   # Allow bots by UA:
   - name: google-read-aloud
