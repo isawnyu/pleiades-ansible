@@ -90,10 +90,10 @@ sub vcl_recv {
     # Annotate request with X-Anonymous header if anonymous
     if (!(req.http.Cookie && req.http.Cookie ~ "{{ nonanonymous_cookies }}=")) {
         set req.http.X-Anonymous = "True";
-        # Return 401 for protected paths when anonymous
-        if (req.url ~ "/@@history" || req.url ~ "/versions_history_form") {
-            return (synth(401, "Authentication required"));
-        }
+        # # Return 401 for protected paths when anonymous
+        # if (req.url ~ "/@@history" || req.url ~ "/versions_history_form") {
+        #     return (synth(401, "Authentication required"));
+        # }
     }
 
    # The default vcl_recv is used from here.
