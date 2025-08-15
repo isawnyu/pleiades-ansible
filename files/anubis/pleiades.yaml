@@ -19,6 +19,14 @@ bots:
   #   weight:
   #     adjust: 15
 
+  # Challenge all requests to history views
+  - name: historyview
+    path_regex: /@@historyview
+    action: CHALLENGE
+  - name: versions_history_form
+    path_regex: /versions_history_form
+    action: CHALLENGE
+
   # Allow bots by UA:
   - name: google-read-aloud
     user_agent_regex: Google-Read-Aloud
@@ -87,7 +95,7 @@ bots:
   # # If the system is under high load, add weight.
   - name: high-load-average
     action: WEIGH
-    expression: load_1m >= 8.0 # make sure to end the load comparison in a .0
+    expression: load_1m >= 3.0 # make sure to end the load comparison in a .0
     weight:
       adjust: 15
 
@@ -98,7 +106,7 @@ bots:
   ## If it is not, remove weight.
   - name: low-load-average
     action: WEIGH
-    expression: load_15m <= 4.0 # make sure to end the load comparison in a .0
+    expression: load_15m <= 2.0 # make sure to end the load comparison in a .0
     weight:
       adjust: -5
 
