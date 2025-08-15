@@ -19,6 +19,14 @@ bots:
   #   weight:
   #     adjust: 15
 
+  # Allow logged in users always
+  - name: plone-session-cookie
+    action: ALLOW
+    expression:
+      all:
+        - '"Cookie" in headers'
+        - headers["Cookie"].contains("__ac=")
+
   # Challenge all requests to history views
   - name: historyview
     path_regex: /@@historyview
@@ -62,13 +70,6 @@ bots:
   - name: kml
     path_regex: /kml$
     action: ALLOW
-
-  - name: plone-session-cookie
-    action: ALLOW
-    expression:
-      all:
-        - '"Cookie" in headers'
-        - headers["Cookie"].contains("__ac=")
 
   # Allow common "keeping the internet working" routes (well-known, favicon, robots.txt)
   - import: (data)/common/keep-internet-working.yaml
