@@ -29,7 +29,7 @@ bots:
 
   # Challenge all requests to history views
   - name: historyview
-    path_regex: /@@historyview
+    path_regex: /@@history
     action: CHALLENGE
   - name: versions_history_form
     path_regex: /versions_history_form
