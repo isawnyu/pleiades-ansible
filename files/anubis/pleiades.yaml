@@ -14,7 +14,7 @@
 # https://anubis.techaro.lol/docs/admin/configuration/open-graph/
 openGraph:
   # Enables Open Graph passthrough
-  enabled: true
+  enabled: false
   # Enables the use of the HTTP host in the cache key, this enables
   # caching metadata for multiple http hosts at once.
   considerHost: false
@@ -42,15 +42,9 @@ bots:
   - name: historyview
     path_regex: /@@history
     action: CHALLENGE
-    openGraph:
-      enabled: false
-      considerHost: false
   - name: versions_history_form
     path_regex: /versions_history_form
     action: CHALLENGE
-    openGraph:
-      enabled: false
-      considerHost: false
 
   # Allow bots by UA:
   - name: google-read-aloud
