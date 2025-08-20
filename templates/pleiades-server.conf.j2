@@ -3,7 +3,16 @@ DocumentRoot /var/www/pleiades.stoa.org
 SetOutputFilter DEFLATE
 HostnameLookups off
 ProxyPreserveHost On
+ProxyRequests Off
+ProxyVia Off
 RemoteIPHeader X-Forwarded-For
+RequestHeader set "X-Real-Ip" expr=%{REMOTE_ADDR}
+RequestHeader set X-Forwarded-Proto "https"
+RequestHeader set "X-Http-Version" "%{SERVER_PROTOCOL}s"
+
+<Proxy "http://localhost:{{ anubis_port }}">
+  ProxySet keepalive=Off
+</Proxy>
 
 <Location /server-status>
 SetHandler server-status

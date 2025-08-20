@@ -102,6 +102,7 @@
   apache_global_vhost_settings: |
     index.html index.htm
   apache_mods_enabled:
+    - access_compat.load
     - alias.load
     - alias.conf
     - auth_basic.load
@@ -112,7 +113,6 @@
     - authz_user.load
     - autoindex.load
     - autoindex.conf
-    - cgid.load
     - deflate.load
     - deflate.conf
     - dir.load
@@ -120,8 +120,10 @@
     - env.load
     - expires.load
     - headers.load
+    - filter.load
     - mime.load
     - mime.conf
+    - mpm_event.load
     - negotiation.load
     - negotiation.conf
     - proxy.load
@@ -129,15 +131,26 @@
     - proxy_connect.load
     - proxy_http.load
     - remoteip.load
+    - reqtimeout.conf
+    - reqtimeout.load
     - rewrite.load
     - setenvif.load
     - setenvif.conf
+    - socache_shmcb.load
+    - ssl.load
     - status.load
     - status.conf
-    - ssl.load
   apache_mods_disabled:
     - evasive.load
     - evasive.conf
+    - authz_svn.load
+    - cgid.load
+    - dav.load
+    - dav_svn.load
+    - dav_svn.conf
+    - ratelimit.load
+    - wsgi.conf
+    - wsgi.load
   apache_packages:
     - apache2
     - apache2-utils

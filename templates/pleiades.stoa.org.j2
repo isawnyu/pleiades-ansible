@@ -32,7 +32,9 @@ AddType application/json .json
   SSLCertificateFile {{pleiades_cert_file}}
   SSLCertificateChainFile {{pleiades_chained_file}}
   SSLCertificateKeyFile {{pleiades_key_file}}
+  RequestHeader set "X-Real-Ip" expr=%{REMOTE_ADDR}
   RequestHeader set X-Forwarded-Proto "https"
+  RequestHeader set "X-Http-Version" "%{SERVER_PROTOCOL}s"
   include /etc/apache2/conf-available/pleiades-server.conf
 </VirtualHost>
 {% endif %}

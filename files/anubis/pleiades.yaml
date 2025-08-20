@@ -10,6 +10,17 @@
 ## paths in your filesystem. If you don't have access to the Anubis source tree, check
 ## /usr/share/docs/anubis/data or in the tarball you extracted Anubis from.
 
+# Open Graph passthrough configuration, see here for more information:
+# https://anubis.techaro.lol/docs/admin/configuration/open-graph/
+openGraph:
+  # Enables Open Graph passthrough
+  enabled: true
+  # Enables the use of the HTTP host in the cache key, this enables
+  # caching metadata for multiple http hosts at once.
+  considerHost: false
+  # How long cached OpenGraph metadata should last in memory
+  ttl: 24h
+
 bots:
   # Emulate high load for testing purposes, this is not a real bot rule.
   # Disable for production.
@@ -31,9 +42,15 @@ bots:
   - name: historyview
     path_regex: /@@history
     action: CHALLENGE
+    openGraph:
+      enabled: false
+      considerHost: false
   - name: versions_history_form
     path_regex: /versions_history_form
     action: CHALLENGE
+    openGraph:
+      enabled: false
+      considerHost: false
 
   # Allow bots by UA:
   - name: google-read-aloud
@@ -112,17 +129,6 @@ bots:
       adjust: -5
 
 dnsbl: false
-
-# Open Graph passthrough configuration, see here for more information:
-# https://anubis.techaro.lol/docs/admin/configuration/open-graph/
-openGraph:
-  # Enables Open Graph passthrough
-  enabled: true
-  # Enables the use of the HTTP host in the cache key, this enables
-  # caching metadata for multiple http hosts at once.
-  considerHost: false
-  # How long cached OpenGraph metadata should last in memory
-  ttl: 24h
 
 # By default, send HTTP 200 back to clients that either get issued a challenge
 # or a denial. This seems weird, but this is load-bearing due to the fact that
