@@ -82,6 +82,36 @@ bots:
     path_regex: /kml$
     action: ALLOW
 
+  - name: json
+    path_regex: /json$
+    action: ALLOW
+
+  - name: turtle
+    path_regex: /turtle$
+    action: ALLOW
+
+  # Challenge on map views
+  - name: places
+    path_regex: ^/places/.+
+    action: WEIGH
+    weight:
+      adjust: 10
+  - name: search
+    path_regex: ^/(search|search_form)
+    action: WEIGH
+    weight:
+      adjust: 10
+  - name: home
+    path_regex: ^/home$
+    action: WEIGH
+    weight:
+      adjust: 10
+  - name: Recent Map
+    path_regex: ^/map_recent$
+    action: WEIGH
+    weight:
+      adjust: 10
+
   # Allow common "keeping the internet working" routes (well-known, favicon, robots.txt)
   - import: (data)/common/keep-internet-working.yaml
 
@@ -168,8 +198,8 @@ thresholds:
         - weight < 10
     action: CHALLENGE
     challenge:
-      algorithm: metarefresh
-      difficulty: 1
+      algorithm: fast
+      difficulty: 1 # One leading zero, should be very fast
       report_as: 1
   # For clients that are browser-like but have either gained points from custom rules or
   # report as a standard browser.
@@ -181,13 +211,13 @@ thresholds:
     action: CHALLENGE
     challenge:
       algorithm: fast
-      difficulty: 2 # two leading zeros, very fast for most clients
-      report_as: 2
+      difficulty: 4
+      report_as: 4
   # For clients that are browser like and have gained many points from custom rules
   - name: extreme-suspicion
     expression: weight >= 20
     action: CHALLENGE
     challenge:
       algorithm: fast
-      difficulty: 4
-      report_as: 4
+      difficulty: 6
+      report_as: 6
