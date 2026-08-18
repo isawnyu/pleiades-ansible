@@ -1,0 +1,14 @@
+[Unit]
+Description=Stream Techaro Anubis Honeypot IPs to Fail2ban Client
+After=fail2ban.service anubis.service
+Requires=fail2ban.service
+
+[Service]
+Type=simple
+# Follow the log, clean whitespaces/carriage returns, and push to fail2ban daemon
+ExecStart=/bin/bash -c "tail -F /var/lib/private/anubis/pleiades/honeypot.addrs | while read -r ip; do clean_ip=$(echo \"$ip\" | tr -d '\\r\\n[:space:]'); if [ -n \"$clean_ip\" ]; then /usr/bin/fail2ban-client set anubis-honeypot banip \"$clean_ip\"; fi; done"
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

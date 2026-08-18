@@ -200,7 +200,6 @@ thresholds:
     challenge:
       algorithm: fast
       difficulty: 1 # One leading zero, should be very fast
-      report_as: 1
   # For clients that are browser-like but have either gained points from custom rules or
   # report as a standard browser.
   - name: moderate-suspicion
@@ -212,7 +211,6 @@ thresholds:
     challenge:
       algorithm: fast
       difficulty: 4
-      report_as: 4
   # For clients that are browser like and have gained many points from custom rules
   - name: extreme-suspicion
     expression: weight >= 20
@@ -220,4 +218,19 @@ thresholds:
     challenge:
       algorithm: fast
       difficulty: 6
-      report_as: 6
+
+honeypot:
+  enabled: true
+  implementation: naive
+  ip_log_file: /var/lib/private/anubis/pleiades/honeypot.addrs
+
+logging:
+  sink: file
+  level: INFO
+  parameters:
+    file: "/var/lib/private/anubis/pleiades/pleiades.log"
+    maxBackups: 3        # Keep up to 3 older rotated log copies
+    maxBytes: 67108864   # Rotate when the log file reaches 64 MiB
+    maxAge: 7            # Delete rotated files older than 7 days
+    compress: true       # Gzip-compress old log files
+    useLocalTime: true

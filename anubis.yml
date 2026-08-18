@@ -13,11 +13,16 @@
       shell: /usr/bin/anubis --version | rev | cut -d ' ' -f1 | rev
       register: anubis_version
 
+    - name: Check if fail2ban is installed
+      ansible.builtin.stat:
+        path: /usr/bin/fail2ban-client
+      register: fail2ban_client
+
     - block:
 
       - name: Upload Anubis installer to tmp dir
         ansible.builtin.copy:
-          src: files/anubis/anubis_1.23.1_arm64.deb
+          src: files/anubis/anubis_1.27.0_arm64.deb
           dest: /tmp/
           owner: root
           group: root
@@ -25,21 +30,21 @@
 
       - name: Install Anubis (ARM)
         ansible.builtin.apt:
-          deb: /tmp/anubis_1.23.1_arm64.deb
+          deb: /tmp/anubis_1.27.0_arm64.deb
           state: present
 
       - name: Remove anubis installer
         ansible.builtin.file:
-          path: /tmp/anubis_1.23.1_arm64.deb
+          path: /tmp/anubis_1.27.0_arm64.deb
           state: absent
 
-      when: anubis_version.stdout != "1.23.1" and ansible_architecture == 'aarch64'
+      when: anubis_version.stdout != "v1.27.0" and ansible_architecture == 'aarch64'
 
     - block:
 
       - name: Upload Anubis installer to tmp dir (Intel)
         ansible.builtin.copy:
-          src: files/anubis/anubis_1.23.1_amd64.deb
+          src: files/anubis/anubis_1.27.0_amd64.deb
           dest: /tmp/
           owner: root
           group: root
@@ -47,15 +52,15 @@
 
       - name: Install Anubis (Intel)
         ansible.builtin.apt:
-          deb: /tmp/anubis_1.23.1_amd64.deb
+          deb: /tmp/anubis_1.27.0_amd64.deb
           state: present
 
       - name: Remove anubis installer (Intel)
         ansible.builtin.file:
-          path: /tmp/anubis_1.23.1_amd64.deb
+          path: /tmp/anubis_1.27.0_amd64.deb
           state: absent
 
-      when: anubis_version.stdout != "1.23.1" and ansible_architecture == 'amd64'
+      when: anubis_version.stdout != "v1.27.0" and ansible_architecture == 'amd64'
 
     - name: Anubis bot configuration
       ansible.builtin.copy:
@@ -82,8 +87,42 @@
         state: started
         enabled: yes
 
+    - block:
+      - name: Add anubis fail2ban jail
+        ansible.builtin.copy:
+          src: files/anubis/anubis-honeypot.conf
+          dest: /etc/fail2ban/jail.d/anubis-honeypot.conf
+          owner: root
+          group: root
+          mode: "0644"
+        notify: restart fail2ban service
+
+      - name: Deploy the Anubis-to-Fail2ban systemd service file
+        ansible.builtin.copy:
+          src: files/anubis/anubis-fail2ban.service
+          dest: /etc/systemd/system/anubis-fail2ban.service
+          owner: root
+          group: root
+          mode: "0644"
+        notify: systemd daemon reload
+
+      - name: Enable and start anubis fail2ban monitor
+        service:
+          name: anubis-fail2ban.service
+          state: started
+          enabled: yes
+      when: fail2ban_client.stat.exists
+
   handlers:
     - name: Restart anubis@pleiades.service
       service:
         name: anubis@pleiades.service
         state: restarted
+
+    - name: restart fail2ban service
+      service:
+        name: fail2ban
+        state: restarted
+
+    - name: systemd daemon reload
+      command: systemctl daemon-reload
