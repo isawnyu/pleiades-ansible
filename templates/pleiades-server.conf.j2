@@ -431,6 +431,15 @@ ExpiresByType text/turtle "access plus 1 day"
 </IfModule>
 
 RewriteEngine On
+# Plone security fix 20261110 (RCE via portal_modifier). Vhost-level rewrites
+# run before Alias/Location handling and before proxying, so nothing can bypass
+# them. REQUEST_URI is already percent-decoded and normalised; the query string
+# is decoded through the unescape map, since Zope's :method/:action fields
+# extend the traversal path.
+RewriteMap unescape int:unescape
+RewriteCond %{REQUEST_URI} portal[_-]modifier [NC,OR]
+RewriteCond ${unescape:%{QUERY_STRING}} portal[_-]modifier [NC]
+RewriteRule ^ - [R=404,L]
 {% if pleiades_ssl_vhost is defined and pleiades_ssl_vhost == 'pleiades.stoa.org' %}
 RewriteCond "%{HTTP_HOST}" "!^pleiades\."
 RewriteCond "%{HTTPS}" "!=on"
